@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home_48px"
+        android:title="Trang chủ"
+        />
+    <item
+        android:id="@+id/nav_cart"
+        android:icon="@drawable/shopping_cart_48px"
+        android:title="Đặt hàng" />
+    <item
+        android:id="@+id/nav_favourite"
+        android:icon="@drawable/favorite_48px"
+        android:title="Yêu thích" />
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/history_48px"
+        android:title="Lịch sử" />
+    <item
+        android:id="@+id/nav_setting"
+        android:icon="@drawable/settings_48px"
+        android:title="Thiết lập tài khoản" />
+    <item
+        android:id="@+id/nav_password"
+        android:icon="@drawable/lock_48px"
+        android:title="Thay đổi mật khẩu" />
+    <item
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/logout_48px"
+        android:title="Đăng xuất" />
+<!--    <item-->
+<!--        android:id="@+id/nav_home"-->
+<!--        android:icon="@drawable/home_48px"-->
+<!--        android:title="Trang chủ" />-->
+<!--    <item-->
+<!--        android:id="@+id/nav_home"-->
+<!--        android:icon="@drawable/home_48px"-->
+<!--        android:title="Trang chủ" />-->
+
+
+</menu>
