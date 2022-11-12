@@ -143,7 +143,9 @@ public class LoginActivity extends AppCompatActivity {
             finishAffinity();
             System.exit(0);
             super.onBackPressed();
+            Log.d(TAG, "exit: ");
         }
 
     }
+    //zzzzzzzzzzzzzzzzz
 }
