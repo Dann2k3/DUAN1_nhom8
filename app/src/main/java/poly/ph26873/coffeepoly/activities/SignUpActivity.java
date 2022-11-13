@@ -28,8 +28,10 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView tvSignIn;
     private TextInputLayout til_email1, til_pass1;
     private FirebaseAuth mAuth;
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+//    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+//            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+        Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
     private ProgressDialog progressDialog;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";

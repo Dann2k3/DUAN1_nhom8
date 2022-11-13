@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -103,7 +104,9 @@ public class PassWordFragment extends Fragment {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 Log.d(TAG, "User password updated: " + passNew1);
-                                                Toast.makeText(getActivity(), "Thay đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+//                                                Toast.makeText(getActivity(), "Thay đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                                transaction.replace(R.id.content_frame,new Password_update_notification_Fragment()).commitAllowingStateLoss();
                                             }
                                         }
                                     });
