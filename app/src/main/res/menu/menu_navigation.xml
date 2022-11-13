@@ -3,8 +3,7 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/home_48px"
-        android:title="Trang chủ"
-        />
+        android:title="Trang chủ" />
     <item
         android:id="@+id/nav_cart"
         android:icon="@drawable/shopping_cart_48px"
@@ -18,25 +17,46 @@
         android:icon="@drawable/history_48px"
         android:title="Lịch sử" />
     <item
-        android:id="@+id/nav_setting"
-        android:icon="@drawable/settings_48px"
-        android:title="Thiết lập tài khoản" />
-    <item
-        android:id="@+id/nav_password"
-        android:icon="@drawable/lock_48px"
-        android:title="Thay đổi mật khẩu" />
+        android:id="@+id/nav_all_setting_1"
+        android:title="Chức năng dành cho quản lí">
+        <menu>
+            <item
+                android:id="@+id/nav_turnover"
+                android:icon="@drawable/turnover_48px"
+                android:title="Doanh thu" />
+            <item
+                android:id="@+id/nav_top_product"
+                android:icon="@drawable/chart_48px"
+                android:title="Top sản phẩm bán chạy" />
+        </menu>
+    </item>
+
+    <item android:title="Thiết lập chung">
+        <menu>
+            <item
+                android:id="@+id/nav_setting"
+                android:icon="@drawable/settings_48px"
+                android:title="Thiết lập tài khoản" />
+            <item
+                android:id="@+id/nav_password"
+                android:icon="@drawable/lock_48px"
+                android:title="Thay đổi mật khẩu" />
+        </menu>
+
+    </item>
+
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/logout_48px"
         android:title="Đăng xuất" />
-<!--    <item-->
-<!--        android:id="@+id/nav_home"-->
-<!--        android:icon="@drawable/home_48px"-->
-<!--        android:title="Trang chủ" />-->
-<!--    <item-->
-<!--        android:id="@+id/nav_home"-->
-<!--        android:icon="@drawable/home_48px"-->
-<!--        android:title="Trang chủ" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/nav_home"-->
+    <!--        android:icon="@drawable/home_48px"-->
+    <!--        android:title="Trang chủ" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/nav_home"-->
+    <!--        android:icon="@drawable/home_48px"-->
+    <!--        android:title="Trang chủ" />-->
 
 
 </menu>
