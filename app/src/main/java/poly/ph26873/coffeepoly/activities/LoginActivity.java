@@ -27,8 +27,10 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tv_reset_password;
     private TextInputLayout til_email, til_pass;
+    //    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+//            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+            Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
 
     private int count = 0;
 
