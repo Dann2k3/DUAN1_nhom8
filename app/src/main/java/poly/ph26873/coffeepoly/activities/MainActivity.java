@@ -35,18 +35,28 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.models.User;
 import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
 import poly.ph26873.coffeepoly.ui.HistoryFragment;
 import poly.ph26873.coffeepoly.ui.HomeFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
+import poly.ph26873.coffeepoly.ui.TopProductFragment;
+import poly.ph26873.coffeepoly.ui.TurnoverFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TABLE_NAME = "coffee-poly";
+    private static final String COL_USER = "user";
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -89,6 +99,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void checkAccountType(FirebaseUser user) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(user.getEmail().replaceAll("@gmail.com",""));
+        readUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user1 = snapshot.getValue(User.class);
+                if(user1 != null){
+                    if(user1.getType() == 2){
+                        navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void showInfomationUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -100,19 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (name != null && !name.trim().isEmpty()) {
             tv_name.setText(name);
         } else {
-            int c = 0;
-            if (email != null) {
-                for (int i = 0; i < email.length(); i++) {
-                    if (String.valueOf(email.charAt(i)).equals("@")) {
-                        c = i;
-                        Log.d(TAG, "index name : " + c);
-                        continue;
-                    }
-                    Log.d(TAG, "i : " + i);
-                }
-            }
-            assert email != null;
-            name = email.substring(0, c);
+            name = email.replaceAll("@gmail.com","");
             tv_name.setText(name);
         }
         tv_email.setText(email);
@@ -120,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "name user: " + name);
         Log.d(TAG, "email user: " + email);
         Log.d(TAG, "avatar user: " + photoUrl);
+        checkAccountType(user);
     }
 
 
@@ -193,6 +213,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Lịch sử");
+                break;
+
+            case R.id.nav_turnover:
+                replaceFragmemt(new TurnoverFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Doanh thu");
+                break;
+
+            case R.id.nav_top_product:
+                replaceFragmemt(new TopProductFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Sản phẩm bán chạy");
                 break;
             case R.id.nav_setting:
                 replaceFragmemt(settingFragment);

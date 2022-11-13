@@ -94,12 +94,12 @@ public class HomeFragment extends Fragment {
                     Product product  = dataSnapshot.getValue(Product.class);
                     list_rcm_product.add(product);
                 }
-                List<Product> list = new ArrayList<>();
-                for (int i = 0; i < 10; i++) {
-                    list.add(list_rcm_product.get(0));
-                }
+//                List<Product> list = new ArrayList<>();
+//                for (int i = 0; i < 10; i++) {
+//                    list.add(list_rcm_product.get(0));
+//                }
                 Log.d(TAG, "list: "+list_rcm_product.size());
-                horizontalRCVAdapter.setData(list);
+                horizontalRCVAdapter.setData(list_rcm_product);
                 recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
             }
 

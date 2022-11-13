@@ -88,7 +88,7 @@ public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email1, "Nam", "null");
+                            User user = new User(email1, email1, 18, email1, "Nam", "null",2);
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);

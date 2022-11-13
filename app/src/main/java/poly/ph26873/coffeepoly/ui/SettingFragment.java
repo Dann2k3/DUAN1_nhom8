@@ -125,7 +125,7 @@ public class SettingFragment extends Fragment {
                         Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
                         String EM = user.getEmail().replaceAll("@gmail.com", "");
-                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim());
+                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(),2);
                         signUpActivity.CreateFrofileUser(user1, EM);
                         Log.d(TAG, "Cập nhật dữ liệu user");
                     }
