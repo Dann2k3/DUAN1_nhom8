@@ -26,5 +26,6 @@
         android:id="@+id/tv_product_name_rcm"
         android:text="ca phe sua"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
 </LinearLayout>
