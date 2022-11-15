@@ -42,30 +42,32 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="5dp"
                 android:text="Đề xuất"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@android:color/holo_orange_dark"
                 android:textSize="24dp" />
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:paddingBottom="3dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/mRecyclerView_rcm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </HorizontalScrollView>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:background="@android:color/holo_orange_dark" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:text="Tất cả"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@android:color/holo_orange_dark"
                 android:textSize="24dp" />
 
             <androidx.recyclerview.widget.RecyclerView
