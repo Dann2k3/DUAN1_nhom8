@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -31,6 +32,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
     private ScrollView scrV_content;
     private int a = 1;
+    private Button btn_detai_product_add_to_cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class DetailProductActivity extends AppCompatActivity {
                 a--;
                 tv_detai_product_quantity.setText(a + "");
                 tv_detai_product_total.setText("Thành tiền: " + price * a);
+            }
+        });
+        btn_detai_product_add_to_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(DetailProductActivity.this,"Chức năng này chưa code",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -119,6 +127,7 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_price = findViewById(R.id.tv_detai_product_price);
         tv_detai_product_quantity = findViewById(R.id.tv_detai_product_quantity);
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
+        btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
     }
 }
