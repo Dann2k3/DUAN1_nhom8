@@ -68,6 +68,11 @@ public class PassWordFragment extends Fragment {
                     edt_pass_new.requestFocus();
                     return;
                 }
+                if(passNew.length()<=5){
+                    til_pass_new.setError("Mật khẩu mới phải nhiều hơn 5 kí tự!");
+                    edt_pass_new.requestFocus();
+                    return;
+                }
                 til_pass_new.setError("");
                 if (passNew1.isEmpty()) {
                     til_pass_new1.setError("Không được để trống trường này!");

@@ -87,7 +87,7 @@
                 android:background="@android:color/holo_orange_dark"
                 android:id="@+id/scrV_content"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="174dp"
                 android:padding="5dp">
 
                 <TextView
