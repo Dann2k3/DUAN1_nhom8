@@ -46,7 +46,7 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
         Product product = list.get(position);
         if (product != null) {
             holder.tv_product_name_rcm.setText(product.getName());
-            holder.imv_product_avatar_rcm.setImageResource(R.drawable.prd_cps);
+            holder.imv_product_avatar_rcm.setImageResource(product.getImage());
             holder.onclick_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

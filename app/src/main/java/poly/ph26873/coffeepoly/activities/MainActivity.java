@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showInfomationUser();
     }
 
+
+
     private void checkAccountType(FirebaseUser user) {
         assert user.getEmail() != null;
         String chilgPath = user.getEmail().replaceAll("@gmail.com", "");

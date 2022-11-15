@@ -29,7 +29,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_TYPE_PRODUCT = "type_product";
-    private ImageView imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
+    private ImageView imv_detail_product_avatar,imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
     private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
     private ScrollView scrV_content;
     private int a = 1;
@@ -71,6 +71,7 @@ public class DetailProductActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Product product = (Product) intent.getSerializableExtra("product");
         if (product != null) {
+            imv_detail_product_avatar.setImageResource(product.getImage());
             tv_detai_product_name.setText(product.getName());
             tv_detai_product_content.setText(product.getContent());
             if (product.getContent().length() <= 150) {
@@ -107,6 +108,7 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void initUi() {
+        imv_detail_product_avatar = findViewById(R.id.imv_detail_product_avatar);
         imv_back_layout_detail_product = findViewById(R.id.imv_back_layout_detail_product);
         imv_detai_product_remove = findViewById(R.id.imv_detai_product_remove);
         imv_detai_product_add = findViewById(R.id.imv_detai_product_add);

@@ -45,6 +45,7 @@
         app:cardCornerRadius="30dp">
 
         <ImageView
+            android:id="@+id/imv_detail_product_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"

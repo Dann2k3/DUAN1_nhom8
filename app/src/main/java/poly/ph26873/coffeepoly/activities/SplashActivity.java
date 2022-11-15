@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import poly.ph26873.coffeepoly.R;
 
@@ -24,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+//        pushImage();
         TextView tv_coofee_poly = findViewById(R.id.tv_coofee_poly);
         ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f,360f);
         ob1.setDuration(2000);
@@ -39,6 +42,12 @@ public class SplashActivity extends AppCompatActivity {
                 nextActivity();
             }
         }, 3000);
+    }
+
+    private void pushImage() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly/product/9/image");
+        reference.setValue(R.drawable.prd_capuchino,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
     }
 
     private void nextActivity() {
