@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void showRecommentProduct() {
-        Log.d(TAG, "showRecommentProduct: 0------0");
+        Log.d(TAG, "showRecommentProduct:");
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
