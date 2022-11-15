@@ -49,7 +49,7 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, DetailProductActivity.class);
-                    intent.putExtra("product", (Serializable) product);
+                    intent.putExtra("product", product);
                     context.startActivity(intent);
                 }
             });
