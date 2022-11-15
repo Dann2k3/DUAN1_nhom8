@@ -87,6 +87,7 @@ public class HomeFragment extends Fragment {
                     list_rcm_product.add(product);
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
+                Log.d(TAG, "price: "+list_rcm_product.get(1).getPrice());
                 showRecommentProduct();
                 showAllProduct();
             }
@@ -114,7 +115,13 @@ public class HomeFragment extends Fragment {
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
         horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
-        horizontalRCVAdapter.setData(list_rcm_product);
+        List<Product> listProductRecoomment  = new ArrayList<>();
+        for (int i = 0; i < list_rcm_product.size(); i++) {
+            if(list_rcm_product.get(i).getQuantitySold() >= 2000){
+                listProductRecoomment.add(list_rcm_product.get(i));
+            }
+        }
+        horizontalRCVAdapter.setData(listProductRecoomment);
         recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
     }
 

@@ -2,6 +2,7 @@ package poly.ph26873.coffeepoly.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import poly.ph26873.coffeepoly.models.Product;
 public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdapter.ProductsHolder> {
     private Context context;
     private List<Product> list;
+    private static final String TAG = "zzz";
 
     public HorizontalRCVAdapter(Context context) {
         this.context = context;

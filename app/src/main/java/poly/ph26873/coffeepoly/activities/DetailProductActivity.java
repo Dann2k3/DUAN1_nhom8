@@ -1,16 +1,124 @@
 package poly.ph26873.coffeepoly.activities;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.models.TypeProduct;
 
 public class DetailProductActivity extends AppCompatActivity {
+    private static final String TAG = "zzz";
+    private static final String TABLE_NAME = "coffee-poly";
+    private static final String COL_TYPE_PRODUCT = "type_product";
+    private ImageView imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
+    private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
+    private ScrollView scrV_content;
+    private int a = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
+        initUi();
+        backActivity();
+        showInformationProduct();
+    }
+
+    private void changeQuantityProduct(long price) {
+        imv_detai_product_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                a++;
+                tv_detai_product_quantity.setText(a + "");
+                tv_detai_product_total.setText("Thành tiền: " + price * a);
+            }
+        });
+        imv_detai_product_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (a == 1) {
+                    Toast.makeText(DetailProductActivity.this, "Số lượng ít nhất bằng 1", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                a--;
+                tv_detai_product_quantity.setText(a + "");
+                tv_detai_product_total.setText("Thành tiền: " + price * a);
+            }
+        });
+    }
+
+    private void showInformationProduct() {
+        Intent intent = getIntent();
+        Product product = (Product) intent.getSerializableExtra("product");
+        if (product != null) {
+            tv_detai_product_name.setText(product.getName());
+            tv_detai_product_content.setText(product.getContent());
+            if (product.getContent().length() <= 150) {
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                scrV_content.setLayoutParams(lp);
+            }
+            tv_detai_product_quantitySold.setText("Số lượng đã bán: " + product.getQuantitySold());
+            tv_detai_product_status.setText("Trạng thái sản phẩm: " + product.getStatus());
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference(TABLE_NAME).child(COL_TYPE_PRODUCT).child(String.valueOf(product.getType()));
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    TypeProduct typeProduct = snapshot.getValue(TypeProduct.class);
+                    tv_detai_product_type.setText("Nguồn gốc: " + typeProduct.getCountry());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    tv_detai_product_type.setText("Nguồn gốc: Không có dữ liệu");
+                }
+            });
+            tv_detai_product_price.setText("Giá tiền: " + product.getPrice());
+            tv_detai_product_total.setText("Thành tiền: " + product.getPrice());
+            tv_detai_product_quantity.setText(a + "");
+            changeQuantityProduct(product.getPrice());
+        }
+    }
+
+    private void backActivity() {
+        imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void initUi() {
+        imv_back_layout_detail_product = findViewById(R.id.imv_back_layout_detail_product);
+        imv_detai_product_remove = findViewById(R.id.imv_detai_product_remove);
+        imv_detai_product_add = findViewById(R.id.imv_detai_product_add);
+        tv_detai_product_name = findViewById(R.id.tv_detai_product_name);
+        tv_detai_product_content = findViewById(R.id.tv_detai_product_content);
+        tv_detai_product_quantitySold = findViewById(R.id.tv_detai_product_quantitySold);
+        tv_detai_product_status = findViewById(R.id.tv_detai_product_status);
+        tv_detai_product_type = findViewById(R.id.tv_detai_product_type);
+        tv_detai_product_price = findViewById(R.id.tv_detai_product_price);
+        tv_detai_product_quantity = findViewById(R.id.tv_detai_product_quantity);
+        tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
+        scrV_content = findViewById(R.id.scrV_content);
     }
 }
