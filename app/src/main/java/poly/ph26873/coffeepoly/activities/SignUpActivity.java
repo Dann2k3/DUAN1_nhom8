@@ -107,6 +107,7 @@ public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
     public void CreateFrofileUser(User user, String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
+//        DatabaseReference newUser = database.getReference(TABLE_NAME).child("Feedback");
         newUser.setValue(user, (error, ref) -> Log.d(TAG, "tạo user trên firebase thành công... "));
     }
 
