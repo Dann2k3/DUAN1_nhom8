@@ -15,7 +15,6 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private int count = 0;
-    private ImageView img_avatar,imv_back_layout_header;
+    private ImageView img_avatar, imv_back_layout_header;
     private TextView tv_name, tv_email;
     private static final String TAG = "zzz";
     private final SettingFragment settingFragment = new SettingFragment();
@@ -99,14 +98,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void checkAccountType(FirebaseUser user) {
+        assert user.getEmail() != null;
+        String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(user.getEmail().replaceAll("@gmail.com",""));
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(chilgPath);
         readUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user1 = snapshot.getValue(User.class);
-                if(user1 != null){
-                    if(user1.getType() == 2){
+                if (user1 != null) {
+                    if (user1.getType() == 2) {
                         navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
                     }
                 }
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tv_name.setText(name);
         } else {
             assert email != null;
-            name = email.replaceAll("@gmail.com","");
+            name = email.replaceAll("@gmail.com", "");
             tv_name.setText(name);
         }
         tv_email.setText(email);
@@ -141,10 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "avatar user: " + photoUrl);
         checkAccountType(user);
     }
-
-
-
-
 
 
     private void showToolBar(String title) {
@@ -177,12 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         replaceFragmemt(new HomeFragment());
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
 
-        imv_back_layout_header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeNavigation();
-            }
-        });
+        imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
 
     @SuppressLint("NonConstantResourceId")
