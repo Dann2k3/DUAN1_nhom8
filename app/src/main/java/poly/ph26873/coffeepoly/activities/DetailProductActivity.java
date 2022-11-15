@@ -1,8 +1,9 @@
 package poly.ph26873.coffeepoly.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -43,35 +44,29 @@ public class DetailProductActivity extends AppCompatActivity {
         showInformationProduct();
     }
 
+    @SuppressLint("SetTextI18n")
     private void changeQuantityProduct(long price) {
-        imv_detai_product_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                a++;
-                tv_detai_product_quantity.setText(a + "");
-                tv_detai_product_total.setText("Thành tiền: " + price * a);
-            }
+        imv_detai_product_add.setOnClickListener(v -> {
+            a++;
+            tv_detai_product_quantity.setText(a + "");
+            tv_detai_product_total.setText("Thành tiền: " + price * a + "K");
         });
-        imv_detai_product_remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (a == 1) {
-                    Toast.makeText(DetailProductActivity.this, "Số lượng ít nhất bằng 1", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                a--;
-                tv_detai_product_quantity.setText(a + "");
-                tv_detai_product_total.setText("Thành tiền: " + price * a);
+        imv_detai_product_remove.setOnClickListener(v -> {
+            if (a == 1) {
+                Toast.makeText(DetailProductActivity.this, "Số lượng ít nhất bằng 1", Toast.LENGTH_SHORT).show();
+                return;
             }
+            a--;
+            tv_detai_product_quantity.setText(a + "");
+            tv_detai_product_total.setText("Thành tiền: " + price * a + "K");
         });
-        btn_detai_product_add_to_cart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(DetailProductActivity.this,"Chức năng này chưa code",Toast.LENGTH_SHORT).show();
-            }
+        btn_detai_product_add_to_cart.setOnClickListener(v -> {
+            Log.d(TAG, "quatity: "+a);
+            Toast.makeText(DetailProductActivity.this, "Chức năng này chưa code", Toast.LENGTH_SHORT).show();
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void showInformationProduct() {
         Intent intent = getIntent();
         Product product = (Product) intent.getSerializableExtra("product");
@@ -91,6 +86,7 @@ public class DetailProductActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     TypeProduct typeProduct = snapshot.getValue(TypeProduct.class);
+                    assert typeProduct != null;
                     tv_detai_product_type.setText("Nguồn gốc: " + typeProduct.getCountry());
                 }
 
@@ -99,20 +95,15 @@ public class DetailProductActivity extends AppCompatActivity {
                     tv_detai_product_type.setText("Nguồn gốc: Không có dữ liệu");
                 }
             });
-            tv_detai_product_price.setText("Giá tiền: " + product.getPrice());
-            tv_detai_product_total.setText("Thành tiền: " + product.getPrice());
+            tv_detai_product_price.setText("Đơn giá: " + product.getPrice()+"K");
+            tv_detai_product_total.setText("Thành tiền: " + product.getPrice()+"K");
             tv_detai_product_quantity.setText(a + "");
             changeQuantityProduct(product.getPrice());
         }
     }
 
     private void backActivity() {
-        imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imv_back_layout_detail_product.setOnClickListener(v -> finish());
     }
 
     private void initUi() {

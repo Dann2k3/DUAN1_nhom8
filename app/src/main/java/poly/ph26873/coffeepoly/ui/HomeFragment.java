@@ -61,7 +61,6 @@ public class HomeFragment extends Fragment {
     private static final String COL_PRODUCT = "product";
 
     private RecyclerView recyclerView_rcm_product, mRecycerView_all_product;
-    private HorizontalRCVAdapter horizontalRCVAdapter, allProductAdapter;
     private List<Product> list_rcm_product;
     private FirebaseDatabase database;
     private ProgressDialog progressDialog;
@@ -104,7 +103,7 @@ public class HomeFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecycerView_all_product.setLayoutManager(manager);
         mRecycerView_all_product.setHasFixedSize(true);
-        allProductAdapter = new HorizontalRCVAdapter(getContext());
+        HorizontalRCVAdapter allProductAdapter = new HorizontalRCVAdapter(getContext());
         allProductAdapter.setData(list_rcm_product);
         mRecycerView_all_product.setAdapter(allProductAdapter);
     }
@@ -114,9 +113,10 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
-        horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
+        HorizontalRCVAdapter horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
         List<Product> listProductRecoomment  = new ArrayList<>();
         for (int i = 0; i < list_rcm_product.size(); i++) {
+            Log.d(TAG, "sp: "+i+" "+list_rcm_product.get(i).getId()+" "+list_rcm_product.get(i).getPrice()+" "+list_rcm_product.get(i).getQuantitySold());
             if(list_rcm_product.get(i).getQuantitySold() >= 2000){
                 listProductRecoomment.add(list_rcm_product.get(i));
             }

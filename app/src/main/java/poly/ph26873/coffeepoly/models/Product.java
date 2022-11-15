@@ -14,8 +14,7 @@ public class Product implements Serializable {
     public Product() {
     }
 
-
-    public Product(long id, String name, String image, long price, String content, String status, long quantitySold, int type) {
+    public Product(long id, String name, long price, String content, String status, long quantitySold, int type) {
 
         this.id = id;
         this.name = name;
@@ -47,10 +46,6 @@ public class Product implements Serializable {
         return price;
     }
 
-    public void setPrice(long price) {
-        price = price;
-    }
-
     public String getContent() {
         return content;
     }
@@ -63,23 +58,12 @@ public class Product implements Serializable {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public long getQuantitySold() {
         return quantitySold;
-    }
-
-    public void setQuantitySold(long quantitySold) {
-        this.quantitySold = quantitySold;
     }
 
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
 }

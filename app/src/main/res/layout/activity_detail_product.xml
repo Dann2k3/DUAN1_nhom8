@@ -21,7 +21,8 @@
             android:layout_height="31dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,8 +32,9 @@
             android:layout_toEndOf="@+id/imv_back_layout_detail_product"
             android:text="Chi tiết sản phẩm"
             android:textColor="@color/white"
-            android:textSize="22dp"
-            android:textStyle="bold" />
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
     </RelativeLayout>
 
     <androidx.cardview.widget.CardView
@@ -46,7 +48,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/prd_cps" />
+            android:src="@drawable/prd_cps"
+            tools:ignore="ContentDescription" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -56,7 +59,8 @@
         android:layout_marginTop="15dp"
         android:text="Tên sản phẩm"
         android:textColor="@color/black"
-        android:textSize="23dp" />
+        android:textSize="23sp"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:layout_width="300dp"
@@ -67,9 +71,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mô tả sản phẩm"
+            android:text="Mô tả sản phẩm:"
             android:textColor="@color/purple_700"
-            android:textSize="19dp" />
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
 
         <ScrollView
             android:id="@+id/scrV_content"
@@ -81,7 +86,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Mô tả sản phẩm"
-                android:textSize="19dp" />
+                android:textSize="19sp"
+                tools:ignore="HardcodedText" />
         </ScrollView>
 
         <TextView
@@ -90,7 +96,8 @@
             android:layout_height="wrap_content"
             android:text="Số lượng đã bán"
             android:textColor="@color/purple_700"
-            android:textSize="19dp" />
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/tv_detai_product_status"
@@ -98,7 +105,8 @@
             android:layout_height="wrap_content"
             android:text="Trạng thái sản phẩm"
             android:textColor="@color/purple_700"
-            android:textSize="19dp" />
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/tv_detai_product_type"
@@ -106,7 +114,8 @@
             android:layout_height="wrap_content"
             android:text="Nguồn gốc"
             android:textColor="@color/purple_700"
-            android:textSize="19dp" />
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/tv_detai_product_price"
@@ -114,7 +123,8 @@
             android:layout_height="wrap_content"
             android:text="Giá tiền"
             android:textColor="@color/purple_700"
-            android:textSize="19dp" />
+            android:textSize="19sp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
@@ -131,7 +141,9 @@
             android:layout_height="wrap_content"
             android:text="Thành tiền: 100k"
             android:textColor="@color/red"
-            android:textSize="24dp" />
+            android:textSize="24sp"
+            tools:ignore="HardcodedText,RtlSymmetry"
+            android:paddingEnd="3dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -139,14 +151,16 @@
             android:layout_centerVertical="true"
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="ObsoleteLayoutParam">
 
             <ImageView
                 android:id="@+id/imv_detai_product_remove"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_bright"
-                android:src="@drawable/ic_remove" />
+                android:src="@drawable/ic_remove"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_detai_product_quantity"
@@ -156,14 +170,16 @@
                 android:layout_marginRight="5dp"
                 android:text="1"
                 android:textColor="@color/purple_700"
-                android:textSize="24dp" />
+                android:textSize="24sp"
+                tools:ignore="HardcodedText" />
 
             <ImageView
                 android:id="@+id/imv_detai_product_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/holo_blue_bright"
-                android:src="@drawable/ic_add" />
+                android:src="@drawable/ic_add"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
@@ -172,7 +188,8 @@
             android:layout_height="wrap_content"
             android:text="Thêm vào giỏ hàng"
             android:background="@android:color/holo_orange_dark"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
 
 
