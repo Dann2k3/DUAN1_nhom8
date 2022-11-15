@@ -170,7 +170,9 @@
             android:id="@+id/btn_detai_product_add_to_cart"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Thêm vào giỏ hàng" />
+            android:text="Thêm vào giỏ hàng"
+            android:background="@android:color/holo_orange_dark"
+            android:padding="10dp"/>
     </LinearLayout>
 
 
