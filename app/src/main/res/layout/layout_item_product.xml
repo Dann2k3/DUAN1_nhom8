@@ -5,7 +5,8 @@
     android:layout_height="110dp"
     android:layout_marginLeft="10dp"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/onclick_item">
 
     <androidx.cardview.widget.CardView
         android:layout_width="90dp"
@@ -26,5 +27,6 @@
         android:id="@+id/tv_product_name_rcm"
         android:text="ca phe sua"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
 </LinearLayout>

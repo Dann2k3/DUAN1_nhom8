@@ -1,5 +1,6 @@
 package poly.ph26873.coffeepoly.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -10,11 +11,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,7 +27,6 @@ import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.MainActivity;
 import poly.ph26873.coffeepoly.adapter.BannerViewPagerAdapter;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
 import poly.ph26873.coffeepoly.models.Banner;
@@ -43,11 +43,10 @@ public class HomeFragment extends Fragment {
     }
 
     private ViewPager viewPager;
-    private BannerViewPagerAdapter pagerAdapter;
     private CircleIndicator circleIndicator;
     private List<Banner> listBanner;
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
+    private final Handler handler = new Handler();
+    private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
             if (viewPager.getCurrentItem() == listBanner.size() - 1) {
@@ -61,12 +60,11 @@ public class HomeFragment extends Fragment {
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_PRODUCT = "product";
 
-    private RecyclerView recyclerView_rcm_product;
-    private HorizontalRCVAdapter horizontalRCVAdapter;
+    private RecyclerView recyclerView_rcm_product, mRecycerView_all_product;
+    private HorizontalRCVAdapter horizontalRCVAdapter, allProductAdapter;
     private List<Product> list_rcm_product;
     private FirebaseDatabase database;
-
-
+    private ProgressDialog progressDialog;
 
 
     @Override
@@ -75,32 +73,22 @@ public class HomeFragment extends Fragment {
         initUi(view);
         showBanner();
         database = FirebaseDatabase.getInstance();
-        showRecommentProduct();
-
+        getList_rcm_product();
     }
 
-    private void showRecommentProduct() {
-        list_rcm_product = new ArrayList<>();
-        Log.d(TAG, "showRecommentProduct: 0------0");
-        LinearLayoutManager manager  = new LinearLayoutManager(getContext(),RecyclerView.HORIZONTAL,true);
-        recyclerView_rcm_product.setLayoutManager(manager);
-        recyclerView_rcm_product.setHasFixedSize(true);
-        horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
-        DatabaseReference  myProduct = database.getReference(TABLE_NAME).child(COL_PRODUCT);
+    private void getList_rcm_product() {
+        DatabaseReference myProduct = database.getReference(TABLE_NAME).child(COL_PRODUCT);
         myProduct.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Product product  = dataSnapshot.getValue(Product.class);
+                progressDialog.dismiss();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Product product = dataSnapshot.getValue(Product.class);
                     list_rcm_product.add(product);
                 }
-//                List<Product> list = new ArrayList<>();
-//                for (int i = 0; i < 10; i++) {
-//                    list.add(list_rcm_product.get(0));
-//                }
-                Log.d(TAG, "list: "+list_rcm_product.size());
-                horizontalRCVAdapter.setData(list_rcm_product);
-                recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
+                Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
+                showRecommentProduct();
+                showAllProduct();
             }
 
             @Override
@@ -108,12 +96,31 @@ public class HomeFragment extends Fragment {
                 Log.d(TAG, "faild product: ");
             }
         });
+    }
 
+    private void showAllProduct() {
+        Log.d(TAG, "showAllProduct: --------");
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
+        mRecycerView_all_product.setLayoutManager(manager);
+        mRecycerView_all_product.setHasFixedSize(true);
+        allProductAdapter = new HorizontalRCVAdapter(getContext());
+        allProductAdapter.setData(list_rcm_product);
+        mRecycerView_all_product.setAdapter(allProductAdapter);
+    }
+
+    private void showRecommentProduct() {
+        Log.d(TAG, "showRecommentProduct:");
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
+        recyclerView_rcm_product.setLayoutManager(manager);
+        recyclerView_rcm_product.setHasFixedSize(true);
+        horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
+        horizontalRCVAdapter.setData(list_rcm_product);
+        recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
     }
 
     private void showBanner() {
         listBanner = getListBanner();
-        pagerAdapter = new BannerViewPagerAdapter(listBanner);
+        BannerViewPagerAdapter pagerAdapter = new BannerViewPagerAdapter(listBanner);
         viewPager.setAdapter(pagerAdapter);
         circleIndicator.setViewPager(viewPager);
         handler.postDelayed(runnable, 2000);
@@ -141,6 +148,11 @@ public class HomeFragment extends Fragment {
         viewPager = view.findViewById(R.id.viewPager);
         circleIndicator = view.findViewById(R.id.circleIndicator);
         recyclerView_rcm_product = view.findViewById(R.id.mRecyclerView_rcm);
+        mRecycerView_all_product = view.findViewById(R.id.mRecycerView_all_product);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.show();
+        list_rcm_product = new ArrayList<>();
     }
 
     private List<Banner> getListBanner() {

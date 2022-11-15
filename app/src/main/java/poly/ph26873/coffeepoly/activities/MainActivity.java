@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showToolBar("Trang chủ");
         toolbarAddNav();
         showInfomationUser();
-
     }
 
     private void checkAccountType(FirebaseUser user) {
@@ -131,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (name != null && !name.trim().isEmpty()) {
             tv_name.setText(name);
         } else {
+            assert email != null;
             name = email.replaceAll("@gmail.com","");
             tv_name.setText(name);
         }
