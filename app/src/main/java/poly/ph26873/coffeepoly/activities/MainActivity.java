@@ -23,6 +23,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "zzz";
     private final SettingFragment settingFragment = new SettingFragment();
     public static final int MY_REQUESTCODE = 511;
+    private int IDmenu = -1;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -171,9 +173,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_home);
+        IDmenu = R.id.nav_home;
         replaceFragmemt(new HomeFragment());
         navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-
         imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
 
@@ -187,24 +189,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hieuUngChecked(id);
                 showToolBar("Trang chủ");
                 closeNavigation();
+                IDmenu = id;
                 break;
             case R.id.nav_cart:
                 replaceFragmemt(new CartFragment());
                 hieuUngChecked(id);
                 showToolBar("Đặt hàng");
                 closeNavigation();
+                IDmenu = id;
                 break;
             case R.id.nav_favourite:
                 replaceFragmemt(new FavouriteFragment());
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Yêu thích");
+                IDmenu = id;
                 break;
             case R.id.nav_history:
                 replaceFragmemt(new HistoryFragment());
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Lịch sử");
+                IDmenu = id;
                 break;
 
             case R.id.nav_turnover:
@@ -212,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Doanh thu");
+                IDmenu = id;
                 break;
 
             case R.id.nav_top_product:
@@ -219,26 +226,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Sản phẩm bán chạy");
+                IDmenu = id;
                 break;
             case R.id.nav_setting:
                 replaceFragmemt(settingFragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thiết lập tài khoản");
+                IDmenu = id;
                 break;
             case R.id.nav_password:
                 replaceFragmemt(new PassWordFragment());
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thay đổi mật khẩu");
+                IDmenu = id;
                 break;
             case R.id.nav_logout:
-                Toast.makeText(this, "Logout account", Toast.LENGTH_SHORT).show();
                 hieuUngChecked(id);
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Bạn muốn đăng xuất tài khoản?");
+                builder.setMessage("Hãy nhấn đắng xuất.");
+                builder.setPositiveButton("Đăng xuất", (dialog, which) -> {
+                    Toast.makeText(MainActivity.this, "Logout account", Toast.LENGTH_SHORT).show();
+                    FirebaseAuth.getInstance().signOut();
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+                builder.setNegativeButton("Hủy", (dialog, which) -> {
+                    closeNavigation();
+                    hieuUngChecked(IDmenu);
+                });
+                builder.setCancelable(false);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
                 break;
 
         }
