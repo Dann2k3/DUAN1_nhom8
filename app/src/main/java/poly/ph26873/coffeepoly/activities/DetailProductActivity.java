@@ -49,7 +49,6 @@ public class DetailProductActivity extends AppCompatActivity {
     private String idu;
     private int vitriSanPhamtrongList;
     private DatabaseReference reference;
-    private Favorite favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,21 +73,17 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_detail_product_favorite.setOnClickListener(v -> {
             if (indexFavorite == 1) {
                 themVaoFavorite();
-                kiemtraSanPhamTrongFavorite();
             } else {
                 xoaFavorite();
-                kiemtraSanPhamTrongFavorite();
             }
-            Intent intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
-            intent.putExtra("product", product);
-            startActivity(intent);
-            finishAffinity();
         });
 
     }
 
     private void xoaFavorite() {
         reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue((error, ref) -> {
+            imv_detail_product_favorite.setImageResource(R.drawable.heart);
+            indexFavorite = 1;
             Log.d(TAG, "delete favorite: successfully");
             Log.d(TAG, "da xoa san pham " + product.getName());
         });
@@ -101,6 +96,8 @@ public class DetailProductActivity extends AppCompatActivity {
         favoriteList.add(product.getId());
         favorite.setList_id_product(favoriteList);
         reference.setValue(favorite, (error, ref) -> {
+            imv_detail_product_favorite.setImageResource(R.drawable.heart1);
+            indexFavorite = 2;
             Log.d(TAG, "add favorite: successfully");
             Log.d(TAG, "cap nhat lai list f: ");
         });
@@ -214,9 +211,7 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailProductActivity.this,MainActivity.class);
-                startActivity(intent);
-                finishAffinity();
+                finish();
             }
         });
     }
