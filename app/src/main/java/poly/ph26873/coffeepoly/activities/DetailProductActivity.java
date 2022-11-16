@@ -49,7 +49,6 @@ public class DetailProductActivity extends AppCompatActivity {
     private String id;
     private int vitriSanPhamtrongList;
     private DatabaseReference reference;
-    private ProgressDialog progressDialog;
     private Favorite favorite;
 
     @Override
@@ -61,14 +60,13 @@ public class DetailProductActivity extends AppCompatActivity {
         product = (Product) intent.getSerializableExtra("product");
         backActivity();
         showInformationProduct();
-        progressDialog.show();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         id = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(id);
-        kiemtraSanPhamTrongFavorite();
-        onClickImagefavorite();
+//        kiemtraSanPhamTrongFavorite();
+//        onClickImagefavorite();
     }
 
 
@@ -90,10 +88,7 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void xoaFavorite() {
-        progressDialog.setTitle("Đang xóa khỏi mục yêu thích");
-        progressDialog.show();
         reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue((error, ref) -> {
-            progressDialog.dismiss();
             Log.d(TAG, "delete favorite: successfully");
             Log.d(TAG, "da xoa san pham " + product.getName());
 //                imv_detail_product_favorite.setImageResource(R.drawable.heart);
@@ -102,14 +97,11 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void themVaoFavorite() {
-        progressDialog.setTitle("Đang thêm vào mục yêu thích");
-        progressDialog.show();
         Favorite favorite = new Favorite();
         favorite.setId_user(id);
         favoriteList.add(product.getId());
         favorite.setList_id_product(favoriteList);
         reference.setValue(favorite, (error, ref) -> {
-            progressDialog.dismiss();
             Log.d(TAG, "add favorite: successfully");
             Log.d(TAG, "cap nhat lai list f: ");
 //                imv_detail_product_favorite.setImageResource(R.drawable.heart1);
@@ -119,10 +111,10 @@ public class DetailProductActivity extends AppCompatActivity {
 
 
     private void kiemtraSanPhamTrongFavorite() {
+        favorite = new Favorite();
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                progressDialog.dismiss();
                 favorite = snapshot.getValue(Favorite.class);
                 Log.d(TAG, "favorite: " + favorite);
                 if (favorite == null || favorite.getList_id_product() == null) {
@@ -131,7 +123,7 @@ public class DetailProductActivity extends AppCompatActivity {
                     imv_detail_product_favorite.setImageResource(R.drawable.heart);
                 } else {
                     Log.d(TAG, "list f khong null: ");
-                    long idp = product.getId();
+                    Long idp = product.getId();
                     for (int i = 0; i < favorite.getList_id_product().size(); i++) {
                         if (idp == favorite.getList_id_product().get(i)) {
                             Log.d(TAG, "id co trong list: ");
@@ -239,7 +231,5 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Đang tải dữ liệu");
     }
 }
