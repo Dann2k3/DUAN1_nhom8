@@ -4,12 +4,12 @@ import java.util.List;
 
 public class Favorite {
     private String id_user;
-    private List<Long> list_id_product;
+    private List<Integer> list_id_product;
 
     public Favorite() {
     }
 
-    public Favorite(String id_user, List<Long> list_id_product) {
+    public Favorite(String id_user, List<Integer> list_id_product) {
         this.id_user = id_user;
         this.list_id_product = list_id_product;
     }
@@ -23,11 +23,11 @@ public class Favorite {
         this.id_user = id_user;
     }
 
-    public List<Long> getList_id_product() {
+    public List<Integer> getList_id_product() {
         return list_id_product;
     }
 
-    public void setList_id_product(List<Long> list_id_product) {
+    public void setList_id_product(List<Integer> list_id_product) {
         this.list_id_product = list_id_product;
     }
 }

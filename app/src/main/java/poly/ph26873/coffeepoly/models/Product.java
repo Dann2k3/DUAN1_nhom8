@@ -3,7 +3,7 @@ package poly.ph26873.coffeepoly.models;
 import java.io.Serializable;
 
 public class Product implements Serializable {
-    private long id;
+    private int id;
     private String name;
     private int image;
     private long price;
@@ -14,7 +14,7 @@ public class Product implements Serializable {
     public Product() {
     }
 
-    public Product(long id, String name, int image, long price, String content, String status, long quantitySold, int type) {
+    public Product(int id, String name, int image, long price, String content, String status, long quantitySold, int type) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -25,11 +25,11 @@ public class Product implements Serializable {
         this.type = type;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

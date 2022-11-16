@@ -1,10 +1,10 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,11 +42,11 @@ public class DetailProductActivity extends AppCompatActivity {
     private int a = 1;
     private Button btn_detai_product_add_to_cart;
     private static final String COL_FAVORITE = "favorite";
-    private List<Long> favoriteList = new ArrayList<>();
+    private List<Integer> favoriteList = new ArrayList<>();
     private Product product;
     private int indexFavorite;
     private int b = -1;
-    private String id;
+    private String idu;
     private int vitriSanPhamtrongList;
     private DatabaseReference reference;
     private Favorite favorite;
@@ -62,13 +62,12 @@ public class DetailProductActivity extends AppCompatActivity {
         showInformationProduct();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
-        id = user.getEmail().replaceAll("@gmail.com", "");
+        idu = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(id);
-//        kiemtraSanPhamTrongFavorite();
-//        onClickImagefavorite();
+        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu);
+        kiemtraSanPhamTrongFavorite();
+        onClickImagefavorite();
     }
-
 
 
     private void onClickImagefavorite() {
@@ -79,10 +78,11 @@ public class DetailProductActivity extends AppCompatActivity {
             } else {
                 xoaFavorite();
                 kiemtraSanPhamTrongFavorite();
-                Intent intent = new Intent(DetailProductActivity.this,DetailProductActivity.class);
-                intent.putExtra("product",product);
-                startActivity(intent);
             }
+            Intent intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
+            intent.putExtra("product", product);
+            startActivity(intent);
+            finishAffinity();
         });
 
     }
@@ -91,41 +91,41 @@ public class DetailProductActivity extends AppCompatActivity {
         reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue((error, ref) -> {
             Log.d(TAG, "delete favorite: successfully");
             Log.d(TAG, "da xoa san pham " + product.getName());
-//                imv_detail_product_favorite.setImageResource(R.drawable.heart);
         });
 
     }
 
     private void themVaoFavorite() {
         Favorite favorite = new Favorite();
-        favorite.setId_user(id);
+        favorite.setId_user(idu);
         favoriteList.add(product.getId());
         favorite.setList_id_product(favoriteList);
         reference.setValue(favorite, (error, ref) -> {
             Log.d(TAG, "add favorite: successfully");
             Log.d(TAG, "cap nhat lai list f: ");
-//                imv_detail_product_favorite.setImageResource(R.drawable.heart1);
         });
 
     }
 
 
     private void kiemtraSanPhamTrongFavorite() {
-        favorite = new Favorite();
-        reference.addValueEventListener(new ValueEventListener() {
+        Log.d(TAG, "idu: " + idu);
+        reference.child("list_id_product").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                favorite = snapshot.getValue(Favorite.class);
-                Log.d(TAG, "favorite: " + favorite);
-                if (favorite == null || favorite.getList_id_product() == null) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    favoriteList.add(dataSnapshot.getValue(Integer.class));
+                }
+                Log.d(TAG, "favoriteList: " + favoriteList.size());
+                if (favoriteList == null || favoriteList.size() == 0) {
                     indexFavorite = 1;
                     Log.d(TAG, "list f null hoac f.list null ");
                     imv_detail_product_favorite.setImageResource(R.drawable.heart);
                 } else {
                     Log.d(TAG, "list f khong null: ");
-                    Long idp = product.getId();
-                    for (int i = 0; i < favorite.getList_id_product().size(); i++) {
-                        if (idp == favorite.getList_id_product().get(i)) {
+                    Integer idp = product.getId();
+                    for (int i = 0; i < favoriteList.size(); i++) {
+                        if (idp == favoriteList.get(i)) {
                             Log.d(TAG, "id co trong list: ");
                             vitriSanPhamtrongList = i;
                             Log.d(TAG, "vitriSanPhamtrongList: " + vitriSanPhamtrongList);
@@ -133,7 +133,6 @@ public class DetailProductActivity extends AppCompatActivity {
                         }
                     }
                     if (b == -1) {
-                        favoriteList = favorite.getList_id_product();
                         indexFavorite = 1;
                         Log.d(TAG, "id khong co trong list: ");
                         imv_detail_product_favorite.setImageResource(R.drawable.heart);
@@ -212,7 +211,14 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void backActivity() {
-        imv_back_layout_detail_product.setOnClickListener(v -> finish());
+        imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailProductActivity.this,MainActivity.class);
+                startActivity(intent);
+                finishAffinity();
+            }
+        });
     }
 
     private void initUi() {
