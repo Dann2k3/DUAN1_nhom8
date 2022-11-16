@@ -73,7 +73,7 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_detail_product_favorite.setOnClickListener(v -> {
             if (indexFavorite == 1) {
                 themVaoFavorite();
-            } else {
+            } else if (indexFavorite == 2) {
                 xoaFavorite();
             }
         });
@@ -83,9 +83,9 @@ public class DetailProductActivity extends AppCompatActivity {
     private void xoaFavorite() {
         reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue((error, ref) -> {
             imv_detail_product_favorite.setImageResource(R.drawable.heart);
-            indexFavorite = 1;
             Log.d(TAG, "delete favorite: successfully");
             Log.d(TAG, "da xoa san pham " + product.getName());
+            restart();
         });
 
     }
@@ -97,11 +97,17 @@ public class DetailProductActivity extends AppCompatActivity {
         favorite.setList_id_product(favoriteList);
         reference.setValue(favorite, (error, ref) -> {
             imv_detail_product_favorite.setImageResource(R.drawable.heart1);
-            indexFavorite = 2;
             Log.d(TAG, "add favorite: successfully");
             Log.d(TAG, "cap nhat lai list f: ");
+            restart();
         });
 
+    }
+
+    private void restart() {
+        Intent intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
+        intent.putExtra("product", product);
+        startActivity(intent);
     }
 
 
@@ -211,7 +217,8 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
