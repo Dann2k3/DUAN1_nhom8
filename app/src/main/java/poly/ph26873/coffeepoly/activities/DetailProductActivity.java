@@ -1,6 +1,7 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,6 +53,8 @@ public class DetailProductActivity extends AppCompatActivity {
     private String id;
     private int vitriSanPhamtrongList;
     private DatabaseReference reference;
+    private ProgressDialog progressDialog;
+    private Favorite favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class DetailProductActivity extends AppCompatActivity {
         product = (Product) intent.getSerializableExtra("product");
         backActivity();
         showInformationProduct();
+        progressDialog.show();
         user = FirebaseAuth.getInstance().getCurrentUser();
         id = user.getEmail().replaceAll("@gmail.com", "");
         database = FirebaseDatabase.getInstance();
@@ -70,14 +74,21 @@ public class DetailProductActivity extends AppCompatActivity {
         onClickImagefavorite();
     }
 
+
+
     private void onClickImagefavorite() {
         imv_detail_product_favorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (indexFavorite == 1) {
                     themVaoFavorite();
+                    kiemtraSanPhamTrongFavorite();
                 } else {
                     xoaFavorite();
+                    kiemtraSanPhamTrongFavorite();
+                    Intent intent = new Intent(DetailProductActivity.this,DetailProductActivity.class);
+                    intent.putExtra("product",product);
+                    startActivity(intent);
                 }
             }
         });
@@ -85,18 +96,23 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void xoaFavorite() {
-        reference.child("list_id_product/" + vitriSanPhamtrongList).removeValue(new DatabaseReference.CompletionListener() {
+        progressDialog.setTitle("Đang xóa khỏi mục yêu thích");
+        progressDialog.show();
+        reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue(new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                progressDialog.dismiss();
                 Log.d(TAG, "delete favorite: successfully");
-                Log.d(TAG, "da xoa san pham "+product.getName());
-                imv_detail_product_favorite.setImageResource(R.drawable.heart);
+                Log.d(TAG, "da xoa san pham " + product.getName());
+//                imv_detail_product_favorite.setImageResource(R.drawable.heart);
             }
         });
 
     }
 
     private void themVaoFavorite() {
+        progressDialog.setTitle("Đang thêm vào mục yêu thích");
+        progressDialog.show();
         Favorite favorite = new Favorite();
         favorite.setId_user(id);
         favoriteList.add(product.getId());
@@ -104,9 +120,10 @@ public class DetailProductActivity extends AppCompatActivity {
         reference.setValue(favorite, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                progressDialog.dismiss();
                 Log.d(TAG, "add favorite: successfully");
                 Log.d(TAG, "cap nhat lai list f: ");
-                imv_detail_product_favorite.setImageResource(R.drawable.heart1);
+//                imv_detail_product_favorite.setImageResource(R.drawable.heart1);
             }
         });
 
@@ -117,7 +134,8 @@ public class DetailProductActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Favorite favorite = snapshot.getValue(Favorite.class);
+                progressDialog.dismiss();
+                favorite = snapshot.getValue(Favorite.class);
                 Log.d(TAG, "favorite: " + favorite);
                 if (favorite == null || favorite.getList_id_product() == null) {
                     indexFavorite = 1;
@@ -125,14 +143,13 @@ public class DetailProductActivity extends AppCompatActivity {
                     imv_detail_product_favorite.setImageResource(R.drawable.heart);
                 } else {
                     Log.d(TAG, "list f khong null: ");
+                    Long idp = product.getId();
                     for (int i = 0; i < favorite.getList_id_product().size(); i++) {
-                        if(favorite.getList_id_product().get(i) != null){
-                            if (product.getId() == favorite.getList_id_product().get(i)) {
-                                Log.d(TAG, "id co trong list: ");
-                                vitriSanPhamtrongList = i;
-                                Log.d(TAG, "vitriSanPhamtrongList: " + vitriSanPhamtrongList);
-                                b++;
-                            }
+                        if (idp == favorite.getList_id_product().get(i)) {
+                            Log.d(TAG, "id co trong list: ");
+                            vitriSanPhamtrongList = i;
+                            Log.d(TAG, "vitriSanPhamtrongList: " + vitriSanPhamtrongList);
+                            b++;
                         }
                     }
                     if (b == -1) {
@@ -181,6 +198,7 @@ public class DetailProductActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void showInformationProduct() {
         if (product != null) {
+            Log.d(TAG, "id product: " + product.getId());
             imv_detail_product_avatar.setImageResource(product.getImage());
             tv_detai_product_name.setText(product.getName());
             tv_detai_product_content.setText(product.getContent());
@@ -233,5 +251,7 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Đang tải dữ liệu");
     }
 }
