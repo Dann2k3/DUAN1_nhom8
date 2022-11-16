@@ -49,6 +49,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private String idu;
     private int vitriSanPhamtrongList;
     private DatabaseReference reference;
+    private int aa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class DetailProductActivity extends AppCompatActivity {
         initUi();
         Intent intent = getIntent();
         product = (Product) intent.getSerializableExtra("product");
+        aa = intent.getIntExtra("a", 1);
         backActivity();
         showInformationProduct();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -107,7 +109,10 @@ public class DetailProductActivity extends AppCompatActivity {
     private void restart() {
         Intent intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
         intent.putExtra("product", product);
+        int dfg = Integer.parseInt(tv_detai_product_quantity.getText().toString().trim());
+        intent.putExtra("a", dfg);
         startActivity(intent);
+        intent.clone();
     }
 
 
@@ -207,8 +212,13 @@ public class DetailProductActivity extends AppCompatActivity {
                 }
             });
             tv_detai_product_price.setText("Đơn giá: " + product.getPrice() + "K");
-            tv_detai_product_total.setText("Thành tiền: " + product.getPrice() + "K");
-            tv_detai_product_quantity.setText(a + "");
+            if (aa > 0) {
+                tv_detai_product_total.setText("Thành tiền: " + aa * product.getPrice() + "K");
+                tv_detai_product_quantity.setText(aa + "");
+            } else {
+                tv_detai_product_total.setText("Thành tiền: " + product.getPrice() + "K");
+                tv_detai_product_quantity.setText(a + "");
+            }
             changeQuantityProduct(product.getPrice());
         }
     }
