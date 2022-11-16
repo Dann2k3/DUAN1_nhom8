@@ -78,7 +78,8 @@
                     android:src="@drawable/heart"
                     android:layout_width="47dp"
                     android:layout_height="47dp"
-                    android:padding="2dp"/>
+                    android:padding="2dp"
+                    tools:ignore="ContentDescription,RtlHardcoded" />
             </RelativeLayout>
 
 
