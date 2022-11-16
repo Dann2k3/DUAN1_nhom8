@@ -71,6 +71,14 @@
                         android:src="@drawable/prd_cps"
                         tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/imv_detail_product_favorite"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginRight="17dp"
+                    android:src="@drawable/heart"
+                    android:layout_width="47dp"
+                    android:layout_height="47dp"
+                    android:padding="2dp"/>
             </RelativeLayout>
 
 
