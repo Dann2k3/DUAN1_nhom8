@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +58,34 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
 
     @Override
     public void onBindViewHolder(@NonNull CartRCVAdapter.ItemBillHolder holder, int position) {
-        int pos = position;
         Item_Bill item_bill = list.get(position);
         if (item_bill != null) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String email = user.getEmail().replaceAll("@gmail.com", "");
             List<Product> products = new ArrayList<>();
+            List<Item_Bill> itemBills = new ArrayList<>();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference  = database.getReference("coffee-poly/bill_current/"+email);
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    itemBills.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        itemBills.add(dataSnapshot.getValue(Item_Bill.class));
+                    }
+                    for (int i = 0; i < itemBills.size(); i++) {
+                        if(item_bill.getId_product()==itemBills.get(i).getId_product()) {
+                            holder.chk_item_bill_selected.setChecked(true);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             DatabaseReference myRef = database.getReference("coffee-poly").child("product");
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -92,6 +114,8 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     holder.tv_item_bill_quantity.setText(sl + "");
                                     holder.tv_item_bill_total.setText("Tổng tiền: " + sl * product.getPrice() + "K");
                                     reference2.setValue(sl);
+                                    DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
+                                    reference4.setValue(sl);
                                 }
                             });
                             holder.imv_item_bill_add.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +126,29 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     holder.tv_item_bill_quantity.setText(sl + "");
                                     holder.tv_item_bill_total.setText("Tổng tiền: " + sl * product.getPrice() + "K");
                                     reference2.setValue(sl);
+                                    DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
+                                    reference4.setValue(sl);
                                 }
                             });
                             holder.chk_item_bill_selected.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Toast.makeText(context, "Chưa code chức năng này", Toast.LENGTH_SHORT).show();
+                                    DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime());
+                                    if (holder.chk_item_bill_selected.isChecked() == true) {
+                                        reference4.setValue(item_bill, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                Log.d(TAG, "đã lưu vào bill tạm thời với key " + item_bill.getTime());
+                                            }
+                                        });
+                                    } else {
+                                        reference4.removeValue(new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                Log.d(TAG, "đã xoá kỏi bill tạm thời với key " + item_bill.getTime());
+                                            }
+                                        });
+                                    }
                                 }
                             });
                             holder.imv_item_bill_image.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +203,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
             });
         }
     }
+
 
     @Override
     public int getItemCount() {

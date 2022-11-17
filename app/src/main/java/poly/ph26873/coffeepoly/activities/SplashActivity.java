@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,6 +72,13 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
             startActivity(intent);
         }else {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + user.getEmail().replaceAll("@gmail.com",""));
+            myRef1.removeValue(new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                }
+            });
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "user: " +user.getEmail());
             Intent intent = new Intent(SplashActivity.this,MainActivity.class);
