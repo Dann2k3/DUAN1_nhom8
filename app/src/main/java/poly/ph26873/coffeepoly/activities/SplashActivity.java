@@ -61,8 +61,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void pushImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/product/6/image");
-        reference.setValue(R.drawable.prd_moka,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
+        DatabaseReference reference = database.getReference("coffee-poly/product/13/image");
+        reference.setValue(R.drawable.prd_americano,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
     }
 
     private void nextActivity() {

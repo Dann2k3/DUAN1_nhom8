@@ -1,17 +1,17 @@
 package poly.ph26873.coffeepoly.models;
 
-import androidx.annotation.NonNull;
-
 public class Item_Bill {
     private int id_product;
     private int quantity;
+    private String time;
 
     public Item_Bill() {
     }
 
-    public Item_Bill(int id_product, int quantity) {
+    public Item_Bill(int id_product, int quantity, String time) {
         this.id_product = id_product;
         this.quantity = quantity;
+        this.time = time;
     }
 
     public int getId_product() {
@@ -30,6 +30,11 @@ public class Item_Bill {
         this.quantity = quantity;
     }
 
+    public String getTime() {
+        return time;
+    }
 
-
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

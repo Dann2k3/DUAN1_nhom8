@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
     android:orientation="vertical"
-    android:layout_marginBottom="2dp">
+    android:id="@+id/onClick_delete">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -89,7 +90,6 @@
                         android:src="@drawable/ic_add" />
                 </LinearLayout>
             </LinearLayout>
-
             <CheckBox
                 android:id="@+id/chk_item_bill_selected"
                 android:layout_width="40dp"
