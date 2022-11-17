@@ -148,7 +148,6 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     });
                                     AlertDialog alertDialog = builder.create();
                                     alertDialog.show();
-                                    Toast.makeText(context, "aaaaaaaa", Toast.LENGTH_SHORT).show();
                                     return true;
                                 }
                             });
