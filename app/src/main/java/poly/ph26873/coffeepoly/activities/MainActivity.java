@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final SettingFragment settingFragment = new SettingFragment();
     public static final int MY_REQUESTCODE = 511;
     private int IDmenu = -1;
+    private Intent intent;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -92,13 +93,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "---------------MainActivity---------------");
+        intent = getIntent();
         initUi();
         setSupportActionBar(toolbar);
         showToolBar("Trang chủ");
         toolbarAddNav();
         showInfomationUser();
     }
-
 
 
     private void checkAccountType(FirebaseUser user) {
@@ -174,10 +175,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_home);
-        IDmenu = R.id.nav_home;
-        replaceFragmemt(new HomeFragment());
-        navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        String gotoFrg = intent.getStringExtra("goto");
+        if (gotoFrg == null) {
+            navigationView.setCheckedItem(R.id.nav_home);
+            IDmenu = R.id.nav_home;
+            replaceFragmemt(new HomeFragment());
+            navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+        } else {
+            if (gotoFrg.equals("cart")) {
+                showToolBar("Đặt hàng");
+                navigationView.setCheckedItem(R.id.nav_cart);
+                IDmenu = R.id.nav_cart;
+                replaceFragmemt(new CartFragment());
+                navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
+            } else {
+                navigationView.setCheckedItem(R.id.nav_home);
+                IDmenu = R.id.nav_home;
+                replaceFragmemt(new HomeFragment());
+                navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            }
+        }
+
         imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
 

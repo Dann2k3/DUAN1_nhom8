@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void xoaFav() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/user");
+        DatabaseReference reference = database.getReference("coffee-poly/cart");
         reference.removeValue(new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {

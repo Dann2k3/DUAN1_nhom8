@@ -1,7 +1,9 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,10 +28,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.TypeProduct;
 
@@ -37,19 +42,22 @@ public class DetailProductActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_TYPE_PRODUCT = "type_product";
+    private static final String COL_CART = "cart";
     private ImageView imv_detail_product_favorite, imv_detail_product_avatar, imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
     private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
     private ScrollView scrV_content;
-    private int a = -1;
+    private int a = 1;
     private Button btn_detai_product_add_to_cart;
     private static final String COL_FAVORITE = "favorite";
     private List<Integer> favoriteList = new ArrayList<>();
     private Product product;
     private String idu;
     private DatabaseReference reference;
-    private int PrInList =1;
+    private int PrInList = 1;
     private ProgressDialog progressDialog;
     private int ViTri;
+    private FirebaseDatabase database;
+    private List<Item_Bill> item_billList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +70,60 @@ public class DetailProductActivity extends AppCompatActivity {
         showInformationProduct();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         idu = user.getEmail().replaceAll("@gmail.com", "");
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu).child("list_id_product");
+        database = FirebaseDatabase.getInstance();
         layDanhSachYeuThich();
         onClickImagefavorite();
+        addToCart();
+    }
+
+    private void addToCart() {
+        btn_detai_product_add_to_cart.setOnClickListener(v -> {
+            progressDialog.setMessage("Đang thêm vào giỏ hàng");
+            progressDialog.show();
+            Item_Bill item_bill = new Item_Bill();
+            item_bill.setId_product(product.getId());
+            item_bill.setQuantity(a);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+            String time = simpleDateFormat.format(calendar.getTime());
+            int total = product.getPrice() * a;
+            reference = database.getReference(TABLE_NAME).child(COL_CART).child(idu).child(time);
+            reference.setValue(item_bill, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    progressDialog.dismiss();
+                    Log.d(TAG, "Đã thêm vào giỏ hàng ");
+                    Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this);
+                    builder.setTitle("Sản phẩm đã được chuyển đến giở hàng");
+                    builder.setMessage("Bạn có muốn chuyển đến giỏ hàng?");
+                    builder.setPositiveButton("Đưa tôi đến giở hàng", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
+                            intent.putExtra("goto", "cart");
+                            startActivity(intent);
+                        }
+                    });
+                    builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
+                            intent.putExtra("goto", "home");
+                            startActivity(intent);
+                        }
+                    });
+                    builder.setCancelable(true);
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            });
+        });
     }
 
     private void layDanhSachYeuThich() {
         favoriteList.clear();
+        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu).child("list_id_product");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -101,7 +155,7 @@ public class DetailProductActivity extends AppCompatActivity {
             if (product.getId() == favoriteList1.get(i)) {
                 PrInList = 1;
                 ViTri = i;
-                Log.d(TAG,"ViTri = "+ViTri);
+                Log.d(TAG, "ViTri = " + ViTri);
             }
         }
         if (PrInList == 1) {
@@ -130,7 +184,7 @@ public class DetailProductActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                     }
                 });
-            }else {
+            } else {
                 progressDialog.setMessage("Đang xoá khỏi danh sách yêu thích");
                 progressDialog.show();
                 favoriteList.remove(ViTri);
@@ -163,10 +217,8 @@ public class DetailProductActivity extends AppCompatActivity {
             tv_detai_product_quantity.setText(a + "");
             tv_detai_product_total.setText("Thành tiền: " + price * a + "K");
         });
-        btn_detai_product_add_to_cart.setOnClickListener(v -> {
-            Log.d(TAG, "quatity: " + a);
-            Toast.makeText(DetailProductActivity.this, "Chức năng này chưa code", Toast.LENGTH_SHORT).show();
-        });
+
+        //------------------------------------------------------------------------------------------------------
     }
 
     @SuppressLint("SetTextI18n")
@@ -231,6 +283,7 @@ public class DetailProductActivity extends AppCompatActivity {
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
         progressDialog = new ProgressDialog(DetailProductActivity.this);
+        item_billList = new ArrayList<>();
     }
 
 
