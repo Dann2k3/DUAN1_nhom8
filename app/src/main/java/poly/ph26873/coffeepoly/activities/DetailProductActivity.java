@@ -113,6 +113,7 @@ public class DetailProductActivity extends AppCompatActivity {
         intent.putExtra("a", dfg);
         startActivity(intent);
         intent.clone();
+        finish();
     }
 
 
@@ -227,8 +228,9 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
+//                startActivity(intent);
+                finish();
             }
         });
     }
@@ -250,4 +252,5 @@ public class DetailProductActivity extends AppCompatActivity {
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
     }
+
 }

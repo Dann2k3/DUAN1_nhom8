@@ -5,7 +5,8 @@
     android:layout_height="110dp"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:id="@+id/onclick_item">
+    android:id="@+id/onclick_item"
+    android:layout_marginBottom="15dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="90dp"
