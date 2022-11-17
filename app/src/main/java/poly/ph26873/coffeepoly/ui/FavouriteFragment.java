@@ -45,13 +45,14 @@ public class FavouriteFragment extends Fragment {
     private FirebaseDatabase database;
     private RecyclerView mRecyclerView;
     private HorizontalRCVAdapter horizontalRCVAdapter;
+    private DatabaseReference reference;
 
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = view.findViewById(R.id.ryc_fravorite);
-        GridLayoutManager manager = new GridLayoutManager(getContext(),3);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecyclerView.setLayoutManager(manager);
         mRecyclerView.setHasFixedSize(true);
         horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
@@ -59,10 +60,20 @@ public class FavouriteFragment extends Fragment {
         String abc = user.getEmail().replaceAll("@gmail.com", "");
         Log.d(TAG, "abc: " + abc);
         database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/favorite/" + abc + "/list_id_product");
+        reference = database.getReference("coffee-poly/favorite/" + abc + "/list_id_product");
+        layListId();
+
+        //lay list product
+
+        //--------------------------------
+
+    }
+
+    private void layListId() {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list_id.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     list_id.add(dataSnapshot.getValue(Integer.class));
                 }
@@ -75,11 +86,6 @@ public class FavouriteFragment extends Fragment {
 
             }
         });
-
-        //lay list product
-
-        //--------------------------------
-
     }
 
     private void layListProduct() {
@@ -87,12 +93,16 @@ public class FavouriteFragment extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list_product.clear();
                 for (DataSnapshot dataSnapshot1 : snapshot.getChildren()) {
                     Product product = dataSnapshot1.getValue(Product.class);
                     list_product.add(product);
                 }
                 Log.d(TAG, "list_product: " + list_product);
-                sosanh();
+                if (list_product.size() > 0) {
+                    sosanh();
+                }
+
             }
 
             @Override
@@ -103,6 +113,7 @@ public class FavouriteFragment extends Fragment {
     }
 
     private void sosanh() {
+        list_product1.clear();
         for (int i = 0; i < list_id.size(); i++) {
             for (int j = 0; j < list_product.size(); j++) {
                 if (list_id.get(i) == list_product.get(j).getId()) {
@@ -115,4 +126,12 @@ public class FavouriteFragment extends Fragment {
         horizontalRCVAdapter.setData(list_product1);
         mRecyclerView.setAdapter(horizontalRCVAdapter);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        layListId();
+        Log.d(TAG, "onResume: ");
+    }
+
 }

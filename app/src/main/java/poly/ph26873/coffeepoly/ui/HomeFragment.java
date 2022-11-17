@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
                     list_rcm_product.add(product);
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
-                Log.d(TAG, "price: "+list_rcm_product.get(1).getPrice());
+                Log.d(TAG, "price: "+list_rcm_product.get(0).getPrice());
                 showRecommentProduct();
                 showAllProduct();
             }

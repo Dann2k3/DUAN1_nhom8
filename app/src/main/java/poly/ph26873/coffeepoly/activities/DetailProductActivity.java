@@ -1,6 +1,7 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.models.Favorite;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.TypeProduct;
 
@@ -39,17 +40,16 @@ public class DetailProductActivity extends AppCompatActivity {
     private ImageView imv_detail_product_favorite, imv_detail_product_avatar, imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
     private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
     private ScrollView scrV_content;
-    private int a = 1;
+    private int a = -1;
     private Button btn_detai_product_add_to_cart;
     private static final String COL_FAVORITE = "favorite";
     private List<Integer> favoriteList = new ArrayList<>();
     private Product product;
-    private int indexFavorite;
-    private int b = -1;
     private String idu;
-    private int vitriSanPhamtrongList;
     private DatabaseReference reference;
-    private int aa;
+    private int PrInList =1;
+    private ProgressDialog progressDialog;
+    private int ViTri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,106 +58,92 @@ public class DetailProductActivity extends AppCompatActivity {
         initUi();
         Intent intent = getIntent();
         product = (Product) intent.getSerializableExtra("product");
-        aa = intent.getIntExtra("a", 1);
         backActivity();
         showInformationProduct();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
         idu = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu);
-        kiemtraSanPhamTrongFavorite();
+        reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu).child("list_id_product");
+        layDanhSachYeuThich();
         onClickImagefavorite();
+    }
+
+    private void layDanhSachYeuThich() {
+        favoriteList.clear();
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    favoriteList.add(data.getValue(Integer.class));
+                }
+                Log.d(TAG, "size của danh sách yêu thích: " + favoriteList.size());
+                Log.d(TAG, "id trong danh sách yêu thích: " + favoriteList);
+                kiemTraIdProductTrongList(favoriteList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "loi khi lay danh sach yeu thich !!!");
+            }
+        });
+    }
+
+    private void kiemTraIdProductTrongList(List<Integer> favoriteList1) {
+        PrInList = -1;
+        if (favoriteList1.size() == 0) {
+            PrInList = -1;
+            imv_detail_product_favorite.setImageResource(R.drawable.heart);
+            Log.d(TAG, " listfavorite trống");
+            Log.d(TAG, " PrInList :" + PrInList);
+            return;
+        }
+        for (int i = 0; i < favoriteList1.size(); i++) {
+            if (product.getId() == favoriteList1.get(i)) {
+                PrInList = 1;
+                ViTri = i;
+                Log.d(TAG,"ViTri = "+ViTri);
+            }
+        }
+        if (PrInList == 1) {
+            imv_detail_product_favorite.setImageResource(R.drawable.heart1);
+            Log.d(TAG, "id product đã có trong listfavorite ");
+            Log.d(TAG, "PrInList " + PrInList);
+        } else {
+            imv_detail_product_favorite.setImageResource(R.drawable.heart);
+            Log.d(TAG, "id product chưa có trong listfavorite ");
+            Log.d(TAG, "PrInList " + PrInList);
+        }
+
     }
 
 
     private void onClickImagefavorite() {
         imv_detail_product_favorite.setOnClickListener(v -> {
-            if (indexFavorite == 1) {
-                themVaoFavorite();
-            } else if (indexFavorite == 2) {
-                xoaFavorite();
-            }
-        });
-
-    }
-
-    private void xoaFavorite() {
-        reference.child("list_id_product").child(vitriSanPhamtrongList + "").removeValue((error, ref) -> {
-            imv_detail_product_favorite.setImageResource(R.drawable.heart);
-            Log.d(TAG, "delete favorite: successfully");
-            Log.d(TAG, "da xoa san pham " + product.getName());
-            restart();
-        });
-
-    }
-
-    private void themVaoFavorite() {
-        Favorite favorite = new Favorite();
-        favorite.setId_user(idu);
-        favoriteList.add(product.getId());
-        favorite.setList_id_product(favoriteList);
-        reference.setValue(favorite, (error, ref) -> {
-            imv_detail_product_favorite.setImageResource(R.drawable.heart1);
-            Log.d(TAG, "add favorite: successfully");
-            Log.d(TAG, "cap nhat lai list f: ");
-            restart();
-        });
-
-    }
-
-    private void restart() {
-        Intent intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
-        intent.putExtra("product", product);
-        int dfg = Integer.parseInt(tv_detai_product_quantity.getText().toString().trim());
-        intent.putExtra("a", dfg);
-        startActivity(intent);
-        intent.clone();
-        finish();
-    }
-
-
-    private void kiemtraSanPhamTrongFavorite() {
-        Log.d(TAG, "idu: " + idu);
-        reference.child("list_id_product").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    favoriteList.add(dataSnapshot.getValue(Integer.class));
-                }
-                Log.d(TAG, "favoriteList: " + favoriteList.size());
-                if (favoriteList == null || favoriteList.size() == 0) {
-                    indexFavorite = 1;
-                    Log.d(TAG, "list f null hoac f.list null ");
-                    imv_detail_product_favorite.setImageResource(R.drawable.heart);
-                } else {
-                    Log.d(TAG, "list f khong null: ");
-                    Integer idp = product.getId();
-                    for (int i = 0; i < favoriteList.size(); i++) {
-                        if (idp == favoriteList.get(i)) {
-                            Log.d(TAG, "id co trong list: ");
-                            vitriSanPhamtrongList = i;
-                            Log.d(TAG, "vitriSanPhamtrongList: " + vitriSanPhamtrongList);
-                            b++;
-                        }
+            if (PrInList == -1) {
+                progressDialog.setMessage("Đang thêm vào danh sách yêu thích");
+                progressDialog.show();
+                favoriteList.add(product.getId());
+                reference.setValue(favoriteList, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        layDanhSachYeuThich();
+                        progressDialog.dismiss();
                     }
-                    if (b == -1) {
-                        indexFavorite = 1;
-                        Log.d(TAG, "id khong co trong list: ");
-                        imv_detail_product_favorite.setImageResource(R.drawable.heart);
-                    } else {
-                        Log.d(TAG, "id co trong list: ");
-                        indexFavorite = 2;
-                        imv_detail_product_favorite.setImageResource(R.drawable.heart1);
+                });
+            }else {
+                progressDialog.setMessage("Đang xoá khỏi danh sách yêu thích");
+                progressDialog.show();
+                favoriteList.remove(ViTri);
+                reference.setValue(favoriteList, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        layDanhSachYeuThich();
+                        progressDialog.dismiss();
                     }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+                });
             }
         });
+
     }
 
 
@@ -213,13 +199,8 @@ public class DetailProductActivity extends AppCompatActivity {
                 }
             });
             tv_detai_product_price.setText("Đơn giá: " + product.getPrice() + "K");
-            if (aa > 0) {
-                tv_detai_product_total.setText("Thành tiền: " + aa * product.getPrice() + "K");
-                tv_detai_product_quantity.setText(aa + "");
-            } else {
-                tv_detai_product_total.setText("Thành tiền: " + product.getPrice() + "K");
-                tv_detai_product_quantity.setText(a + "");
-            }
+            tv_detai_product_total.setText("Thành tiền: " + product.getPrice() + "K");
+            tv_detai_product_quantity.setText(a + "");
             changeQuantityProduct(product.getPrice());
         }
     }
@@ -228,8 +209,6 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
-//                startActivity(intent);
                 finish();
             }
         });
@@ -251,6 +230,8 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         scrV_content = findViewById(R.id.scrV_content);
+        progressDialog = new ProgressDialog(DetailProductActivity.this);
     }
+
 
 }
