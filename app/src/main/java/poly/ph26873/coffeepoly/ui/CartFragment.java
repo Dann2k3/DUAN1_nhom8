@@ -40,6 +40,7 @@ import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.models.Turnover;
 
 
 public class CartFragment extends Fragment {
@@ -184,11 +185,9 @@ public class CartFragment extends Fragment {
     }
 
     private void capNhatDoanhThu(int tong_tien, String time) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM_yyyy");
-        String referenceKey = simpleDateFormat.format(calendar.getTime());
-        DatabaseReference reference = database.getReference("coffee-poly/turnover").child(referenceKey).child(time);
-        reference.setValue(tong_tien, new DatabaseReference.CompletionListener() {
+        Turnover turnover = new Turnover(email+" "+time,tong_tien,time);
+        DatabaseReference reference = database.getReference("coffee-poly/turnover").child(email+" "+time);
+        reference.setValue(turnover, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 Log.d(TAG, "doanh thu cap nhat : +"+tong_tien);
