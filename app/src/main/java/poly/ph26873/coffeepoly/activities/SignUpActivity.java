@@ -91,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email1, "Nam", "null", 2);
+                            User user = new User(email1, email1, 18, email, "Nam", "null");
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
@@ -109,11 +109,13 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void CreateFrofileUser(User user, String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
+        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1).child(email1);
         newUser.setValue(user, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 Log.d(TAG, "tạo user trên firebase thành công... ");
+                DatabaseReference keyRef = database.getReference(TABLE_NAME).child(COL_USER).child(email1).child("type");
+                keyRef.setValue(2);
             }
         });
     }

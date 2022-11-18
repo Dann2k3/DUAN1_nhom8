@@ -44,7 +44,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.models.User;
 import poly.ph26873.coffeepoly.ui.BillFragment;
 import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
@@ -107,15 +106,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         assert user.getEmail() != null;
         String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(chilgPath);
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(chilgPath).child("type");
         readUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user1 = snapshot.getValue(User.class);
-                if (user1 != null) {
-                    if (user1.getType() == 2) {
-                        navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
-                    }
+                int type = snapshot.getValue(Integer.class);
+                if (type == 2) {
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
                 }
             }
 
@@ -194,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_home;
                 replaceFragmemt(new HomeFragment());
                 navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
-            } else if(gotoFrg.equals("setting")) {
+            } else if (gotoFrg.equals("setting")) {
                 navigationView.setCheckedItem(R.id.nav_setting);
                 IDmenu = R.id.nav_setting;
                 replaceFragmemt(new SettingFragment());
@@ -303,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout,R.id.nav_bill,R.id.nav_turnover,R.id.nav_top_product};
+        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

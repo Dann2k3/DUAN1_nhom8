@@ -1,5 +1,6 @@
 package poly.ph26873.coffeepoly.ui;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,9 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.show();
         hisRecyclerView = view.findViewById(R.id.hisRecyclerView);
         list = new ArrayList<>();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -69,6 +73,7 @@ public class HistoryFragment extends Fragment {
                 }
                 historyRCVAdapter.setData(histories);
                 hisRecyclerView.setAdapter(historyRCVAdapter);
+                progressDialog.dismiss();
             }
 
             @Override

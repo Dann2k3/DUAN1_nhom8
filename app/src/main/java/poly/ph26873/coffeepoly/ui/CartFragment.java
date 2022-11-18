@@ -106,7 +106,7 @@ public class CartFragment extends Fragment {
             public void onClick(View v) {
                 progressDialog.setMessage("Đang tiến hàng đặt hàng....");
                 progressDialog.show();
-                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email + "/address");
+                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email+"/"+email + "/address");
                 AddressRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -182,7 +182,7 @@ public class CartFragment extends Fragment {
     private void capNhatLichSuDatHang(String time) {
         DatabaseReference reference = database.getReference("coffee-poly/history/" + email + "/" + time);
         History history = new History(time, 0);
-        reference.setValue(history,new DatabaseReference.CompletionListener() {
+        reference.setValue(history, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 Log.d(TAG, "Cập nhật lịch sử thành công");

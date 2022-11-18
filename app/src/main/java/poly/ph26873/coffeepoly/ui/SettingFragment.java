@@ -126,22 +126,24 @@ public class SettingFragment extends Fragment {
                         Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
                         String EM = user.getEmail().replaceAll("@gmail.com", "");
-                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(), 2);
+                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim());
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
+                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM).child(EM);
                         newUser.setValue(user1, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                 Log.d(TAG, "Cập nhật dữ liệu user");
-                                String set = getActivity().getIntent().getExtras().getString("goto");
-                                Log.d(TAG, "set: " + set);
-                                if (set != null) {
-                                    if (set.equalsIgnoreCase("setting")) {
-                                        Intent intent1 = new Intent(getContext(), MainActivity.class);
-                                        intent1.putExtra("goto", "cart");
-                                        intent1.putExtra("return","return");
-                                        startActivity(intent1);
-                                        getActivity().finish();
+                                Intent intent = getActivity().getIntent();
+                                if(intent.getStringExtra("goto")!=null){
+                                    String set = getActivity().getIntent().getExtras().getString("goto");
+                                    if (set != null) {
+                                        if (set.equalsIgnoreCase("setting")) {
+                                            Intent intent1 = new Intent(getContext(), MainActivity.class);
+                                            intent1.putExtra("goto", "cart");
+                                            intent1.putExtra("return","return");
+                                            startActivity(intent1);
+                                            getActivity().finish();
+                                        }
                                     }
                                 }
                             }
@@ -183,7 +185,7 @@ public class SettingFragment extends Fragment {
 
     public void ReadFrofileUser(String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1).child(email1);
         readUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -7,18 +7,16 @@ public class User {
     private String email;
     private String gender;
     private String address;
-    private int type;
     public User() {
     }
 
-    public User(String id, String name, int age, String email, String gender, String address,int type) {
+    public User(String id, String name, int age, String email, String gender, String address) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.email = email;
         this.gender = gender;
         this.address = address;
-        this.type = type;
     }
 
 
@@ -70,13 +68,6 @@ public class User {
         this.address = address;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
 
     @Override
     public String toString() {
