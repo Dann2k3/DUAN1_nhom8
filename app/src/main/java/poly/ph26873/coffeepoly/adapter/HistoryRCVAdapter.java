@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -131,7 +132,7 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
         private TextView tv_his_time, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
-        private CardView onClick_del_his;
+        private LinearLayout onClick_del_his;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
