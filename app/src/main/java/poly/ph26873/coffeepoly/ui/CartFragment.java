@@ -165,6 +165,7 @@ public class CartFragment extends Fragment {
                                         @Override
                                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                             Log.d(TAG, "Đã xóa bill hiện thời");
+                                            capNhatDoanhThu(tong_tien,time);
                                             capNhatLichSuDatHang(time);
                                         }
                                     });
@@ -178,6 +179,19 @@ public class CartFragment extends Fragment {
 
                     }
                 });
+            }
+        });
+    }
+
+    private void capNhatDoanhThu(int tong_tien, String time) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM_yyyy");
+        String referenceKey = simpleDateFormat.format(calendar.getTime());
+        DatabaseReference reference = database.getReference("coffee-poly/turnover").child(referenceKey).child(time);
+        reference.setValue(tong_tien, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Log.d(TAG, "doanh thu cap nhat : +"+tong_tien);
             }
         });
     }
