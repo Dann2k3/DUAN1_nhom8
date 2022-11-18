@@ -9,10 +9,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -28,10 +31,10 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView tvSignIn;
     private TextInputLayout til_email1, til_pass1;
     private FirebaseAuth mAuth;
-//    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+    //    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
 //            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-        Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
     private ProgressDialog progressDialog;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
@@ -88,7 +91,7 @@ public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email1, "Nam", "null",2);
+                            User user = new User(email1, email1, 18, email1, "Nam", "null", 2);
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
@@ -107,11 +110,13 @@ public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
     public void CreateFrofileUser(User user, String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
-//        DatabaseReference newUser = database.getReference(TABLE_NAME).child("Feedback");
-        newUser.setValue(user, (error, ref) -> Log.d(TAG, "tạo user trên firebase thành công... "));
+        newUser.setValue(user, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Log.d(TAG, "tạo user trên firebase thành công... ");
+            }
+        });
     }
-
-
 
 
     private void initUi() {

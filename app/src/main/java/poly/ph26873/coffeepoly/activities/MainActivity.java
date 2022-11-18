@@ -45,6 +45,7 @@ import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.ui.BillFragment;
 import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
 import poly.ph26873.coffeepoly.ui.HistoryFragment;
@@ -188,11 +189,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_cart;
                 replaceFragmemt(new CartFragment());
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-            } else {
+            } else if (gotoFrg.equals("home")) {
                 navigationView.setCheckedItem(R.id.nav_home);
                 IDmenu = R.id.nav_home;
                 replaceFragmemt(new HomeFragment());
                 navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            } else if(gotoFrg.equals("setting")) {
+                navigationView.setCheckedItem(R.id.nav_setting);
+                IDmenu = R.id.nav_setting;
+                replaceFragmemt(new SettingFragment());
+                navigationView.getMenu().findItem(R.id.nav_setting).setChecked(true);
             }
         }
 
@@ -215,6 +221,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragmemt(new CartFragment());
                 hieuUngChecked(id);
                 showToolBar("Đặt hàng");
+                closeNavigation();
+                IDmenu = id;
+                break;
+
+            case R.id.nav_bill:
+                replaceFragmemt(new BillFragment());
+                hieuUngChecked(id);
+                showToolBar("Đơn hàng của bạn");
                 closeNavigation();
                 IDmenu = id;
                 break;

@@ -4,6 +4,7 @@ import static poly.ph26873.coffeepoly.activities.MainActivity.MY_REQUESTCODE;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -125,9 +126,26 @@ public class SettingFragment extends Fragment {
                         Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
                         String EM = user.getEmail().replaceAll("@gmail.com", "");
-                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(),2);
-                        signUpActivity.CreateFrofileUser(user1, EM);
-                        Log.d(TAG, "Cập nhật dữ liệu user");
+                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(), 2);
+                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
+                        newUser.setValue(user1, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                Log.d(TAG, "Cập nhật dữ liệu user");
+                                String set = getActivity().getIntent().getExtras().getString("goto");
+                                Log.d(TAG, "set: " + set);
+                                if (set != null) {
+                                    if (set.equalsIgnoreCase("setting")) {
+                                        Intent intent1 = new Intent(getContext(), MainActivity.class);
+                                        intent1.putExtra("goto", "cart");
+                                        intent1.putExtra("return","return");
+                                        startActivity(intent1);
+                                        getActivity().finish();
+                                    }
+                                }
+                            }
+                        });
                     }
                 });
     }
@@ -152,7 +170,7 @@ public class SettingFragment extends Fragment {
         if (user == null) {
             return;
         }
-    ReadFrofileUser(user.getEmail().replaceAll("@gmail.com",""));
+        ReadFrofileUser(user.getEmail().replaceAll("@gmail.com", ""));
 
         Uri avatar = user.getPhotoUrl();
 
@@ -170,17 +188,16 @@ public class SettingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                if(user != null){
-                        edt_user_name_frgst.setText(user.getName());
-                        edt_age_frgst.setText(user.getAge()+"");
-                        edt_address_frgst.setText(user.getAddress());
-                        if(user.getGender().equalsIgnoreCase("Nam")){
-                            sp_gender_frgst.setSelection(0);
-                        }
-                        else {
-                            sp_gender_frgst.setSelection(1);
-                        }
-                        progressDialog.dismiss();
+                if (user != null) {
+                    edt_user_name_frgst.setText(user.getName());
+                    edt_age_frgst.setText(user.getAge() + "");
+                    edt_address_frgst.setText(user.getAddress());
+                    if (user.getGender().equalsIgnoreCase("Nam")) {
+                        sp_gender_frgst.setSelection(0);
+                    } else {
+                        sp_gender_frgst.setSelection(1);
+                    }
+                    progressDialog.dismiss();
                 }
             }
 

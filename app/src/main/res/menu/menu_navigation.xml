@@ -9,6 +9,10 @@
         android:icon="@drawable/shopping_cart_48px"
         android:title="Đặt hàng" />
     <item
+        android:id="@+id/nav_bill"
+        android:icon="@drawable/bill_48px"
+        android:title="Đơn hàng của bạn" />
+    <item
         android:id="@+id/nav_favourite"
         android:icon="@drawable/favorite_48px"
         android:title="Yêu thích" />
