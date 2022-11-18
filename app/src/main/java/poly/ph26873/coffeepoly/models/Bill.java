@@ -74,4 +74,16 @@ public class Bill {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    public String getTrangThai() {
+        String tt = "";
+        if (status == 0) {
+            tt = "Đã giao hàng";
+        } else if (status == 1) {
+            tt = "Đang giao hàng";
+        } else {
+            tt = "Đã hủy đơn";
+        }
+        return tt;
+    }
 }

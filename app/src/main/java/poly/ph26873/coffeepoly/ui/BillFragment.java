@@ -66,7 +66,14 @@ public class BillFragment extends Fragment {
                         list.add(bills.get(i));
                     }
                 }
-                billRCVAdapter.setData(list);
+                List<Bill> billList = new ArrayList<>();
+                billList.clear();
+                for (int i = list.size()-1; i >=0 ; i--) {
+                    if(list.get(i).getStatus()==1){
+                        billList.add(list.get(i));
+                    }
+                }
+                billRCVAdapter.setData(billList);
                 billRecyclerView.setAdapter(billRCVAdapter);
             }
 

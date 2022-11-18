@@ -65,16 +65,16 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
             List<Product> products = new ArrayList<>();
             List<Item_Bill> itemBills = new ArrayList<>();
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference reference  = database.getReference("coffee-poly/bill_current/"+email);
+            DatabaseReference reference = database.getReference("coffee-poly/bill_current/" + email);
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     itemBills.clear();
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         itemBills.add(dataSnapshot.getValue(Item_Bill.class));
                     }
                     for (int i = 0; i < itemBills.size(); i++) {
-                        if(item_bill.getId_product()==itemBills.get(i).getId_product()) {
+                        if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
                             holder.chk_item_bill_selected.setChecked(true);
                         }
                     }

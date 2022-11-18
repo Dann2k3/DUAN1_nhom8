@@ -11,7 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -42,37 +49,50 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     public void onBindViewHolder(@NonNull BillRCVAdapter.BillHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_bill_time.setText("Thời gian: " + bill.getId());
-            String note = bill.getNote().toString();
-            note.substring(0, note.length() - 2);
-            note.replaceAll("-", "\n");
-            holder.tv_bill_note.setText(note);
-            holder.tv_bill_address.setText("Địa chỉ: " + bill.getAddress());
-            holder.tv_bill_total.setText("Tổng tiền: " + bill.getTotal() + "K");
-            holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
-            holder.btn_bill_cancle.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                    builder.setTitle("Bạn chắc chắn muốn hủy đơn hàng này");
-                    builder.setMessage("Hãy nhấn hủy để giữ lại đơn hàng");
-                    builder.setCancelable(true);
-                    builder.setPositiveButton("Xóa đơn hàng", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(context, "chưa code chức năng này", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+            if (bill.getStatus() == 1) {
+                holder.tv_bill_time.setText("Thời gian: " + bill.getId());
+                String note = bill.getNote().toString();
+                note.substring(0, note.length() - 2);
+                note.replaceAll("-", "\n");
+                holder.tv_bill_note.setText(note);
+                holder.tv_bill_address.setText("Địa chỉ: " + bill.getAddress());
+                holder.tv_bill_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+                holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
+                holder.btn_bill_cancle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                        builder.setTitle("Bạn chắc chắn muốn hủy đơn hàng này");
+                        builder.setMessage("Hãy nhấn hủy để giữ lại đơn hàng");
+                        builder.setCancelable(true);
+                        builder.setPositiveButton("Hủy đơn hàng", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                bill.setStatus(2);
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String email = user.getEmail().replaceAll("@gmail.com", "");
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference reference = database.getReference("coffee-poly/bill/" + email + "/" + bill.getId());
+                                reference.setValue(bill, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                        Toast.makeText(builder.getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        });
+                        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
-            });
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                });
+            }
+
         }
     }
 

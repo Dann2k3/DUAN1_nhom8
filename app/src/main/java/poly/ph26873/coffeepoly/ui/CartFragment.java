@@ -36,6 +36,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.MainActivity;
 import poly.ph26873.coffeepoly.adapter.CartRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
+import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 
@@ -161,7 +162,7 @@ public class CartFragment extends Fragment {
                                         @Override
                                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                             Log.d(TAG, "Đã xóa bill hiện thời");
-                                            xoaSanPhamTrongGioHang();
+                                            capNhatLichSuDatHang(time);
                                         }
                                     });
                                 }
@@ -174,6 +175,18 @@ public class CartFragment extends Fragment {
 
                     }
                 });
+            }
+        });
+    }
+
+    private void capNhatLichSuDatHang(String time) {
+        DatabaseReference reference = database.getReference("coffee-poly/history/" + email + "/" + time);
+        History history = new History(time, 0);
+        reference.setValue(history,new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                Log.d(TAG, "Cập nhật lịch sử thành công");
+                xoaSanPhamTrongGioHang();
             }
         });
     }
@@ -253,7 +266,7 @@ public class CartFragment extends Fragment {
         thong_ke = " ";
         for (int i = 0; i < list3.size(); i++) {
             tong_tien += list1.get(i).getQuantity() * list3.get(i).getPrice();
-            thong_ke +=list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K" + "\n ";
+            thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K" + "\n ";
         }
         tv_cart_thong_ke.setText(thong_ke);
         tv_cart_tong_tien.setText("Thanh toán: " + tong_tien + "K");
