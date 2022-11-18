@@ -1,17 +1,21 @@
 package poly.ph26873.coffeepoly.models;
 
-public class Turnover {
+import java.io.Serializable;
+
+public class Turnover implements Serializable {
     private String id;
     private int total;
     private String time;
+    private String path;
 
     public Turnover() {
     }
 
-    public Turnover(String id, int total,String time) {
+    public Turnover(String id, int total,String time,String path) {
         this.id = id;
         this.total = total;
         this.time  = time;
+        this.path = path;
     }
 
     public String getId() {
@@ -36,5 +40,13 @@ public class Turnover {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

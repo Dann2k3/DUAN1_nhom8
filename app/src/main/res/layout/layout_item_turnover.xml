@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:id="@+id/onclick_detail_item_turnover">
     <TextView
         android:id="@+id/tv_turn_id"
         android:layout_width="match_parent"

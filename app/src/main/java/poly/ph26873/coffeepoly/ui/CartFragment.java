@@ -41,6 +41,7 @@ import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.Turnover;
+import poly.ph26873.coffeepoly.models.User;
 
 
 public class CartFragment extends Fragment {
@@ -94,8 +95,6 @@ public class CartFragment extends Fragment {
                 }
                 cartRCVAdapter.setData(list);
                 cartRecyclerView.setAdapter(cartRCVAdapter);
-                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-                cartRecyclerView.addItemDecoration(itemDecoration);
                 layDanhSachTinhTien();
             }
 
@@ -110,16 +109,18 @@ public class CartFragment extends Fragment {
             public void onClick(View v) {
                 progressDialog.setMessage("Đang tiến hàng đặt hàng....");
                 progressDialog.show();
-                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email + "/" + email + "/address");
+                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email);
                 AddressRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         progressDialog.dismiss();
-                        String ad = snapshot.getValue(String.class);
-                        if (ad.equalsIgnoreCase("null")) {
+                        User user1 = snapshot.getValue(User.class);
+                        String ad = user1.getAddress();
+                        String nb = user1.getNumberPhone();
+                        if (ad.equalsIgnoreCase("null") || nb.equalsIgnoreCase("null")) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            builder.setTitle("Tài khoản chưa cập nhật địa chỉ");
-                            builder.setMessage("Hãy cập nhật địa chỉ trước khi đặt hàng");
+                            builder.setTitle("Tài khoản chưa cập nhật đầy đủ thông tin cần thiết");
+                            builder.setMessage("Hãy cập nhật đủ thông tin trước khi đặt hàng");
                             builder.setCancelable(true);
                             builder.setPositiveButton("Cập nhật ngay", new DialogInterface.OnClickListener() {
                                 @Override
@@ -150,10 +151,13 @@ public class CartFragment extends Fragment {
                             String time = simpleDateFormat.format(calendar.getTime());
                             Bill bill = new Bill();
                             bill.setId(time);
+                            bill.setName(user1.getName());
                             bill.setList(list1);
                             bill.setTotal(tong_tien);
                             bill.setAddress(ad);
+                            bill.setNumberPhone(nb);
                             bill.setNote(thong_ke);
+                            bill.setId_user(email);
                             bill.setStatus(1);
                             DatabaseReference myBill = database.getReference("coffee-poly/bill/" + email + "/" + time);
                             myBill.setValue(bill, new DatabaseReference.CompletionListener() {
@@ -166,7 +170,6 @@ public class CartFragment extends Fragment {
                                         @Override
                                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                             Log.d(TAG, "Đã xóa bill hiện thời");
-                                            capNhatDoanhThu(tong_tien,time);
                                             capNhatLichSuDatHang(time);
                                         }
                                     });
@@ -180,17 +183,6 @@ public class CartFragment extends Fragment {
 
                     }
                 });
-            }
-        });
-    }
-
-    private void capNhatDoanhThu(int tong_tien, String time) {
-        Turnover turnover = new Turnover(email+" "+time,tong_tien,time);
-        DatabaseReference reference = database.getReference("coffee-poly/turnover").child(email+" "+time);
-        reference.setValue(turnover, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Log.d(TAG, "doanh thu cap nhat : +"+tong_tien);
             }
         });
     }

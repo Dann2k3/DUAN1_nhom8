@@ -58,6 +58,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private int ViTri;
     private FirebaseDatabase database;
     private List<Item_Bill> item_billList;
+    private LinearLayout ln_out;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +76,7 @@ public class DetailProductActivity extends AppCompatActivity {
         onClickImagefavorite();
         addToCart();
     }
+
 
     private void addToCart() {
         btn_detai_product_add_to_cart.setOnClickListener(v -> {
@@ -282,6 +284,7 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_quantity = findViewById(R.id.tv_detai_product_quantity);
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
+        ln_out = findViewById(R.id.ln_out);
         scrV_content = findViewById(R.id.scrV_content);
         progressDialog = new ProgressDialog(DetailProductActivity.this);
         item_billList = new ArrayList<>();

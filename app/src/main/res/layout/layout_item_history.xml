@@ -15,7 +15,12 @@
         android:text="Thời gian: 18_11_2022 12:36:23"
         android:textColor="@android:color/holo_green_dark"
         android:textSize="19dp" />
-
+    <TextView
+        android:id="@+id/tv_his_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Họ và tên"
+        android:textColor="@color/black" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,6 +40,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Địa chỉ: Hà nội"
+        android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tv_his_number_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="số điện thoại"
         android:textColor="@color/black" />
 
     <TextView

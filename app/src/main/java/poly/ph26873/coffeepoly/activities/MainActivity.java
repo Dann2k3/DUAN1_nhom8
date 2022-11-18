@@ -1,6 +1,7 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -44,11 +45,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFragment;
 import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
 import poly.ph26873.coffeepoly.ui.HistoryFragment;
 import poly.ph26873.coffeepoly.ui.HomeFragment;
+import poly.ph26873.coffeepoly.ui.ManagementFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
 import poly.ph26873.coffeepoly.ui.TopProductFragment;
@@ -56,7 +59,6 @@ import poly.ph26873.coffeepoly.ui.TurnoverFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TABLE_NAME = "coffee-poly";
-    private static final String COL_USER = "user";
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -106,13 +108,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         assert user.getEmail() != null;
         String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(chilgPath).child("type");
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child("type_user").child(chilgPath);
         readUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int type = snapshot.getValue(Integer.class);
                 if (type == 2) {
                     navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
+                }
+                if (type == 1) {
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
+                    replaceFragmemt(new ManagementFragment());
+                    hieuUngChecked(R.id.nav_order_management);
+                    showToolBar("Quản lí hóa đơn");
+                    IDmenu = R.id.nav_order_management;
+
+                } else {
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
                 }
             }
 
@@ -196,6 +210,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_setting;
                 replaceFragmemt(new SettingFragment());
                 navigationView.getMenu().findItem(R.id.nav_setting).setChecked(true);
+            } else {
+                navigationView.setCheckedItem(R.id.nav_order_management);
+                IDmenu = R.id.nav_order_management;
+                replaceFragmemt(new ManagementFragment());
+                navigationView.getMenu().findItem(R.id.nav_order_management).setChecked(true);
             }
         }
 
@@ -243,6 +262,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showToolBar("Lịch sử");
                 IDmenu = id;
                 break;
+
+
+            case R.id.nav_order_management:
+                replaceFragmemt(new ManagementFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Quản lí hóa đơn");
+                IDmenu = id;
+                break;
+
+            case R.id.nav_history_bill:
+                replaceFragmemt(new BillDaGiaoFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Đơn hàng thành công");
+                IDmenu = id;
+                break;
+
 
             case R.id.nav_turnover:
                 replaceFragmemt(new TurnoverFragment());
@@ -300,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product};
+        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

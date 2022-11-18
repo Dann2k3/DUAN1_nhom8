@@ -7,16 +7,19 @@ public class User {
     private String email;
     private String gender;
     private String address;
+    private String numberPhone;
+
     public User() {
     }
 
-    public User(String id, String name, int age, String email, String gender, String address) {
+    public User(String id, String name, int age, String email, String gender, String address, String numberPhone) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.email = email;
         this.gender = gender;
         this.address = address;
+        this.numberPhone = numberPhone;
     }
 
 
@@ -68,16 +71,11 @@ public class User {
         this.address = address;
     }
 
+    public String getNumberPhone() {
+        return numberPhone;
+    }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", email='" + email + '\'' +
-                ", gender='" + gender + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
     }
 }

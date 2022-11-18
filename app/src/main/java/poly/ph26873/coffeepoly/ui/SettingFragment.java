@@ -54,9 +54,9 @@ public class SettingFragment extends Fragment {
     }
 
     private ImageView imv_avatar_frgst;
-    private EditText edt_user_name_frgst, edt_age_frgst, edt_address_frgst;
+    private EditText edt_user_name_frgst, edt_age_frgst, edt_address_frgst, edt_number_phone_frgst;
     private Button btn_change_info_frgst;
-    private TextInputLayout til_age_frgst, til_name_frgst, til_address_frgst;
+    private TextInputLayout til_age_frgst, til_name_frgst, til_address_frgst, til_number_phone_frgst;
     private static final String TAG = "zzz";
     private Uri mUri;
     private MainActivity mainActivity;
@@ -65,6 +65,7 @@ public class SettingFragment extends Fragment {
     private SignUpActivity signUpActivity;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
+    private String regex = "/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/";
 
 
     @Override
@@ -109,9 +110,21 @@ public class SettingFragment extends Fragment {
             return;
         }
         til_address_frgst.setError("");
+        if (edt_number_phone_frgst.getText().toString().trim().isEmpty()) {
+            til_number_phone_frgst.setError("Không được để trống trường này!");
+            edt_number_phone_frgst.requestFocus();
+            return;
+        }
+        if (edt_number_phone_frgst.getText().toString().trim().matches(regex)) {
+            til_number_phone_frgst.setError("Số điện thoại không hợp lệ!");
+            edt_number_phone_frgst.requestFocus();
+            return;
+        }
+        til_address_frgst.setError("");
         edt_address_frgst.clearFocus();
         edt_user_name_frgst.clearFocus();
         edt_age_frgst.clearFocus();
+        edt_number_phone_frgst.clearFocus();
         progressDialog.show();
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
@@ -126,21 +139,21 @@ public class SettingFragment extends Fragment {
                         Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
                         String EM = user.getEmail().replaceAll("@gmail.com", "");
-                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim());
+                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(),edt_number_phone_frgst.getText().toString().trim());
                         FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM).child(EM);
+                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
                         newUser.setValue(user1, new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                 Log.d(TAG, "Cập nhật dữ liệu user");
                                 Intent intent = getActivity().getIntent();
-                                if(intent.getStringExtra("goto")!=null){
+                                if (intent.getStringExtra("goto") != null) {
                                     String set = getActivity().getIntent().getExtras().getString("goto");
                                     if (set != null) {
                                         if (set.equalsIgnoreCase("setting")) {
                                             Intent intent1 = new Intent(getContext(), MainActivity.class);
                                             intent1.putExtra("goto", "cart");
-                                            intent1.putExtra("return","return");
+                                            intent1.putExtra("return", "return");
                                             startActivity(intent1);
                                             getActivity().finish();
                                         }
@@ -185,7 +198,7 @@ public class SettingFragment extends Fragment {
 
     public void ReadFrofileUser(String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1).child(email1);
+        DatabaseReference readUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
         readUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -199,6 +212,7 @@ public class SettingFragment extends Fragment {
                     } else {
                         sp_gender_frgst.setSelection(1);
                     }
+                    edt_number_phone_frgst.setText(user.getNumberPhone());
                     progressDialog.dismiss();
                 }
             }
@@ -214,10 +228,12 @@ public class SettingFragment extends Fragment {
         til_name_frgst = view.findViewById(R.id.til_name_frgst);
         til_age_frgst = view.findViewById(R.id.til_age_frgst);
         til_address_frgst = view.findViewById(R.id.til_address_frgst);
+        til_number_phone_frgst = view.findViewById(R.id.til_number_phone_frgst);
         imv_avatar_frgst = view.findViewById(R.id.imv_avatar_frgst);
         edt_user_name_frgst = view.findViewById(R.id.edt_user_name_frgst);
         edt_age_frgst = view.findViewById(R.id.edt_age_frgst);
         edt_address_frgst = view.findViewById(R.id.edt_address_frgst);
+        edt_number_phone_frgst = view.findViewById(R.id.edt_number_phone_frgst);
         btn_change_info_frgst = view.findViewById(R.id.btn_change_info_frgst);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang cập nhật...");

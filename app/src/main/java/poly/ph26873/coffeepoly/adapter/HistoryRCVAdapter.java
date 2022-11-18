@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -63,52 +62,55 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Bill bill = snapshot.getValue(Bill.class);
-                        holder.tv_his_time.setText("Thời gian: " + history.getId());
-                        String note = bill.getNote();
-                        note.substring(0, note.length() - 2);
-                        note.replaceAll("-", "\n");
-                        holder.tv_his_note.setText(note);
-                        holder.tv_his_address.setText("Địa chỉ: " + bill.getAddress());
-                        holder.tv_his_total.setText("Tổng tiền: " + bill.getTotal() + "K");
-                        if (bill.getStatus() == 0) {
-                            holder.tv_his_status.setTextColor(Color.GREEN);
-                        } else if (bill.getTotal() == 1) {
-                            holder.tv_his_status.setTextColor(Color.YELLOW);
-                        } else if (bill.getStatus() == 2) {
-                            holder.tv_his_status.setTextColor(Color.RED);
-                        }
-                        holder.tv_his_status.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
-                        holder.onClick_del_his.setOnLongClickListener(new View.OnLongClickListener() {
-                            @Override
-                            public boolean onLongClick(View v) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                builder.setTitle("Xóa lịch sử đơn hàng này?");
-                                builder.setCancelable(true);
-                                builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        history.setStatus(1);
-                                        DatabaseReference reference1 = database.getReference("coffee-poly/history/" + email + "/" + history.getId());
-                                        reference1.setValue(history, new DatabaseReference.CompletionListener() {
-                                            @Override
-                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                Toast.makeText(context, "Xóa lịch sử đơn hàng thành công", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                });
-                                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                });
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-                                return true;
+                        if (bill != null) {
+                            holder.tv_his_time.setText("Thời gian: " + history.getId());
+                            holder.tv_his_name.setText("Họ và tên: " + bill.getName());
+                            String note = bill.getNote();
+                            note.substring(0, note.length() - 2);
+                            note.replaceAll("-", "\n");
+                            holder.tv_his_note.setText(note);
+                            holder.tv_his_address.setText("Địa chỉ: " + bill.getAddress());
+                            holder.tv_his_number_phone.setText("Số điện thoại: " + bill.getNumberPhone());
+                            holder.tv_his_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+                            if (bill.getStatus() == 0) {
+                                holder.tv_his_status.setTextColor(Color.GRAY);
+                            } else if (bill.getTotal() == 1) {
+                                holder.tv_his_status.setTextColor(Color.YELLOW);
+                            } else if (bill.getStatus() == 2) {
+                                holder.tv_his_status.setTextColor(Color.RED);
                             }
-                        });
+                            holder.tv_his_status.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
+                            holder.onClick_del_his.setOnLongClickListener(new View.OnLongClickListener() {
+                                @Override
+                                public boolean onLongClick(View v) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                    builder.setTitle("Xóa lịch sử đơn hàng này?");
+                                    builder.setCancelable(true);
+                                    builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            history.setStatus(1);
+                                            DatabaseReference reference1 = database.getReference("coffee-poly/history/" + email + "/" + history.getId());
+                                            reference1.setValue(history, new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                    Toast.makeText(context, "Xóa lịch sử đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
+                                        }
+                                    });
+                                    AlertDialog alertDialog = builder.create();
+                                    alertDialog.show();
+                                    return true;
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -131,11 +133,13 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
     }
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
-        private TextView tv_his_time, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
+        private TextView tv_his_time, tv_his_name, tv_his_number_phone, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
         private LinearLayout onClick_del_his;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
+            tv_his_number_phone = itemView.findViewById(R.id.tv_his_number_phone);
+            tv_his_name = itemView.findViewById(R.id.tv_his_name);
             tv_his_time = itemView.findViewById(R.id.tv_his_time);
             tv_his_note = itemView.findViewById(R.id.tv_his_note);
             tv_his_address = itemView.findViewById(R.id.tv_his_address);

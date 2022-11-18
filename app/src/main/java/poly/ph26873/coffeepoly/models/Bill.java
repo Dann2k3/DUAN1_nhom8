@@ -4,11 +4,14 @@ import java.util.List;
 
 public class Bill {
     private String id;
+    private String name;
     private List<Item_Bill> list;
     private int total;
     private String address;
+    private String numberPhone;
     private String note;
     private int status;
+    private String id_user;
     // status = 0 - đã nhận hàng
     // status = 1 - đang giao hàng
     // status = 2 - đã hủy
@@ -18,13 +21,32 @@ public class Bill {
     public Bill() {
     }
 
-    public Bill(String id, List<Item_Bill> list, int total, String address, String note, int status) {
+    public Bill(String id, String name, List<Item_Bill> list, int total, String address, String numberPhone, String note, int status,String id_user) {
         this.id = id;
         this.list = list;
         this.total = total;
         this.address = address;
         this.note = note;
         this.status = status;
+        this.name = name;
+        this.numberPhone = numberPhone;
+        this.id_user = id_user;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getNumberPhone() {
+        return numberPhone;
+    }
+
+    public void setNumberPhone(String numberPhone) {
+        this.numberPhone = numberPhone;
     }
 
     public String getId() {
@@ -73,6 +95,14 @@ public class Bill {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(String id_user) {
+        this.id_user = id_user;
     }
 
     public String getTrangThai() {

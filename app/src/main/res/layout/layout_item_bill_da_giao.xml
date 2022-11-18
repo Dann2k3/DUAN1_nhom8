@@ -2,23 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/custom_bill"
-    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:layout_marginBottom="5dp">
+    android:padding="15dp">
 
     <TextView
-        android:id="@+id/tv_bill_time"
+        android:id="@+id/tv_his_time_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Thời gian: 18_11_2022 12:36:23"
         android:textColor="@android:color/holo_green_dark"
         android:textSize="19dp" />
     <TextView
-        android:id="@+id/tv_bill_name"
+        android:id="@+id/tv_his_name_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thông tin chi tiết:"
+        android:text="Họ và tên"
         android:textColor="@color/black" />
     <TextView
         android:layout_width="match_parent"
@@ -27,45 +27,40 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_bill_note"
+        android:id="@+id/tv_his_note_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white3"
-        android:text="Cà phê sữa x5 = 30k"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:text="Cà phê sữa x5 = 30k" />
 
     <TextView
-        android:id="@+id/tv_bill_address"
+        android:id="@+id/tv_his_address_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Địa chỉ: Hà nội"
         android:textColor="@color/black" />
     <TextView
-        android:id="@+id/tv_bill_number_phone"
+        android:id="@+id/tv_his_number_phone_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thông tin chi tiết:"
+        android:text="số điện thoại"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_bill_total"
+        android:id="@+id/tv_his_total_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tổng tiền: 450k"
         android:textColor="@color/red" />
 
     <TextView
-        android:id="@+id/tv_bill_status"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_his_status_1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Trạng thái: Đang giao hàng"
         android:textColor="@color/green1" />
 
-    <Button
-        android:id="@+id/btn_bill_cancle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_orange_dark"
-        android:text="Hủy" />
 
 </LinearLayout>

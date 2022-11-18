@@ -1,9 +1,11 @@
 package poly.ph26873.coffeepoly.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.models.Turnover;
 
 public class TurnoverRCVAdapter extends RecyclerView.Adapter<TurnoverRCVAdapter.TurnoverHolder> {
@@ -40,7 +43,15 @@ public class TurnoverRCVAdapter extends RecyclerView.Adapter<TurnoverRCVAdapter.
         if (turnover != null) {
             holder.tv_turn_id.setText("ID: " + turnover.getId());
             holder.tv_turn_time.setText("Thời gian: " + turnover.getTime());
-            holder.tv_turn_total.setText("Tổng tiền: " + turnover.getTotal()+"K");
+            holder.tv_turn_total.setText("Tổng tiền: " + turnover.getTotal() + "K");
+            holder.onclick_detail_item_turnover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                    intent.putExtra("turnover", turnover);
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 
@@ -54,12 +65,14 @@ public class TurnoverRCVAdapter extends RecyclerView.Adapter<TurnoverRCVAdapter.
 
     public class TurnoverHolder extends RecyclerView.ViewHolder {
         private TextView tv_turn_time, tv_turn_total, tv_turn_id;
+        private LinearLayout onclick_detail_item_turnover;
 
         public TurnoverHolder(@NonNull View itemView) {
             super(itemView);
             tv_turn_time = itemView.findViewById(R.id.tv_turn_time);
             tv_turn_total = itemView.findViewById(R.id.tv_turn_total);
             tv_turn_id = itemView.findViewById(R.id.tv_turn_id);
+            onclick_detail_item_turnover = itemView.findViewById(R.id.onclick_detail_item_turnover);
         }
     }
 }

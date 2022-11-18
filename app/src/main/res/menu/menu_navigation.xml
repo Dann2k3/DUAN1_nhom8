@@ -1,25 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/home_48px"
-        android:title="Trang chủ" />
+        android:id="@+id/nav_all_setting_0"
+        android:title="Chức năng dành cho người dùng">
+        <menu>
+            <item
+                android:id="@+id/nav_home"
+                android:icon="@drawable/home_48px"
+                android:title="Trang chủ" />
+            <item
+                android:id="@+id/nav_cart"
+                android:icon="@drawable/shopping_cart_48px"
+                android:title="Đặt hàng" />
+            <item
+                android:id="@+id/nav_bill"
+                android:icon="@drawable/bill_48px"
+                android:title="Đơn hàng của bạn" />
+            <item
+                android:id="@+id/nav_favourite"
+                android:icon="@drawable/favorite_48px"
+                android:title="Yêu thích" />
+            <item
+                android:id="@+id/nav_history"
+                android:icon="@drawable/history_48px"
+                android:title="Lịch sử" />
+        </menu>
+
+    </item>
+
     <item
-        android:id="@+id/nav_cart"
-        android:icon="@drawable/shopping_cart_48px"
-        android:title="Đặt hàng" />
-    <item
-        android:id="@+id/nav_bill"
-        android:icon="@drawable/bill_48px"
-        android:title="Đơn hàng của bạn" />
-    <item
-        android:id="@+id/nav_favourite"
-        android:icon="@drawable/favorite_48px"
-        android:title="Yêu thích" />
-    <item
-        android:id="@+id/nav_history"
-        android:icon="@drawable/history_48px"
-        android:title="Lịch sử" />
+        android:id="@+id/nav_all_setting_2"
+        android:title="Chức năng dành cho nhân viên">
+        <menu>
+            <item
+                android:id="@+id/nav_order_management"
+                android:icon="@drawable/receipt_long_48px"
+                android:title="Quản lí đơn hàng" />
+            <item
+                android:id="@+id/nav_history_bill"
+                android:icon="@drawable/bill_ok_48px"
+                android:title="Đơn hàng thành công" />
+        </menu>
+    </item>
+
     <item
         android:id="@+id/nav_all_setting_1"
         android:title="Chức năng dành cho quản lí">
