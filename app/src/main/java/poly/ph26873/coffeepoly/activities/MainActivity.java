@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 replaceFragmemt(new TopProductFragment());
                 hieuUngChecked(id);
                 closeNavigation();
-                showToolBar("Sản phẩm bán chạy");
+                showToolBar("Bảng xếp hạng sản phẩm");
                 IDmenu = id;
                 break;
             case R.id.nav_setting:
@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout};
+        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout,R.id.nav_bill,R.id.nav_turnover,R.id.nav_top_product};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

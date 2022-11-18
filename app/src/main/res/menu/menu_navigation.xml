@@ -31,7 +31,7 @@
             <item
                 android:id="@+id/nav_top_product"
                 android:icon="@drawable/chart_48px"
-                android:title="Top sản phẩm bán chạy" />
+                android:title="Bảng xếp hạng sản phẩm" />
         </menu>
     </item>
 

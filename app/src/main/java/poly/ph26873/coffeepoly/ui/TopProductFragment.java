@@ -1,66 +1,83 @@
 package poly.ph26873.coffeepoly.ui;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import poly.ph26873.coffeepoly.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TopProductFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.adapter.TopProductRCVAdapter;
+import poly.ph26873.coffeepoly.models.Product;
+
+
 public class TopProductFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public TopProductFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TopProductFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static TopProductFragment newInstance(String param1, String param2) {
-        TopProductFragment fragment = new TopProductFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_top_product, container, false);
+    }
+
+    private RecyclerView topRecyclerView;
+    private TopProductRCVAdapter topProductRCVAdapter;
+    private List<Product> list;
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        topRecyclerView = view.findViewById(R.id.topRecyclerView);
+        list = new ArrayList<>();
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+        topRecyclerView.setLayoutManager(manager);
+        topRecyclerView.setHasFixedSize(true);
+        topProductRCVAdapter = new TopProductRCVAdapter(getContext());
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly/product");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Product product = dataSnapshot.getValue(Product.class);
+                    list.add(product);
+                }
+                Collections.sort(list, new Comparator<Product>() {
+                    @Override
+                    public int compare(Product o1, Product o2) {
+                        return o2.getQuantitySold() - o1.getQuantitySold();
+                    }
+                });
+
+                topProductRCVAdapter.setData(list);
+                topRecyclerView.setAdapter(topProductRCVAdapter);
+                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+                topRecyclerView.addItemDecoration(itemDecoration);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
