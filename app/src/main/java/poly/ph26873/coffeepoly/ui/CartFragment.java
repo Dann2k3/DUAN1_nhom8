@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -92,6 +93,8 @@ public class CartFragment extends Fragment {
                 }
                 cartRCVAdapter.setData(list);
                 cartRecyclerView.setAdapter(cartRCVAdapter);
+                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+                cartRecyclerView.addItemDecoration(itemDecoration);
                 layDanhSachTinhTien();
             }
 
@@ -106,7 +109,7 @@ public class CartFragment extends Fragment {
             public void onClick(View v) {
                 progressDialog.setMessage("Đang tiến hàng đặt hàng....");
                 progressDialog.show();
-                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email+"/"+email + "/address");
+                DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email + "/" + email + "/address");
                 AddressRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

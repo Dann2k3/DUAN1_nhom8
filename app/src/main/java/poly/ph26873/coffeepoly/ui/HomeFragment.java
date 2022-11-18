@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,7 +87,7 @@ public class HomeFragment extends Fragment {
                     list_rcm_product.add(product);
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
-                Log.d(TAG, "price: "+list_rcm_product.get(0).getPrice());
+                Log.d(TAG, "price: " + list_rcm_product.get(0).getPrice());
                 showRecommentProduct();
                 showAllProduct();
             }
@@ -106,6 +107,8 @@ public class HomeFragment extends Fragment {
         HorizontalRCVAdapter allProductAdapter = new HorizontalRCVAdapter(getContext());
         allProductAdapter.setData(list_rcm_product);
         mRecycerView_all_product.setAdapter(allProductAdapter);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
+        mRecycerView_all_product.addItemDecoration(itemDecoration);
     }
 
     private void showRecommentProduct() {
@@ -114,10 +117,10 @@ public class HomeFragment extends Fragment {
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
         HorizontalRCVAdapter horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
-        List<Product> listProductRecoomment  = new ArrayList<>();
+        List<Product> listProductRecoomment = new ArrayList<>();
         for (int i = 0; i < list_rcm_product.size(); i++) {
-            Log.d(TAG, "sp: "+i+" "+list_rcm_product.get(i).getId()+" "+list_rcm_product.get(i).getPrice()+" "+list_rcm_product.get(i).getQuantitySold());
-            if(list_rcm_product.get(i).getQuantitySold() >= 2000){
+            Log.d(TAG, "sp: " + i + " " + list_rcm_product.get(i).getId() + " " + list_rcm_product.get(i).getPrice() + " " + list_rcm_product.get(i).getQuantitySold());
+            if (list_rcm_product.get(i).getQuantitySold() >= 2000) {
                 listProductRecoomment.add(list_rcm_product.get(i));
             }
         }

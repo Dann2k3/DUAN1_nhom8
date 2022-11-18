@@ -5,16 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.CartFragment">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cartRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_margin="10dp"
-            android:background="@android:color/holo_orange_dark" />
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,7 +88,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold" />
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </FrameLayout>
