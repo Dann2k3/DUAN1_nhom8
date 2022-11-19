@@ -61,29 +61,28 @@ public class ManagementFragment extends Fragment {
 
     private void layListBill() {
         listBill.clear();
-        final int[] yy = {-1};
+        List<Bill> list = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
-            yy[0] = i;
             Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
             reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         listBill.add(dataSnapshot.getValue(Bill.class));
-                    }
-                    if (yy[0] == listUser.size() - 1) {
-                        List<Bill> list = new ArrayList<>();
-                        list.clear();
-                        for (int j = 0; j < listBill.size(); j++) {
-                            if (listBill.get(j).getStatus() == 1) {
-                                list.add(listBill.get(j));
+                        Log.d(TAG, "listBill: "+listBill.size());
+                        if(listBill.size()>0){
+                            for (int j = 0; j < listBill.size(); j++) {
+                                if (listBill.get(j).getStatus() == 1) {
+                                    list.add(listBill.get(j));
+                                    Log.d(TAG, "list can tim: "+list.size());
+                                }
                             }
-                        }
-                        Log.d(TAG, "list can tim: "+list.size());
                             managementRCVAdapter.setData(list);
                             maRecyclerView.setAdapter(managementRCVAdapter);
+                        }
                     }
+
                 }
 
                 @Override
@@ -117,4 +116,5 @@ public class ManagementFragment extends Fragment {
             }
         });
     }
+
 }

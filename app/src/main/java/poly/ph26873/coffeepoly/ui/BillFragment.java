@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -37,7 +38,6 @@ public class BillFragment extends Fragment {
 
     private RecyclerView billRecyclerView;
     private BillRCVAdapter billRCVAdapter;
-    private List<Bill> list;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class BillFragment extends Fragment {
         billRecyclerView.setLayoutManager(manager);
         billRecyclerView.setHasFixedSize(true);
         billRCVAdapter = new BillRCVAdapter(getContext());
-        list = new ArrayList<>();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String email = user.getEmail().replaceAll("@gmail.com", "");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -60,20 +59,8 @@ public class BillFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     bills.add(dataSnapshot.getValue(Bill.class));
                 }
-                list.clear();
-                for (int i = 0; i < bills.size(); i++) {
-                    if (bills.get(i).getStatus() == 1) {
-                        list.add(bills.get(i));
-                    }
-                }
-                List<Bill> billList = new ArrayList<>();
-                billList.clear();
-                for (int i = list.size()-1; i >=0 ; i--) {
-                    if(list.get(i).getStatus()==1){
-                        billList.add(list.get(i));
-                    }
-                }
-                billRCVAdapter.setData(billList);
+                Collections.reverse(bills);
+                billRCVAdapter.setData(bills);
                 billRecyclerView.setAdapter(billRCVAdapter);
             }
 

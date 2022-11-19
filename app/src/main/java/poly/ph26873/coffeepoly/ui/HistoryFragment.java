@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -65,13 +66,8 @@ public class HistoryFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     list.add(dataSnapshot.getValue(History.class));
                 }
-                List<History> histories = new ArrayList<>();
-                for (int i = list.size() - 1; i >= 0; i--) {
-                    if (list.get(i).getStatus() == 0) {
-                        histories.add(list.get(i));
-                    }
-                }
-                historyRCVAdapter.setData(histories);
+                Collections.reverse(list);
+                historyRCVAdapter.setData(list);
                 hisRecyclerView.setAdapter(historyRCVAdapter);
                 progressDialog.dismiss();
             }

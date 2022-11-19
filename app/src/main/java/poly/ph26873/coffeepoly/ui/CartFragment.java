@@ -31,6 +31,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -93,6 +95,7 @@ public class CartFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     list.add(dataSnapshot.getValue(Item_Bill.class));
                 }
+                Collections.reverse(list);
                 cartRCVAdapter.setData(list);
                 cartRecyclerView.setAdapter(cartRCVAdapter);
                 layDanhSachTinhTien();
@@ -147,7 +150,7 @@ public class CartFragment extends Fragment {
                         }
                         if (tong_tien > 0) {
                             Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
                             String time = simpleDateFormat.format(calendar.getTime());
                             Bill bill = new Bill();
                             bill.setId(time);

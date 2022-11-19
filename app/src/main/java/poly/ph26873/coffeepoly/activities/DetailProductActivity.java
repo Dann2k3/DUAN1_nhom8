@@ -86,7 +86,7 @@ public class DetailProductActivity extends AppCompatActivity {
             item_bill.setId_product(product.getId());
             item_bill.setQuantity(a);
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
             String time = simpleDateFormat.format(calendar.getTime());
             item_bill.setTime(time);
             int total = product.getPrice() * a;

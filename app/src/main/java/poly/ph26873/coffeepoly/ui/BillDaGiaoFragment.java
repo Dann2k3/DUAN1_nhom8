@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,12 +24,18 @@ import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.BillDaGiaoRCVAdapter;
-import poly.ph26873.coffeepoly.adapter.BillRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
 
 
 public class BillDaGiaoFragment extends Fragment {
+
+    private static final String TAG = "zzz";
+    private RecyclerView recyclerView;
+    private BillDaGiaoRCVAdapter adapter;
+    private List<Bill> listBill;
+    private List<User> listUser;
+    private FirebaseDatabase database;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,13 +43,6 @@ public class BillDaGiaoFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_bill_da_giao, container, false);
     }
-
-    private RecyclerView recyclerView;
-    private BillDaGiaoRCVAdapter adapter;
-    private List<Bill> listBill;
-    private List<User> listUser;
-    private FirebaseDatabase database;
-    private static final String TAG = "zzz";
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
