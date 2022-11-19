@@ -70,15 +70,14 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                         builder.setPositiveButton("Hủy đơn hàng", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                bill.setStatus(2);
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                String email = user.getEmail().replaceAll("@gmail.com", "");
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference reference = database.getReference("coffee-poly/bill/" + email + "/" + bill.getId());
-                                reference.setValue(bill, new DatabaseReference.CompletionListener() {
+                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child( bill.getId_user()).child(bill.getId()).child("status");
+                                reference.setValue(2, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
+                                        list.remove(bill);
+                                        notifyDataSetChanged();
                                     }
                                 });
                             }

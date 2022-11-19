@@ -1,6 +1,7 @@
 package poly.ph26873.coffeepoly.ui;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class BillFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d("zzz", "-----------BillFragment-------------- ");
         billRecyclerView = view.findViewById(R.id.billRecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         billRecyclerView.setLayoutManager(manager);
@@ -55,11 +57,17 @@ public class BillFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Bill> bills = new ArrayList<>();
-                bills.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     bills.add(dataSnapshot.getValue(Bill.class));
                 }
-                Collections.reverse(bills);
+                for (int i = 0; i < bills.size(); i++) {
+                    if(bills.get(i).getStatus()!=1){
+                        bills.remove(i);
+                    }
+                }
+                if(bills.size()>0){
+                    Collections.reverse(bills);
+                }
                 billRCVAdapter.setData(bills);
                 billRecyclerView.setAdapter(billRCVAdapter);
             }
