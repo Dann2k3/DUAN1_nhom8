@@ -1,6 +1,5 @@
 package poly.ph26873.coffeepoly.ui;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,8 +38,6 @@ public class ManagementFragment extends Fragment {
     }
 
     private RecyclerView maRecyclerView;
-    private List<Bill> listBill;
-    private List<User> listUser;
     private ManagementRCVAdapter managementRCVAdapter;
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
@@ -49,8 +46,6 @@ public class ManagementFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "-------------ManagementFragment-----------------");
-        listBill = new ArrayList<>();
-        listUser = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
         maRecyclerView = view.findViewById(R.id.maRecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -60,7 +55,32 @@ public class ManagementFragment extends Fragment {
         layListUser();
     }
 
-    private void layListBill() {
+
+    private void layListUser() {
+        Log.d(TAG, "layListUser");
+        DatabaseReference refuser = database.getReference("coffee-poly").child("user");
+        refuser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<User> listUser = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    listUser.add(dataSnapshot.getValue(User.class));
+                }
+                if (listUser.size() > 0) {
+                    Log.d(TAG, "listUser: " + listUser.size());
+                    layListBill(listUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, "onCancelled: layListUser");
+            }
+        });
+    }
+
+    private void layListBill(List<User> listUser) {
+        List<Bill> listBill = new ArrayList<>();
         List<Bill> list = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
@@ -68,12 +88,10 @@ public class ManagementFragment extends Fragment {
             reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    listBill.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         listBill.add(dataSnapshot.getValue(Bill.class));
                         Log.d(TAG, "listBill: " + listBill.size());
                         if (listBill.size() > 0) {
-                            list.clear();
                             for (int j = 0; j < listBill.size(); j++) {
                                 if (listBill.get(j).getStatus() == 1) {
                                     list.add(listBill.get(j));
@@ -81,7 +99,7 @@ public class ManagementFragment extends Fragment {
                                 }
                             }
                             Collections.reverse(list);
-                            Log.d(TAG, "list: "+list.size());
+                            Log.d(TAG, "list: " + list.size());
                             managementRCVAdapter.setData(list);
                             maRecyclerView.setAdapter(managementRCVAdapter);
                         }
@@ -95,29 +113,6 @@ public class ManagementFragment extends Fragment {
                 }
             });
         }
-    }
-
-    private void layListUser() {
-        Log.d(TAG, "layListUser");
-        DatabaseReference refuser = database.getReference("coffee-poly").child("user");
-        refuser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listUser.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    listUser.add(dataSnapshot.getValue(User.class));
-                }
-                if (listUser.size() > 0) {
-                    Log.d(TAG, "listUser: " + listUser.size());
-                    layListBill();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled: layListUser");
-            }
-        });
     }
 
 }
