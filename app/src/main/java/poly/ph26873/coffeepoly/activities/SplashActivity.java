@@ -1,18 +1,17 @@
 package poly.ph26873.coffeepoly.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
 //        pushImage();
 //        xoaFav();
         TextView tv_coofee_poly = findViewById(R.id.tv_coofee_poly);
-        ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f,360f);
+        ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f, 360f);
         ob1.setDuration(2000);
         ObjectAnimator ob2 = ObjectAnimator.ofFloat(tv_coofee_poly, "alpha", 0.3f, 1.1f);
         ob2.setDuration(2000);
@@ -63,25 +62,25 @@ public class SplashActivity extends AppCompatActivity {
     private void pushImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly/product/3/image");
-        reference.setValue(R.drawable.prd_robusta,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
+        reference.setValue(R.drawable.prd_robusta, (error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
     }
 
     private void nextActivity() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null){
-            Intent intent = new Intent(SplashActivity.this,LoginActivity.class);
+        if (user == null) {
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
-        }else {
+        } else {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + user.getEmail().replaceAll("@gmail.com",""));
+            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + user.getEmail().replaceAll("@gmail.com", ""));
             myRef1.removeValue(new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 }
             });
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "user: " +user.getEmail());
-            Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+            Log.d(TAG, "user: " + user.getEmail());
+            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             startActivity(intent);
         }
         finish();
