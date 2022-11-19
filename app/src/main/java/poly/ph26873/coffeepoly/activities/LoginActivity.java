@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void checkUser() {
         btnLogin.setOnClickListener(v -> {
-            String email = edtEmail.getText().toString().trim();
+            String email = edtEmail.getText().toString().trim().toLowerCase();
             String password = edtPass.getText().toString().trim();
             if (email.length() == 0) {
                 til_email.setError("Email không được để trống");

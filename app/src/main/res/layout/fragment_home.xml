@@ -73,7 +73,8 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mRecycerView_all_product"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="5dp"/>
 
         </LinearLayout>
     </LinearLayout>

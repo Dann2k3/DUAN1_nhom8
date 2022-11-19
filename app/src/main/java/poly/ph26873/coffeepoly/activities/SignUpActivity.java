@@ -59,7 +59,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signInAccount() {
         btnSignUp.setOnClickListener(v -> {
-            String email = edtEmail.getText().toString().trim();
+            String email = edtEmail.getText().toString().trim().toLowerCase();
             String password = edtPass.getText().toString().trim();
             if (email.length() == 0) {
                 til_email1.setError("Không được để trống trường này!");

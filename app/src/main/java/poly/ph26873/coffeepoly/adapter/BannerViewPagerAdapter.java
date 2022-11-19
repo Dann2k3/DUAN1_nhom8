@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.squareup.picasso.Picasso;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class BannerViewPagerAdapter extends PagerAdapter {
         ImageView imageView = view.findViewById(R.id.imv_banner);
         Banner banner = list.get(position);
 //        imageView.setImageResource(banner.getResourceId());
-        Picasso.with(container.getContext()).load(banner.getResourceId()).error(R.color.red).into(imageView);
+        Glide.with(container.getContext()).load(banner.getResourceId()).error(R.color.red).into(imageView);
         container.addView(view);
         return view;
     }

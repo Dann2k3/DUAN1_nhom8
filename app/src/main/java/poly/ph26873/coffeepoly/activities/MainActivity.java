@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void checkAccountType(FirebaseUser user) {
         assert user.getEmail() != null;
         String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
+        Log.d(TAG, "chilgPath: "+chilgPath);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference readUser = database.getReference(TABLE_NAME).child("type_user").child(chilgPath);
         readUser.addValueEventListener(new ValueEventListener() {
