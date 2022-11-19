@@ -55,14 +55,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
-                <ImageView
-                    android:id="@+id/imv_detail_product_avatar"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
                     android:layout_centerInParent="true"
-                    android:src="@drawable/prd_cps" />
+                    android:layout_marginTop="35dp"
+                    app:cardCornerRadius="35sp"
+                    app:cardBackgroundColor="@color/white"
+                    app:elevation="50dp">
 
+                    <ImageView
+                        android:id="@+id/imv_detail_product_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/prd_cps" />
+                </androidx.cardview.widget.CardView>
 
                 <ImageView
                     android:id="@+id/imv_detail_product_favorite"

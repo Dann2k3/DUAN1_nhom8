@@ -12,8 +12,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="35dp">
-
+        app:cardCornerRadius="22dp">
         <ImageView
             android:id="@+id/imv_product_avatar_rcm"
             android:layout_width="95dp"
