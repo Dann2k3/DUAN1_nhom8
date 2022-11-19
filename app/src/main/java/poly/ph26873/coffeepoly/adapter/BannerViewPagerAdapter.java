@@ -9,13 +9,14 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Banner;
 
 public class BannerViewPagerAdapter extends PagerAdapter {
-
     private List<Banner> list;
 
     public BannerViewPagerAdapter(List<Banner> list) {
@@ -28,7 +29,8 @@ public class BannerViewPagerAdapter extends PagerAdapter {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.layout_item_banner,container,false);
         ImageView imageView = view.findViewById(R.id.imv_banner);
         Banner banner = list.get(position);
-        imageView.setImageResource(banner.getResourceId());
+//        imageView.setImageResource(banner.getResourceId());
+        Picasso.with(container.getContext()).load(banner.getResourceId()).error(R.color.red).into(imageView);
         container.addView(view);
         return view;
     }

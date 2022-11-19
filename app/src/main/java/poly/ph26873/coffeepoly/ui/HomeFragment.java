@@ -82,6 +82,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();
+                list_rcm_product.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Product product = dataSnapshot.getValue(Product.class);
                     list_rcm_product.add(product);
@@ -107,8 +108,6 @@ public class HomeFragment extends Fragment {
         HorizontalRCVAdapter allProductAdapter = new HorizontalRCVAdapter(getContext());
         allProductAdapter.setData(list_rcm_product);
         mRecycerView_all_product.setAdapter(allProductAdapter);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL);
-        mRecycerView_all_product.addItemDecoration(itemDecoration);
     }
 
     private void showRecommentProduct() {
@@ -119,6 +118,7 @@ public class HomeFragment extends Fragment {
         HorizontalRCVAdapter horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
         List<Product> listProductRecoomment = new ArrayList<>();
         for (int i = 0; i < list_rcm_product.size(); i++) {
+            listProductRecoomment.clear();
             Log.d(TAG, "sp: " + i + " " + list_rcm_product.get(i).getId() + " " + list_rcm_product.get(i).getPrice() + " " + list_rcm_product.get(i).getQuantitySold());
             if (list_rcm_product.get(i).getQuantitySold() >= 2000) {
                 listProductRecoomment.add(list_rcm_product.get(i));

@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        pushImage();
+        pushImage();
 //        xoaFav();
         TextView tv_coofee_poly = findViewById(R.id.tv_coofee_poly);
         ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f,360f);
@@ -62,8 +62,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void pushImage() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/product/9/image");
-        reference.setValue(R.drawable.prd_capuchino,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
+        DatabaseReference reference = database.getReference("coffee-poly/product/13/image");
+        reference.setValue(R.drawable.prd_americano,(error, ref) -> Log.d(TAG, "pushImage: thanh cong"));
     }
 
     private void nextActivity() {
