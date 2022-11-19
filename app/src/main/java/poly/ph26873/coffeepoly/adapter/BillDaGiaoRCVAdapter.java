@@ -39,8 +39,6 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
     public void onBindViewHolder(@NonNull BillDaGiaoRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            if (bill.getStatus() == 0) {
-
                 holder.tv_his_time1.setText("Thời gian: " + bill.getId());
                 holder.tv_his_name1.setText("Họ và tên: " + bill.getName());
                 String note = bill.getNote();
@@ -58,9 +56,6 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
                     holder.tv_his_status1.setTextColor(Color.RED);
                 }
                 holder.tv_his_status1.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
-            }
-
-
         }
     }
 

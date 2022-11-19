@@ -45,6 +45,7 @@ import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
+import poly.ph26873.coffeepoly.ui.BillFaildFragment;
 import poly.ph26873.coffeepoly.ui.BillFragment;
 import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void checkAccountType(FirebaseUser user) {
         assert user.getEmail() != null;
         String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
-        Log.d(TAG, "chilgPath: "+chilgPath);
+        Log.d(TAG, "chilgPath: " + chilgPath);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference readUser = database.getReference(TABLE_NAME).child("type_user").child(chilgPath);
         readUser.addValueEventListener(new ValueEventListener() {
@@ -280,6 +281,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = id;
                 break;
 
+            case R.id.nav_bill_faild:
+                replaceFragmemt(new BillFaildFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Đơn hàng thất bại");
+                IDmenu = id;
+                break;
+
 
             case R.id.nav_turnover:
                 replaceFragmemt(new TurnoverFragment());
@@ -337,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill};
+        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

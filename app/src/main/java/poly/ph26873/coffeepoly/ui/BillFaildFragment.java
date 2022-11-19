@@ -29,7 +29,13 @@ import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
 
 
-public class BillDaGiaoFragment extends Fragment {
+public class BillFaildFragment extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_bill_faild, container, false);
+    }
 
     private static final String TAG = "zzz";
     private RecyclerView recyclerView;
@@ -37,19 +43,12 @@ public class BillDaGiaoFragment extends Fragment {
     private FirebaseDatabase database;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_bill_da_giao, container, false);
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.show();
-        recyclerView = view.findViewById(R.id.bill1RecyclerView);
+        recyclerView = view.findViewById(R.id.billFRecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
@@ -57,7 +56,6 @@ public class BillDaGiaoFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         layListUser();
         progressDialog.dismiss();
-
     }
 
     private void layListUser() {
@@ -97,7 +95,7 @@ public class BillDaGiaoFragment extends Fragment {
                     if (listBill.size() > 0) {
                         List<Bill> list = new ArrayList<>();
                         for (int j = 0; j < listBill.size(); j++) {
-                            if (listBill.get(j).getStatus() == 0) {
+                            if (listBill.get(j).getStatus() == 2) {
                                 list.add(listBill.get(j));
                             }
                         }
@@ -115,6 +113,4 @@ public class BillDaGiaoFragment extends Fragment {
             });
         }
     }
-
-
 }

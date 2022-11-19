@@ -40,6 +40,10 @@
                 android:id="@+id/nav_history_bill"
                 android:icon="@drawable/bill_ok_48px"
                 android:title="Đơn hàng thành công" />
+            <item
+                android:id="@+id/nav_bill_faild"
+                android:icon="@drawable/bill_faild_48px"
+                android:title="Đơn hàng thất bại" />
         </menu>
     </item>
 
