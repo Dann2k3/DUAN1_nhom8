@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -44,7 +46,7 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
         Product product = list.get(position);
         if (product != null) {
             holder.tv_product_name_rcm.setText(product.getName());
-            holder.imv_product_avatar_rcm.setImageResource(product.getImage());
+            Picasso.with(context).load(product.getImage()).error(R.color.red).into(holder.imv_product_avatar_rcm);
             holder.onclick_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
