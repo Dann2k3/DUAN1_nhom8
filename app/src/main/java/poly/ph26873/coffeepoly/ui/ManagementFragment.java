@@ -61,8 +61,6 @@ public class ManagementFragment extends Fragment {
     }
 
     private void layListBill() {
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.show();
         List<Bill> list = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
@@ -82,8 +80,8 @@ public class ManagementFragment extends Fragment {
                                     Log.d(TAG, "list can tim: " + list.size());
                                 }
                             }
-                            progressDialog.dismiss();
                             Collections.reverse(list);
+                            Log.d(TAG, "list: "+list.size());
                             managementRCVAdapter.setData(list);
                             maRecyclerView.setAdapter(managementRCVAdapter);
                         }

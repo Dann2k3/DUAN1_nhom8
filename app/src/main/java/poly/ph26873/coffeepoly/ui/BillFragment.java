@@ -60,16 +60,19 @@ public class BillFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     bills.add(dataSnapshot.getValue(Bill.class));
                 }
-                for (int i = 0; i < bills.size(); i++) {
-                    if(bills.get(i).getStatus()!=1){
-                        bills.remove(i);
+                if (bills.size() > 0) {
+                    List<Bill> bills1  = new ArrayList<>();
+                    for (int i = 0; i < bills.size(); i++) {
+                        if (bills.get(i).getStatus() == 1) {
+                            bills1.add(bills.get(i));
+                            Log.d("zzz", "bills1.add(bills.get(i)): "+bills.get(i).getId());
+                        }
                     }
+                    Collections.reverse(bills1);
+                    billRCVAdapter.setData(bills1);
+                    billRecyclerView.setAdapter(billRCVAdapter);
                 }
-                if(bills.size()>0){
-                    Collections.reverse(bills);
-                }
-                billRCVAdapter.setData(bills);
-                billRecyclerView.setAdapter(billRCVAdapter);
+
             }
 
             @Override

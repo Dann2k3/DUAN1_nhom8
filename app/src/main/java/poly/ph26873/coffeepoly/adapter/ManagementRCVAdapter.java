@@ -72,10 +72,9 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                         builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                bill.setStatus(0);
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference reference = database.getReference("coffee-poly/bill/" + bill.getId_user() + "/" + bill.getId());
-                                reference.setValue(bill, new DatabaseReference.CompletionListener() {
+                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child( bill.getId_user()).child(bill.getId()).child("status");
+                                reference.setValue(0, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Xác nhân hàng thành công", Toast.LENGTH_SHORT).show();
