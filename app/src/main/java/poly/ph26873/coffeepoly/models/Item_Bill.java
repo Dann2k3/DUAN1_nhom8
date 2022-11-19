@@ -1,5 +1,13 @@
 package poly.ph26873.coffeepoly.models;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class Item_Bill {
     private int id_product;
     private int quantity;
@@ -37,4 +45,5 @@ public class Item_Bill {
     public void setTime(String time) {
         this.time = time;
     }
+
 }

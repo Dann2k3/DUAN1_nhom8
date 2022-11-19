@@ -118,7 +118,7 @@ public class HomeFragment extends Fragment {
         List<Product> listProductRecoomment = new ArrayList<>();
         for (int i = 0; i < list_rcm_product.size(); i++) {
             Log.d(TAG, "sp: " + i + " " + list_rcm_product.get(i).getId() + " " + list_rcm_product.get(i).getPrice() + " " + list_rcm_product.get(i).getQuantitySold());
-            if (list_rcm_product.get(i).getQuantitySold() >= 7000) {
+            if (list_rcm_product.get(i).getQuantitySold() >= 4000) {
                 listProductRecoomment.add(list_rcm_product.get(i));
             }
         }

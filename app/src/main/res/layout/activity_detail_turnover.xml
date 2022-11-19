@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.DetailTurnoverActivity">
 
     <LinearLayout
@@ -41,5 +42,66 @@
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
         </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tv_dt_turn_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thoi gian"
+            android:textColor="@color/green1"
+            android:textSize="25dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_dt_turn_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ho ten"
+            android:textColor="@color/black"
+            android:textSize="23dp" />
+        <TextView
+            android:id="@+id/tv_dt_turn_nbp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="so dien thoai"
+            android:textColor="@color/black"
+            android:textSize="23dp" />
+        <TextView
+            android:id="@+id/tv_dt_turn_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="email"
+            android:textColor="@color/black"
+            android:textSize="23dp" />
+        <TextView
+            android:id="@+id/tv_dt_turn_ad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="dia chi"
+            android:textColor="@color/black"
+            android:textSize="23dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chi tiết hóa đơn:"
+            android:textSize="20dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dt_turn_RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_dt_turn_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="thanh toan "
+            android:textColor="@color/red"
+            android:textSize="23dp" />
+
     </LinearLayout>
 </LinearLayout>
