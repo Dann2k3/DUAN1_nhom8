@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -64,13 +65,12 @@ public class BillDaGiaoFragment extends Fragment {
     }
 
     private void layListUser() {
-        listUser.clear();
         Log.d(TAG, "layListUser");
         DatabaseReference refuser = database.getReference("coffee-poly").child("user");
         refuser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listBill.clear();
+                listUser.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     listUser.add(dataSnapshot.getValue(User.class));
                 }
@@ -88,19 +88,17 @@ public class BillDaGiaoFragment extends Fragment {
     }
 
     private void layListBill() {
-        listBill.clear();
-        final int[] yy = {-1};
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
-            yy[0] = i;
             Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
             reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listBill.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         listBill.add(dataSnapshot.getValue(Bill.class));
                     }
-                    if (yy[0] == listUser.size() - 1) {
+                    if (listBill.size() > 0) {
                         List<Bill> list = new ArrayList<>();
                         list.clear();
                         for (int j = 0; j < listBill.size(); j++) {
@@ -108,6 +106,7 @@ public class BillDaGiaoFragment extends Fragment {
                                 list.add(listBill.get(j));
                             }
                         }
+                        Collections.reverse(list);
                         Log.d(TAG, "list can tim: " + list.size());
                         adapter.setData(list);
                         recyclerView.setAdapter(adapter);
