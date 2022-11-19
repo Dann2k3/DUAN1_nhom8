@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
@@ -158,6 +159,9 @@ public class SettingFragment extends Fragment {
                                             getActivity().finish();
                                         }
                                     }
+                                }else {
+                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                    transaction.replace(R.id.content_frame,new Password_update_notification_Fragment()).commitAllowingStateLoss();
                                 }
                             }
                         });
