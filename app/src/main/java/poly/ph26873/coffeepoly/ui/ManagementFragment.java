@@ -92,6 +92,7 @@ public class ManagementFragment extends Fragment {
                         listBill.add(dataSnapshot.getValue(Bill.class));
                         Log.d(TAG, "listBill: " + listBill.size());
                         if (listBill.size() > 0) {
+                            list.clear();
                             for (int j = 0; j < listBill.size(); j++) {
                                 if (listBill.get(j).getStatus() == 1) {
                                     list.add(listBill.get(j));
