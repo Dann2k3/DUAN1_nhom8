@@ -114,8 +114,10 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     holder.tv_item_bill_quantity.setText(sl + "");
                                     holder.tv_item_bill_total.setText("Tổng tiền: " + sl * product.getPrice() + "K");
                                     reference2.setValue(sl);
-                                    DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
-                                    reference4.setValue(sl);
+                                    if (holder.chk_item_bill_selected.isChecked()) {
+                                        DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
+                                        reference4.setValue(sl);
+                                    }
                                 }
                             });
                             holder.imv_item_bill_add.setOnClickListener(new View.OnClickListener() {
@@ -126,8 +128,10 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     holder.tv_item_bill_quantity.setText(sl + "");
                                     holder.tv_item_bill_total.setText("Tổng tiền: " + sl * product.getPrice() + "K");
                                     reference2.setValue(sl);
-                                    DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
-                                    reference4.setValue(sl);
+                                    if (holder.chk_item_bill_selected.isChecked()) {
+                                        DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
+                                        reference4.setValue(sl);
+                                    }
                                 }
                             });
                             holder.chk_item_bill_selected.setOnClickListener(new View.OnClickListener() {
