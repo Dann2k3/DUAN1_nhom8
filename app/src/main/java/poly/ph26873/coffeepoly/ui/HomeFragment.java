@@ -1,17 +1,18 @@
 package poly.ph26873.coffeepoly.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,11 +24,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.AllProductActivity;
 import poly.ph26873.coffeepoly.adapter.BannerViewPagerAdapter;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
 import poly.ph26873.coffeepoly.models.Banner;
@@ -65,6 +68,7 @@ public class HomeFragment extends Fragment {
     private List<Product> list_rcm_product;
     private FirebaseDatabase database;
     private ProgressDialog progressDialog;
+    private TextView tv_home_see_all;
 
 
     @Override
@@ -86,6 +90,19 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Product product = dataSnapshot.getValue(Product.class);
                     list_rcm_product.add(product);
+                }
+                if (list_rcm_product.size() == 0) {
+                    tv_home_see_all.setVisibility(View.INVISIBLE);
+                } else {
+                    tv_home_see_all.setVisibility(View.VISIBLE);
+                    tv_home_see_all.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getContext(), AllProductActivity.class);
+                            intent.putExtra("list", (Serializable) list_rcm_product);
+                            startActivity(intent);
+                        }
+                    });
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
                 showRecommentProduct();
@@ -122,7 +139,7 @@ public class HomeFragment extends Fragment {
                 listProductRecoomment.add(list_rcm_product.get(i));
             }
         }
-        Log.d(TAG, "listProductRecoomment: "+listProductRecoomment.size());
+        Log.d(TAG, "listProductRecoomment: " + listProductRecoomment.size());
         horizontalRCVAdapter.setData(listProductRecoomment);
         recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
     }
@@ -158,6 +175,7 @@ public class HomeFragment extends Fragment {
         circleIndicator = view.findViewById(R.id.circleIndicator);
         recyclerView_rcm_product = view.findViewById(R.id.mRecyclerView_rcm);
         mRecycerView_all_product = view.findViewById(R.id.mRecycerView_all_product);
+        tv_home_see_all = view.findViewById(R.id.tv_home_see_all);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.show();

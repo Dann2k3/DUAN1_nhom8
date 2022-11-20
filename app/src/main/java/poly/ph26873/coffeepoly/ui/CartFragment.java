@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -42,7 +41,6 @@ import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
-import poly.ph26873.coffeepoly.models.Turnover;
 import poly.ph26873.coffeepoly.models.User;
 
 
@@ -58,7 +56,7 @@ public class CartFragment extends Fragment {
     private RecyclerView cartRecyclerView;
     private CartRCVAdapter cartRCVAdapter;
     private List<Item_Bill> list;
-    private TextView tv_cart_thong_ke, tv_cart_tong_tien;
+    private TextView tv_cart_thong_ke, tv_cart_tong_tien, tv_cart_mess;
     private Button btn_cart_order;
     private String email;
     private FirebaseDatabase database;
@@ -67,6 +65,7 @@ public class CartFragment extends Fragment {
     private List<Item_Bill> list1;
     private static final String TAG = "zzz";
     private List<String> listSPdel;
+    private LinearLayout ln_bill;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -74,6 +73,8 @@ public class CartFragment extends Fragment {
         cartRecyclerView = view.findViewById(R.id.cartRecyclerView);
         tv_cart_thong_ke = view.findViewById(R.id.tv_cart_thong_ke);
         tv_cart_tong_tien = view.findViewById(R.id.tv_cart_tong_tien);
+        tv_cart_mess = view.findViewById(R.id.tv_cart_mess);
+        ln_bill = view.findViewById(R.id.ln_bill);
         btn_cart_order = view.findViewById(R.id.btn_cart_order);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         cartRecyclerView.setLayoutManager(manager);
@@ -94,6 +95,11 @@ public class CartFragment extends Fragment {
                 list.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     list.add(dataSnapshot.getValue(Item_Bill.class));
+                }
+                if(list.size()==0){
+                    tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                }else {
+                    tv_cart_mess.setText("");
                 }
                 Collections.reverse(list);
                 cartRCVAdapter.setData(list);
@@ -141,44 +147,57 @@ public class CartFragment extends Fragment {
                             });
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
-                            return;
+                        } else {
+                            if (tong_tien > 0) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Xác nhận đặt hàng?");
+                                builder.setCancelable(false);
+                                builder.setPositiveButton("Đặt hàng", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Calendar calendar = Calendar.getInstance();
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
+                                        String time = simpleDateFormat.format(calendar.getTime());
+                                        Bill bill = new Bill();
+                                        bill.setId(time);
+                                        bill.setName(user1.getName());
+                                        bill.setList(list1);
+                                        bill.setTotal(tong_tien);
+                                        bill.setAddress(ad);
+                                        bill.setNumberPhone(nb);
+                                        bill.setNote(thong_ke);
+                                        bill.setId_user(email);
+                                        bill.setStatus(1);
+                                        DatabaseReference myBill = database.getReference("coffee-poly/bill/" + email + "/" + time);
+                                        myBill.setValue(bill, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                Log.d(TAG, "Đã cập nhật đơn hàng lên bill");
+                                                Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+                                                DatabaseReference delBillcurrent = database.getReference("coffee-poly/bill_current/" + email);
+                                                delBillcurrent.removeValue(new DatabaseReference.CompletionListener() {
+                                                    @Override
+                                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                        Log.d(TAG, "Đã xóa bill hiện thời");
+                                                        capNhatLichSuDatHang(time);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(getContext(), "Đã hủy thao tác đặt hàng", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+
+                            }
                         }
-                        String ret = String.valueOf(requireActivity().getIntent().hasExtra("return"));
-                        if (ret != null && ret.equals("return")) {
-                            getActivity().getIntent().getExtras().remove("return");
-                            return;
-                        }
-                        if (tong_tien > 0) {
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
-                            String time = simpleDateFormat.format(calendar.getTime());
-                            Bill bill = new Bill();
-                            bill.setId(time);
-                            bill.setName(user1.getName());
-                            bill.setList(list1);
-                            bill.setTotal(tong_tien);
-                            bill.setAddress(ad);
-                            bill.setNumberPhone(nb);
-                            bill.setNote(thong_ke);
-                            bill.setId_user(email);
-                            bill.setStatus(1);
-                            DatabaseReference myBill = database.getReference("coffee-poly/bill/" + email + "/" + time);
-                            myBill.setValue(bill, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                    Log.d(TAG, "Đã cập nhật đơn hàng lên bill");
-                                    Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference delBillcurrent = database.getReference("coffee-poly/bill_current/" + email);
-                                    delBillcurrent.removeValue(new DatabaseReference.CompletionListener() {
-                                        @Override
-                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                            Log.d(TAG, "Đã xóa bill hiện thời");
-                                            capNhatLichSuDatHang(time);
-                                        }
-                                    });
-                                }
-                            });
-                        }
+
                     }
 
                     @Override
@@ -230,6 +249,10 @@ public class CartFragment extends Fragment {
                 if (list1.size() == 0) {
                     tv_cart_thong_ke.setText("");
                     tv_cart_tong_tien.setText("");
+                    //-------------------------------------------
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0, 0);
+                    ln_bill.setLayoutParams(lp);
                     return;
                 }
                 layDanhSachSanPham(list1);
@@ -279,6 +302,9 @@ public class CartFragment extends Fragment {
             tong_tien += list1.get(i).getQuantity() * list3.get(i).getPrice();
             thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K" + "\n ";
         }
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ln_bill.setLayoutParams(lp);
         tv_cart_thong_ke.setText(thong_ke);
         tv_cart_tong_tien.setText("Thanh toán: " + tong_tien + "K");
     }

@@ -62,19 +62,35 @@
                 android:layout_height="1dp"
                 android:background="@android:color/holo_orange_dark" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:text="Tất cả"
-                android:textColor="@android:color/holo_orange_dark"
-                android:textSize="24dp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Tất cả"
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="24dp" />
+
+                <TextView
+                    android:id="@+id/tv_home_see_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="8dp"
+                    android:text="See all"
+                    android:textColor="@color/see"
+                    android:textSize="17dp" />
+            </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mRecycerView_all_product"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="5dp"/>
+                android:padding="5dp" />
 
         </LinearLayout>
     </LinearLayout>
