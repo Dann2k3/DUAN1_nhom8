@@ -29,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import me.relex.circleindicator.CircleIndicator;
@@ -69,7 +71,6 @@ public class HomeFragment extends Fragment {
     private static final String COL_PRODUCT = "product";
 
     private RecyclerView recyclerView_rcm_product, mRecycerView_all_product;
-    private List<Product> list_rcm_product;
     private FirebaseDatabase database;
     private ProgressDialog progressDialog;
     private TextView tv_home_see_all;
@@ -92,7 +93,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();
-                list_rcm_product.clear();
+                List<Product> list_rcm_product = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Product product = dataSnapshot.getValue(Product.class);
                     list_rcm_product.add(product);
@@ -111,8 +112,8 @@ public class HomeFragment extends Fragment {
                     });
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
-                showRecommentProduct();
-                showAllProduct();
+                showRecommentProduct(list_rcm_product);
+                showAllProduct(list_rcm_product);
             }
 
             @Override
@@ -122,7 +123,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void showAllProduct() {
+    private void showAllProduct(List<Product> list_rcm_product) {
         Log.d(TAG, "showAllProduct: --------");
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecycerView_all_product.setLayoutManager(manager);
@@ -131,21 +132,25 @@ public class HomeFragment extends Fragment {
         mRecycerView_all_product.setAdapter(adapter);
     }
 
-    private void showRecommentProduct() {
+    private void showRecommentProduct(List<Product> list_rcm_product) {
         Log.d(TAG, "showRecommentProduct:");
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
-        List<Product> listProductRecoomment = new ArrayList<>();
-        for (int i = 0; i < list_rcm_product.size(); i++) {
-            Log.d(TAG, "sp: " + i + " " + list_rcm_product.get(i).getId() + " " + list_rcm_product.get(i).getPrice() + " " + list_rcm_product.get(i).getQuantitySold());
-            if (list_rcm_product.get(i).getQuantitySold() >= 4000) {
-                listProductRecoomment.add(list_rcm_product.get(i));
+        HorizontalRCVAdapter adapter1 = new HorizontalRCVAdapter(getContext());
+        List<Product> listProductRecoomment = list_rcm_product;
+        Collections.sort(listProductRecoomment, new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o2.getQuantitySold() - o1.getQuantitySold();
             }
+        });
+        List<Product> list = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            list.add(listProductRecoomment.get(i));
         }
-        Log.d(TAG, "listProductRecoomment: " + listProductRecoomment.size());
-        adapter.setData(listProductRecoomment);
-        recyclerView_rcm_product.setAdapter(adapter);
+        adapter1.setData(list);
+        recyclerView_rcm_product.setAdapter(adapter1);
     }
 
     private void showBanner() {
@@ -183,7 +188,6 @@ public class HomeFragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.show();
-        list_rcm_product = new ArrayList<>();
         adapter = new HorizontalRCVAdapter(getContext());
     }
 
