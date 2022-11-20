@@ -44,6 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.service.MyService;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFaildFragment;
 import poly.ph26873.coffeepoly.ui.BillFragment;
@@ -101,6 +102,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showToolBar("Trang chủ");
         toolbarAddNav();
         showInfomationUser();
+        serviceConnection();
+    }
+
+    private void serviceConnection() {
+        Intent intent = new Intent(MainActivity.this, MyService.class);
+        startService(intent);
     }
 
 

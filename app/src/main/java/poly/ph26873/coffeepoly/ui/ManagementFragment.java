@@ -80,9 +80,8 @@ public class ManagementFragment extends Fragment {
     }
 
     private void layListBill(List<User> listUser) {
-        List<Bill> listBill = new ArrayList<>();
-        List<Bill> list = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
+        List<Bill> listBill = new ArrayList<>();
         for (int i = 0; i < listUser.size(); i++) {
             Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
             reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
@@ -92,7 +91,7 @@ public class ManagementFragment extends Fragment {
                         listBill.add(dataSnapshot.getValue(Bill.class));
                         Log.d(TAG, "listBill: " + listBill.size());
                         if (listBill.size() > 0) {
-                            list.clear();
+                            List<Bill> list = new ArrayList<>();
                             for (int j = 0; j < listBill.size(); j++) {
                                 if (listBill.get(j).getStatus() == 1) {
                                     list.add(listBill.get(j));

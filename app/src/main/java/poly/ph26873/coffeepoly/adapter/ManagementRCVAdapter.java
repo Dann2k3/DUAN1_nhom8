@@ -24,7 +24,9 @@ import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.MainActivity;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
+import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Turnover;
 
 public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdapter.BillHolder> {
@@ -73,12 +75,13 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child( bill.getId_user()).child(bill.getId()).child("status");
+                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(bill.getId_user()).child(bill.getId()).child("status");
                                 reference.setValue(0, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Xác nhân hàng thành công", Toast.LENGTH_SHORT).show();
                                         capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
+                                        capNhatSoLuongSanPham(bill.getList());
                                         notifyDataSetChanged();
                                         Intent intent = new Intent(context, MainActivity.class);
                                         intent.putExtra("goto", "management");
@@ -97,6 +100,19 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                         alertDialog.show();
                     }
                 });
+            }
+
+        }
+    }
+
+    private void capNhatSoLuongSanPham(List<Item_Bill> list) {
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < ListData.listPrd.size(); j++) {
+                if (list.get(i).getId_product() == ListData.listPrd.get(j).getId()) {
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference refQ = database.getReference("coffee-poly").child("product").child(String.valueOf(list.get(i).getId_product())).child("quantitySold");
+                    refQ.setValue(list.get(i).getQuantity() + ListData.listPrd.get(j).getQuantitySold());
+                }
             }
 
         }
