@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailProductActivity;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 
@@ -217,6 +220,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
         return 0;
     }
 
+
     public class ItemBillHolder extends RecyclerView.ViewHolder {
         private ImageView imv_item_bill_image, imv_item_bill_remove, imv_item_bill_add;
         private TextView tv_item_bill_name, tv_item_bill_price, tv_item_bill_total, tv_item_bill_quantity;
@@ -236,4 +240,5 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
             onClick_delete = itemView.findViewById(R.id.onClick_delete);
         }
     }
+
 }

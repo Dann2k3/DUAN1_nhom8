@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +31,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 
-public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.HistoryHolder> {
+public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.HistoryHolder>  {
     private Context context;
     private List<History> list;
 
@@ -132,6 +134,8 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
         return 0;
     }
 
+
+
     public class HistoryHolder extends RecyclerView.ViewHolder {
         private TextView tv_his_time, tv_his_name, tv_his_number_phone, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
         private LinearLayout onClick_del_his;
@@ -148,4 +152,6 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
             onClick_del_his = itemView.findViewById(R.id.onClick_del_his);
         }
     }
+
+
 }

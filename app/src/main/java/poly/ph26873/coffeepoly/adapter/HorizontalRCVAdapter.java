@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,15 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailProductActivity;
 import poly.ph26873.coffeepoly.models.Product;
 
-public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdapter.ProductsHolder> {
+public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdapter.ProductsHolder> implements Filterable {
     private Context context;
     private List<Product> list;
+    private List<Product> listNew;
     private static final String TAG = "zzz";
 
     public HorizontalRCVAdapter(Context context) {
@@ -31,6 +37,7 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
 
     public void setData(List<Product> list) {
         this.list = list;
+        this.listNew = list;
         notifyDataSetChanged();
     }
 
@@ -79,5 +86,46 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
 
 
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String strSearch = constraint.toString();
+                if (strSearch.isEmpty()) {
+                    list = listNew;
+                } else {
+                    List<Product> list1 = new ArrayList<>();
+                    for (Product product : listNew) {
+                        if (covertToString(product.getName().toLowerCase()).contains(covertToString(strSearch.toLowerCase().trim()))) {
+                            list1.add(product);
+                        }
+                    }
+                    list = list1;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = list;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<Product>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public static String covertToString(String value) {
+        try {
+            String temp = Normalizer.normalize(value, Normalizer.Form.NFD);
+            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            return pattern.matcher(temp).replaceAll("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

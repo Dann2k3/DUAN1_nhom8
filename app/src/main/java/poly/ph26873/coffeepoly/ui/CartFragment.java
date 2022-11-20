@@ -96,9 +96,9 @@ public class CartFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     list.add(dataSnapshot.getValue(Item_Bill.class));
                 }
-                if(list.size()==0){
+                if (list.size() == 0) {
                     tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
-                }else {
+                } else {
                     tv_cart_mess.setText("");
                 }
                 Collections.reverse(list);
@@ -308,4 +308,5 @@ public class CartFragment extends Fragment {
         tv_cart_thong_ke.setText(thong_ke);
         tv_cart_tong_tien.setText("Thanh toán: " + tong_tien + "K");
     }
+
 }

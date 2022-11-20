@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -43,6 +46,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true); // Add this!
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -69,6 +73,8 @@ public class HomeFragment extends Fragment {
     private FirebaseDatabase database;
     private ProgressDialog progressDialog;
     private TextView tv_home_see_all;
+    private SearchView searchView;
+    private HorizontalRCVAdapter adapter;
 
 
     @Override
@@ -121,9 +127,8 @@ public class HomeFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecycerView_all_product.setLayoutManager(manager);
         mRecycerView_all_product.setHasFixedSize(true);
-        HorizontalRCVAdapter allProductAdapter = new HorizontalRCVAdapter(getContext());
-        allProductAdapter.setData(list_rcm_product);
-        mRecycerView_all_product.setAdapter(allProductAdapter);
+        adapter.setData(list_rcm_product);
+        mRecycerView_all_product.setAdapter(adapter);
     }
 
     private void showRecommentProduct() {
@@ -131,7 +136,6 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
-        HorizontalRCVAdapter horizontalRCVAdapter = new HorizontalRCVAdapter(getContext());
         List<Product> listProductRecoomment = new ArrayList<>();
         for (int i = 0; i < list_rcm_product.size(); i++) {
             Log.d(TAG, "sp: " + i + " " + list_rcm_product.get(i).getId() + " " + list_rcm_product.get(i).getPrice() + " " + list_rcm_product.get(i).getQuantitySold());
@@ -140,8 +144,8 @@ public class HomeFragment extends Fragment {
             }
         }
         Log.d(TAG, "listProductRecoomment: " + listProductRecoomment.size());
-        horizontalRCVAdapter.setData(listProductRecoomment);
-        recyclerView_rcm_product.setAdapter(horizontalRCVAdapter);
+        adapter.setData(listProductRecoomment);
+        recyclerView_rcm_product.setAdapter(adapter);
     }
 
     private void showBanner() {
@@ -180,6 +184,7 @@ public class HomeFragment extends Fragment {
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.show();
         list_rcm_product = new ArrayList<>();
+        adapter = new HorizontalRCVAdapter(getContext());
     }
 
     private List<Banner> getListBanner() {
@@ -204,4 +209,30 @@ public class HomeFragment extends Fragment {
         super.onResume();
         handler.postDelayed(runnable, 3000);
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_search, menu);
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+
+        });
+    }
+
 }
