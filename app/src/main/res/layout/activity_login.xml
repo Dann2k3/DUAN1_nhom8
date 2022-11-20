@@ -9,10 +9,11 @@
     android:padding="20dp"
     tools:context=".activities.LoginActivity">
     <ImageView
-        android:layout_marginTop="45dp"
-        android:src="@drawable/logo_coffee"
         android:layout_width="150dp"
-        android:layout_height="150dp"/>
+        android:layout_height="150dp"
+        android:layout_marginTop="45dp"
+        android:src="@drawable/cppl"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:layout_width="wrap_content"
