@@ -4,11 +4,14 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.BillDaGiaoRCVAdapter;
@@ -34,6 +39,7 @@ public class BillFaildFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.fragment_bill_faild, container, false);
     }
 
@@ -99,9 +105,11 @@ public class BillFaildFragment extends Fragment {
                                 list.add(listBill.get(j));
                             }
                         }
-                        Collections.reverse(list);
-                        Log.d(TAG, "list can tim: " + list.size());
-                        adapter.setData(list);
+                        Set<Bill> set = new LinkedHashSet<Bill>(list);
+                        List<Bill> list1 = new ArrayList<>(set);
+                        Collections.reverse(list1);
+                        Log.d(TAG, "list can tim: " + list1.size());
+                        adapter.setData(list1);
                         recyclerView.setAdapter(adapter);
                     }
                 }
@@ -113,4 +121,30 @@ public class BillFaildFragment extends Fragment {
             });
         }
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_search, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+
+        });
+    }
+
 }

@@ -5,19 +5,25 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
 
-public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdapter.HistoryHolder> {
+public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdapter.HistoryHolder> implements Filterable {
     private Context context;
     private List<Bill> list;
+    private List<Bill> listNew;
 
     public BillDaGiaoRCVAdapter(Context context) {
         this.context = context;
@@ -25,6 +31,7 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
 
     public void setData(List<Bill> list) {
         this.list = list;
+        this.listNew = list;
         notifyDataSetChanged();
     }
 
@@ -39,23 +46,23 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
     public void onBindViewHolder(@NonNull BillDaGiaoRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-                holder.tv_his_time1.setText("Thời gian: " + bill.getId());
-                holder.tv_his_name1.setText("Họ và tên: " + bill.getName());
-                String note = bill.getNote();
-                note.substring(0, note.length() - 2);
-                note.replaceAll("-", "\n");
-                holder.tv_his_note1.setText(note);
-                holder.tv_his_address1.setText("Địa chỉ: " + bill.getAddress());
-                holder.tv_his_number_phone1.setText("Số điện thoại: " + bill.getNumberPhone());
-                holder.tv_his_total1.setText("Tổng tiền: " + bill.getTotal() + "K");
-                if (bill.getStatus() == 0) {
-                    holder.tv_his_status1.setTextColor(Color.GREEN);
-                } else if (bill.getTotal() == 1) {
-                    holder.tv_his_status1.setTextColor(Color.YELLOW);
-                } else if (bill.getStatus() == 2) {
-                    holder.tv_his_status1.setTextColor(Color.RED);
-                }
-                holder.tv_his_status1.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
+            holder.tv_his_time1.setText("Thời gian: " + bill.getId());
+            holder.tv_his_name1.setText("Họ và tên: " + bill.getName());
+            String note = bill.getNote();
+            note.substring(0, note.length() - 2);
+            note.replaceAll("-", "\n");
+            holder.tv_his_note1.setText(note);
+            holder.tv_his_address1.setText("Địa chỉ: " + bill.getAddress());
+            holder.tv_his_number_phone1.setText("Số điện thoại: " + bill.getNumberPhone());
+            holder.tv_his_total1.setText("Tổng tiền: " + bill.getTotal() + "K");
+            if (bill.getStatus() == 0) {
+                holder.tv_his_status1.setTextColor(Color.GREEN);
+            } else if (bill.getTotal() == 1) {
+                holder.tv_his_status1.setTextColor(Color.YELLOW);
+            } else if (bill.getStatus() == 2) {
+                holder.tv_his_status1.setTextColor(Color.RED);
+            }
+            holder.tv_his_status1.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
         }
     }
 
@@ -80,5 +87,46 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
             tv_his_total1 = itemView.findViewById(R.id.tv_his_total_1);
             tv_his_status1 = itemView.findViewById(R.id.tv_his_status_1);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String strSearch = constraint.toString();
+                if (strSearch.isEmpty()) {
+                    list = listNew;
+                } else {
+                    List<Bill> list1 = new ArrayList<>();
+                    for (Bill bill : listNew) {
+                        if (covertToString(bill.getId_user().toLowerCase()).contains(covertToString(strSearch.toLowerCase().trim()))) {
+                            list1.add(bill);
+                        }
+                    }
+                    list = list1;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = list;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<Bill>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public static String covertToString(String value) {
+        try {
+            String temp = Normalizer.normalize(value, Normalizer.Form.NFD);
+            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            return pattern.matcher(temp).replaceAll("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

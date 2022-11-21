@@ -74,7 +74,6 @@ public class HomeFragment extends Fragment {
     private FirebaseDatabase database;
     private ProgressDialog progressDialog;
     private TextView tv_home_see_all;
-    private SearchView searchView;
     private HorizontalRCVAdapter adapter;
 
 
@@ -102,13 +101,10 @@ public class HomeFragment extends Fragment {
                     tv_home_see_all.setVisibility(View.INVISIBLE);
                 } else {
                     tv_home_see_all.setVisibility(View.VISIBLE);
-                    tv_home_see_all.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(getContext(), AllProductActivity.class);
-                            intent.putExtra("list", (Serializable) list_rcm_product);
-                            startActivity(intent);
-                        }
+                    tv_home_see_all.setOnClickListener(v -> {
+                        Intent intent = new Intent(getContext(), AllProductActivity.class);
+                        intent.putExtra("list", (Serializable) list_rcm_product);
+                        startActivity(intent);
                     });
                 }
                 Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
@@ -220,7 +216,7 @@ public class HomeFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 

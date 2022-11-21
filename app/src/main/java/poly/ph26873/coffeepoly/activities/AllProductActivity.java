@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -26,8 +24,6 @@ public class AllProductActivity extends AppCompatActivity {
     private ImageView imv_back_layout_all_product;
     private RecyclerView recyclerView;
     private HorizontalRCVAdapter adapter;
-    private SearchView searchView;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +35,7 @@ public class AllProductActivity extends AppCompatActivity {
     }
 
     private void showAllProduct() {
-        List<Product> list = new ArrayList<>();
+        List<Product> list;
         Intent intent = getIntent();
         list = (List<Product>) intent.getSerializableExtra("list");
         if (list.size() > 0) {
@@ -49,16 +45,11 @@ public class AllProductActivity extends AppCompatActivity {
     }
 
     private void back() {
-        imv_back_layout_all_product.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imv_back_layout_all_product.setOnClickListener(v -> finish());
     }
 
     private void initUi() {
-        toolbar = findViewById(R.id.toolbarAP);
+        Toolbar toolbar = findViewById(R.id.toolbarAP);
         setSupportActionBar(toolbar);
         imv_back_layout_all_product = findViewById(R.id.imv_back_layout_all_product);
         recyclerView = findViewById(R.id.allRecyclerView);
@@ -72,7 +63,7 @@ public class AllProductActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -90,4 +81,5 @@ public class AllProductActivity extends AppCompatActivity {
         });
         return true;
     }
+
 }

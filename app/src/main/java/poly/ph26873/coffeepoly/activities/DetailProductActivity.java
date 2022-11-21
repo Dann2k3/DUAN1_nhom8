@@ -109,12 +109,9 @@ public class DetailProductActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-                    builder.setNegativeButton("Tiếp tục mua sắm", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
-                            intent.putExtra("goto", "home");
-                            startActivity(intent);
                         }
                     });
                     builder.setCancelable(true);
@@ -290,8 +287,6 @@ public class DetailProductActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(DetailProductActivity.this);
         item_billList = new ArrayList<>();
     }
-
-
 
 
 }

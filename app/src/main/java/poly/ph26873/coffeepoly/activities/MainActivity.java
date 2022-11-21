@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int MY_REQUESTCODE = 511;
     private int IDmenu = -1;
     private Intent intent;
-    private SearchView searchView;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -214,11 +215,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_cart;
                 replaceFragmemt(new CartFragment());
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-            } else if (gotoFrg.equals("home")) {
-                navigationView.setCheckedItem(R.id.nav_home);
-                IDmenu = R.id.nav_home;
-                replaceFragmemt(new HomeFragment());
-                navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+//            } else if (gotoFrg.equals("home")) {
+//                navigationView.setCheckedItem(R.id.nav_home);
+//                IDmenu = R.id.nav_home;
+//                replaceFragmemt(new HomeFragment());
+//                navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             } else if (gotoFrg.equals("setting")) {
                 navigationView.setCheckedItem(R.id.nav_setting);
                 IDmenu = R.id.nav_setting;

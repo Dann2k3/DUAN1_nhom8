@@ -29,8 +29,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailProductActivity;
@@ -38,9 +40,10 @@ import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 
-public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBillHolder> {
+public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBillHolder> implements Filterable {
     private Context context;
     private List<Item_Bill> list;
+    private List<Item_Bill> listNew;
     private static final String TAG = "zzz";
 
     public CartRCVAdapter(Context context) {
@@ -49,6 +52,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
 
     public void setData(List<Item_Bill> list) {
         this.list = list;
+        this.listNew = list;
         notifyDataSetChanged();
     }
 
@@ -239,6 +243,52 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
             chk_item_bill_selected = itemView.findViewById(R.id.chk_item_bill_selected);
             onClick_delete = itemView.findViewById(R.id.onClick_delete);
         }
+    }
+
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String strSearch = constraint.toString();
+                if (strSearch.isEmpty()) {
+                    list = listNew;
+                } else {
+                    List<Item_Bill> list1 = new ArrayList<>();
+                    for (Item_Bill item_bill : listNew) {
+                        for (int i = 0; i < ListData.listPrd.size(); i++) {
+                            if (item_bill.getId_product() == ListData.listPrd.get(i).getId()) {
+                                if (covertToString(ListData.listPrd.get(i).getName().toLowerCase()).contains(covertToString(strSearch.toLowerCase().trim()))) {
+                                    list1.add(item_bill);
+                                }
+                            }
+                        }
+                    }
+                    list = list1;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = list;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                list = (List<Item_Bill>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public static String covertToString(String value) {
+        try {
+            String temp = Normalizer.normalize(value, Normalizer.Form.NFD);
+            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            return pattern.matcher(temp).replaceAll("");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 }
