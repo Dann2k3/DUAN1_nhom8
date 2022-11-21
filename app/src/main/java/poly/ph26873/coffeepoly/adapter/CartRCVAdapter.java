@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -103,7 +105,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                     for (int i = 0; i < products.size(); i++) {
                         if (products.get(i).getId() == item_bill.getId_product()) {
                             Product product = products.get(i);
-                            holder.imv_item_bill_image.setImageResource(product.getImage());
+                            Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_item_bill_image);
                             holder.tv_item_bill_name.setText(products.get(i).getName());
                             holder.tv_item_bill_price.setText("Đơn giá: " + product.getPrice() + "K");
                             holder.tv_item_bill_total.setText("Tổng tiền: " + item_bill.getQuantity() * product.getPrice() + "K");

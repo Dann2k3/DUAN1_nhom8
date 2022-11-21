@@ -2,6 +2,7 @@ package poly.ph26873.coffeepoly.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,7 +57,7 @@ public class DetailTurnoverRCVAdapter extends RecyclerView.Adapter<DetailTurnove
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Product product = snapshot.getValue(Product.class);
                     if (product != null) {
-                        holder.imv_prd_in_turn_avatar.setImageResource(product.getImage());
+                        Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_prd_in_turn_avatar);
                         holder.tv_prd_in_turn_name.setText(product.getName());
                         holder.tv_prd_in_turn_price.setText("Đơn giá: " + product.getPrice() + "K");
                         holder.tv_prd_in_turn_quantity.setText("Số lương: " + item_bill.getQuantity());

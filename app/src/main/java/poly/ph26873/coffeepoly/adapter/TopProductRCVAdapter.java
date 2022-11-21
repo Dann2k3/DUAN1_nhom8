@@ -2,6 +2,7 @@ package poly.ph26873.coffeepoly.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -42,7 +45,7 @@ public class TopProductRCVAdapter extends RecyclerView.Adapter<TopProductRCVAdap
     public void onBindViewHolder(@NonNull TopProductRCVAdapter.ProductHolder holder, int position) {
         Product product = list.get(position);
         if (product != null) {
-            holder.imv_top_avatar.setImageResource(product.getImage());
+            Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_top_avatar);
             holder.tv_top_name.setText(product.getName());
             holder.tv_top_price.setText("Đơn giá: " + product.getPrice()+"K");
             holder.tv_top_quantitySold.setText("Số lượng đã bán: " + product.getQuantitySold());
