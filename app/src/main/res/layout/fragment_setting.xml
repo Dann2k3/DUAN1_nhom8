@@ -63,7 +63,7 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:background="#E0E0E0"
+            android:background="@android:color/transparent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="8dp">

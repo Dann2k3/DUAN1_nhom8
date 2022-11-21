@@ -190,7 +190,7 @@ public class SettingFragment extends Fragment {
                         sp_gender_frgst.setSelection(1);
                     }
                     edt_number_phone_frgst.setText(user.getNumberPhone());
-                    Glide.with(getActivity()).load(Uri.parse(user.getImage())).error(R.drawable.anime_naruto).into(imv_avatar_frgst);
+                    Glide.with(getActivity()).load(Uri.parse(user.getImage())).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/gif_avatar.gif?alt=media&token=5755ac07-e204-491e-8f0d-8eb4df811505")).into(imv_avatar_frgst);
                     progressDialog.dismiss();
                 }
             }
@@ -292,7 +292,7 @@ public class SettingFragment extends Fragment {
                                 });
                             }
                         });
-                    }else {
+                    } else {
                         progressDialog.dismiss();
                     }
                 }

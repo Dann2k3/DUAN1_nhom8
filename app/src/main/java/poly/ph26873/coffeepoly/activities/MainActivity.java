@@ -39,6 +39,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String image = snapshot.getValue(String.class);
                 Uri uri = Uri.parse(image);
-                Glide.with(MainActivity.this).load(uri).error(R.drawable.anime_naruto).into(img_avatar);
+                Glide.with(MainActivity.this).asGif().load(uri).error("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/gif_avatar.gif?alt=media&token=5755ac07-e204-491e-8f0d-8eb4df811505").into(img_avatar);
             }
 
             @Override
