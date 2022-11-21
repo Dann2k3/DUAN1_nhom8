@@ -8,11 +8,12 @@ public class User {
     private String gender;
     private String address;
     private String numberPhone;
+    private String image;
 
     public User() {
     }
 
-    public User(String id, String name, int age, String email, String gender, String address, String numberPhone) {
+    public User(String id, String name, int age, String email, String gender, String address, String numberPhone, String image) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -20,6 +21,7 @@ public class User {
         this.gender = gender;
         this.address = address;
         this.numberPhone = numberPhone;
+        this.image = image;
     }
 
 
@@ -77,5 +79,13 @@ public class User {
 
     public void setNumberPhone(String numberPhone) {
         this.numberPhone = numberPhone;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

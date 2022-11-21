@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +40,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import poly.ph26873.coffeepoly.R;
@@ -126,7 +134,6 @@ public class SettingFragment extends Fragment {
         edt_user_name_frgst.clearFocus();
         edt_age_frgst.clearFocus();
         edt_number_phone_frgst.clearFocus();
-        progressDialog.show();
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .setPhotoUri(mUri)
@@ -134,37 +141,11 @@ public class SettingFragment extends Fragment {
 
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
-                    progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         Log.d(TAG, "User profile updated.");
                         Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
-                        String EM = user.getEmail().replaceAll("@gmail.com", "");
-                        User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(),edt_number_phone_frgst.getText().toString().trim());
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
-                        newUser.setValue(user1, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                Log.d(TAG, "Cập nhật dữ liệu user");
-                                Intent intent = getActivity().getIntent();
-                                if (intent.getStringExtra("goto") != null) {
-                                    String set = getActivity().getIntent().getExtras().getString("goto");
-                                    if (set != null) {
-                                        if (set.equalsIgnoreCase("setting")) {
-                                            Intent intent1 = new Intent(getContext(), MainActivity.class);
-                                            intent1.putExtra("goto", "cart");
-                                            intent1.putExtra("return", "return");
-                                            startActivity(intent1);
-                                            getActivity().finish();
-                                        }
-                                    }
-                                }else {
-                                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                    transaction.replace(R.id.content_frame,new Password_update_notification_Fragment()).commitAllowingStateLoss();
-                                }
-                            }
-                        });
+                        putImageUser();
                     }
                 });
     }
@@ -190,14 +171,6 @@ public class SettingFragment extends Fragment {
             return;
         }
         ReadFrofileUser(user.getEmail().replaceAll("@gmail.com", ""));
-
-        Uri avatar = user.getPhotoUrl();
-
-        Glide.with(getActivity()).load(avatar).error(R.drawable.anime_naruto).into(imv_avatar_frgst);
-        if (avatar != null) {
-            Log.d(TAG, "uri img: " + avatar);
-        }
-
     }
 
     public void ReadFrofileUser(String email1) {
@@ -217,6 +190,7 @@ public class SettingFragment extends Fragment {
                         sp_gender_frgst.setSelection(1);
                     }
                     edt_number_phone_frgst.setText(user.getNumberPhone());
+                    Glide.with(getActivity()).load(Uri.parse(user.getImage())).error(R.drawable.anime_naruto).into(imv_avatar_frgst);
                     progressDialog.dismiss();
                 }
             }
@@ -258,5 +232,73 @@ public class SettingFragment extends Fragment {
 
     public void setmUri(Uri mUri) {
         this.mUri = mUri;
+    }
+
+    public void putImageUser() {
+        progressDialog.show();
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://coffepoly-f7e3b.appspot.com");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        StorageReference mountainsRef = storageRef.child(user.getEmail().replaceAll("@gmail.com", "") + ".png");
+        imv_avatar_frgst.setDrawingCacheEnabled(true);
+        imv_avatar_frgst.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) imv_avatar_frgst.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] data = baos.toByteArray();
+        UploadTask uploadTask = mountainsRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                if (taskSnapshot.getMetadata() != null) {
+                    if (taskSnapshot.getMetadata().getReference() != null) {
+                        Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                        result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String imageUrl = uri.toString();
+                                Log.d(TAG, "taskSnapshot: " + imageUrl);
+                                String EM = user.getEmail().replaceAll("@gmail.com", "");
+                                User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(), edt_number_phone_frgst.getText().toString().trim(), imageUrl);
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
+                                newUser.setValue(user1, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                        progressDialog.dismiss();
+                                        Log.d(TAG, "Cập nhật dữ liệu user");
+                                        Intent intent = getActivity().getIntent();
+                                        if (intent.getStringExtra("goto") != null) {
+                                            String set = getActivity().getIntent().getExtras().getString("goto");
+                                            if (set != null) {
+                                                if (set.equalsIgnoreCase("setting")) {
+                                                    Intent intent1 = new Intent(getContext(), MainActivity.class);
+                                                    intent1.putExtra("goto", "cart");
+                                                    intent1.putExtra("return", "return");
+                                                    startActivity(intent1);
+                                                    getActivity().finish();
+                                                }
+                                            }
+                                        } else {
+                                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                                            transaction.replace(R.id.content_frame, new Password_update_notification_Fragment()).commitAllowingStateLoss();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }else {
+                        progressDialog.dismiss();
+                    }
+                }
+
+
+            }
+        });
     }
 }

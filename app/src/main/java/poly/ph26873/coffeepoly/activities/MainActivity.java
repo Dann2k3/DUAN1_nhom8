@@ -49,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.net.URL;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.service.MyService;
@@ -159,7 +160,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         String name = user.getDisplayName();
         String email = user.getEmail();
-        Uri photoUrl = user.getPhotoUrl();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("user").child(email.replaceAll("@gmail.com", "")).child("image");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String image = snapshot.getValue(String.class);
+                Uri uri = Uri.parse(image);
+                Glide.with(MainActivity.this).load(uri).error(R.drawable.anime_naruto).into(img_avatar);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         if (name != null && !name.trim().isEmpty()) {
             tv_name.setText(name);
         } else {
@@ -168,10 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tv_name.setText(name);
         }
         tv_email.setText(email);
-        Glide.with(this).load(photoUrl).error(R.drawable.anime_naruto).into(img_avatar);
         Log.d(TAG, "name user: " + name);
         Log.d(TAG, "email user: " + email);
-        Log.d(TAG, "avatar user: " + photoUrl);
         checkAccountType(user);
     }
 
@@ -413,5 +426,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
+
 
 }
