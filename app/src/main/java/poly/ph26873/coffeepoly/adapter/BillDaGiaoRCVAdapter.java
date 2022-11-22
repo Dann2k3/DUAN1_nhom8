@@ -55,14 +55,8 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
             holder.tv_his_address1.setText("Địa chỉ: " + bill.getAddress());
             holder.tv_his_number_phone1.setText("Số điện thoại: " + bill.getNumberPhone());
             holder.tv_his_total1.setText("Tổng tiền: " + bill.getTotal() + "K");
-            if (bill.getStatus() == 0) {
-                holder.tv_his_status1.setTextColor(Color.GREEN);
-            } else if (bill.getTotal() == 1) {
-                holder.tv_his_status1.setTextColor(Color.YELLOW);
-            } else if (bill.getStatus() == 2) {
-                holder.tv_his_status1.setTextColor(Color.RED);
-            }
-            holder.tv_his_status1.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
+            holder.tv_his_status1.setTextColor(Color.GREEN);
+            holder.tv_his_status1.setText("Trạng thái đơn hàng: Đã giao thành công");
         }
     }
 

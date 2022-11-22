@@ -12,11 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +41,8 @@ public class ManagementFragment extends Fragment {
     private ManagementRCVAdapter managementRCVAdapter;
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
+    private List<User> listUser = new ArrayList<>();
+    private List<Bill> listBill = new ArrayList<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -59,51 +61,78 @@ public class ManagementFragment extends Fragment {
     private void layListUser() {
         Log.d(TAG, "layListUser");
         DatabaseReference refuser = database.getReference("coffee-poly").child("user");
-        refuser.addValueEventListener(new ValueEventListener() {
+        refuser.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<User> listUser = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    listUser.add(dataSnapshot.getValue(User.class));
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    listUser.add(user);
                 }
                 if (listUser.size() > 0) {
-                    Log.d(TAG, "listUser: " + listUser.size());
-                    layListBill(listUser);
+                    layListBill();
                 }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled: layListUser");
+
             }
         });
     }
 
-    private void layListBill(List<User> listUser) {
+    private void layListBill() {
         DatabaseReference reference = database.getReference("coffee-poly/bill");
-        List<Bill> listBill = new ArrayList<>();
         for (int i = 0; i < listUser.size(); i++) {
-            Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
-            reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
+            reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        listBill.add(dataSnapshot.getValue(Bill.class));
-                        Log.d(TAG, "listBill: " + listBill.size());
-                        if (listBill.size() > 0) {
-                            List<Bill> list = new ArrayList<>();
-                            for (int j = 0; j < listBill.size(); j++) {
-                                if (listBill.get(j).getStatus() == 1) {
-                                    list.add(listBill.get(j));
-                                    Log.d(TAG, "list can tim: " + list.size());
-                                }
-                            }
-                            Collections.reverse(list);
-                            Log.d(TAG, "list: " + list.size());
-                            managementRCVAdapter.setData(list);
-                            maRecyclerView.setAdapter(managementRCVAdapter);
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Bill bill = snapshot.getValue(Bill.class);
+                    if (bill != null && bill.getStatus() == 1) {
+                        listBill.add(bill);
+                        Collections.reverse(listBill);
+                        managementRCVAdapter.setData(listBill);
+                        maRecyclerView.setAdapter(managementRCVAdapter);
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Bill bill = snapshot.getValue(Bill.class);
+                    if (bill == null || listBill.isEmpty()) {
+                        return;
+                    }
+                    for (int j = 0; j < listBill.size(); j++) {
+                        if (listBill.get(j).getId() == bill.getId()) {
+                            listBill.remove(listBill.get(j));
+                            Collections.reverse(listBill);
+                            managementRCVAdapter.setData(listBill);
+                            break;
                         }
                     }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
                 }
 

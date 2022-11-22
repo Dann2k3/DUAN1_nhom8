@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -66,7 +67,8 @@ public class CartFragment extends Fragment {
     private FirebaseDatabase database;
     private String thong_ke = "";
     private int tong_tien = 0;
-    private List<Item_Bill> list1;
+    private List<Item_Bill> list1 = new ArrayList<>();
+    ;
     private static final String TAG = "zzz";
     private List<String> listSPdel;
     private LinearLayout ln_bill;
@@ -85,41 +87,72 @@ public class CartFragment extends Fragment {
         cartRecyclerView.setHasFixedSize(true);
         cartRCVAdapter = new CartRCVAdapter(getContext());
         list = new ArrayList<>();
-        ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Đang tải dữ liệu của giỏ hàng");
-        progressDialog.show();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email = user.getEmail().replaceAll("@gmail.com", "");
         database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly/cart/" + email);
-        reference.addValueEventListener(new ValueEventListener() {
+        reference.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                progressDialog.dismiss();
-                list.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    list.add(dataSnapshot.getValue(Item_Bill.class));
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Item_Bill item_bill = snapshot.getValue(Item_Bill.class);
+                if (item_bill != null) {
+                    list.add(item_bill);
+                    Collections.reverse(list);
+                    cartRCVAdapter.setData(list);
+                    cartRecyclerView.setAdapter(cartRCVAdapter);
+                    layDanhSachTinhTien();
                 }
                 if (list.size() == 0) {
                     tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    ln_bill.setVisibility(View.INVISIBLE);
                 } else {
                     tv_cart_mess.setText("");
                 }
-                Collections.reverse(list);
-                cartRCVAdapter.setData(list);
-                cartRecyclerView.setAdapter(cartRCVAdapter);
-                layDanhSachTinhTien();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Item_Bill item_bill = snapshot.getValue(Item_Bill.class);
+                if (list.isEmpty() || item_bill == null) {
+                    return;
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getId_product() == item_bill.getId_product()) {
+                        list.set(i, item_bill);
+                        cartRCVAdapter.setData(list);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Item_Bill item_bill = snapshot.getValue(Item_Bill.class);
+                if (item_bill == null || list.isEmpty()) {
+                    return;
+                }
+                for (int i = 0; i < list.size(); i++) {
+                    if(list.get(i).getId_product()==item_bill.getId_product()){
+                        list.remove(list.get(i));
+                        cartRCVAdapter.setData(list);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
-
         btn_cart_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setCancelable(false);
                 progressDialog.setMessage("Đang tiến hàng đặt hàng....");
                 progressDialog.show();
                 DatabaseReference AddressRef = database.getReference("coffee-poly/user/" + email);
@@ -188,6 +221,8 @@ public class CartFragment extends Fragment {
                                                 });
                                             }
                                         });
+
+
                                     }
                                 });
                                 builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -241,7 +276,6 @@ public class CartFragment extends Fragment {
 
 
     public void layDanhSachTinhTien() {
-        list1 = new ArrayList<>();
         DatabaseReference reference1 = database.getReference("coffee-poly/bill_current/" + email);
         reference1.addValueEventListener(new ValueEventListener() {
             @Override
@@ -306,6 +340,7 @@ public class CartFragment extends Fragment {
             tong_tien += list1.get(i).getQuantity() * list3.get(i).getPrice();
             thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K" + "\n ";
         }
+        ln_bill.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ln_bill.setLayoutParams(lp);

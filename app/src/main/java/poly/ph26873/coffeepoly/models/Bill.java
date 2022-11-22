@@ -12,9 +12,11 @@ public class Bill {
     private String note;
     private int status;
     private String id_user;
-    // status = 0 - đã nhận hàng
-    // status = 1 - đang giao hàng
+    // status = 0 - đã xac nhan
+    // status = 1 - đang xac nhan
     // status = 2 - đã hủy
+    // status = 3 - dang giao
+    // status = 4 - giao thanh cong
     //id chính là thời gian đặt hàng định dạng: dd_MM_yyyy kk:mm:ss
 
 
@@ -105,15 +107,4 @@ public class Bill {
         this.id_user = id_user;
     }
 
-    public String getTrangThai() {
-        String tt = "";
-        if (status == 0) {
-            tt = "Đã giao hàng";
-        } else if (status == 1) {
-            tt = "Đang giao hàng";
-        } else {
-            tt = "Đã hủy đơn";
-        }
-        return tt;
-    }
 }

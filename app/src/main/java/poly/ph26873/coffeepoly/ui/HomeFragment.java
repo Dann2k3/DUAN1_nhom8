@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,11 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -75,6 +74,7 @@ public class HomeFragment extends Fragment {
     private ProgressDialog progressDialog;
     private TextView tv_home_see_all;
     private HorizontalRCVAdapter adapter;
+    private List<Product> list_rcm_product;
 
 
     @Override
@@ -88,13 +88,12 @@ public class HomeFragment extends Fragment {
 
     private void getList_rcm_product() {
         DatabaseReference myProduct = database.getReference(TABLE_NAME).child(COL_PRODUCT);
-        myProduct.addValueEventListener(new ValueEventListener() {
+        myProduct.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 progressDialog.dismiss();
-                List<Product> list_rcm_product = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Product product = dataSnapshot.getValue(Product.class);
+                Product product = snapshot.getValue(Product.class);
+                if (product != null) {
                     list_rcm_product.add(product);
                 }
                 if (list_rcm_product.size() == 0) {
@@ -106,21 +105,43 @@ public class HomeFragment extends Fragment {
                         intent.putExtra("list", (Serializable) list_rcm_product);
                         startActivity(intent);
                     });
+                    showRecommentProduct();
+                    showAllProduct();
                 }
-                Log.d(TAG, "list_rcm_product: " + list_rcm_product.size());
-                showRecommentProduct(list_rcm_product);
-                showAllProduct(list_rcm_product);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                progressDialog.dismiss();
+                Product product = snapshot.getValue(Product.class);
+                if (list_rcm_product.isEmpty() || product == null) {
+                    return;
+                }
+                for (int i = 0; i < list_rcm_product.size(); i++) {
+                    if (list_rcm_product.get(i).getId() == product.getId()) {
+                        list_rcm_product.set(i, product);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "faild product: ");
+                progressDialog.dismiss();
             }
         });
     }
 
-    private void showAllProduct(List<Product> list_rcm_product) {
-        Log.d(TAG, "showAllProduct: --------");
+    private void showAllProduct() {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecycerView_all_product.setLayoutManager(manager);
         mRecycerView_all_product.setHasFixedSize(true);
@@ -128,24 +149,14 @@ public class HomeFragment extends Fragment {
         mRecycerView_all_product.setAdapter(adapter);
     }
 
-    private void showRecommentProduct(List<Product> list_rcm_product) {
-        Log.d(TAG, "showRecommentProduct:");
+    private void showRecommentProduct() {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
         HorizontalRCVAdapter adapter1 = new HorizontalRCVAdapter(getContext());
         List<Product> listProductRecoomment = list_rcm_product;
-        Collections.sort(listProductRecoomment, new Comparator<Product>() {
-            @Override
-            public int compare(Product o1, Product o2) {
-                return o2.getQuantitySold() - o1.getQuantitySold();
-            }
-        });
-        List<Product> list = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            list.add(listProductRecoomment.get(i));
-        }
-        adapter1.setData(list);
+        Collections.shuffle(listProductRecoomment);
+        adapter1.setData(listProductRecoomment);
         recyclerView_rcm_product.setAdapter(adapter1);
     }
 
@@ -186,6 +197,7 @@ public class HomeFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.show();
         adapter = new HorizontalRCVAdapter(getContext());
+        list_rcm_product = new ArrayList<>();
     }
 
     private List<Banner> getListBanner() {

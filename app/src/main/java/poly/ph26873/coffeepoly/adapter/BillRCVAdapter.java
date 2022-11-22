@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -49,17 +48,22 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     public void onBindViewHolder(@NonNull BillRCVAdapter.BillHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            if (bill.getStatus() == 1) {
-                holder.tv_bill_time.setText("Thời gian: " + bill.getId());
-                holder.tv_bill_name.setText("Họ và tên: "+bill.getName());
-                String note = bill.getNote().toString();
-                note.substring(0, note.length() - 2);
-                note.replaceAll("-", "\n");
-                holder.tv_bill_note.setText(note);
-                holder.tv_bill_address.setText("Địa chỉ: " + bill.getAddress());
-                holder.tv_bill_number_phone.setText("Số điện thoại: "+bill.getNumberPhone());
-                holder.tv_bill_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+            holder.tv_bill_time.setText("Thời gian: " + bill.getId());
+            holder.tv_bill_name.setText("Họ và tên: " + bill.getName());
+            String note = bill.getNote().toString();
+            note.substring(0, note.length() - 2);
+            note.replaceAll("-", "\n");
+            holder.tv_bill_note.setText(note);
+            holder.tv_bill_address.setText("Địa chỉ: " + bill.getAddress());
+            holder.tv_bill_number_phone.setText("Số điện thoại: " + bill.getNumberPhone());
+            holder.tv_bill_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+            if (bill.getStatus() == 0) {
+                holder.tv_bill_status.setTextColor(Color.GREEN);
                 holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
+                holder.btn_bill_cancle.setVisibility(View.INVISIBLE);
+            } else {
+                holder.tv_bill_status.setTextColor(Color.BLACK);
+                holder.tv_bill_status.setText("Trạng thái: Đang chờ xác nhận");
                 holder.btn_bill_cancle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -71,7 +75,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child( bill.getId_user()).child(bill.getId()).child("status");
+                                DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(bill.getId_user()).child(bill.getId()).child("status");
                                 reference.setValue(2, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
@@ -93,6 +97,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                     }
                 });
             }
+
 
         }
     }

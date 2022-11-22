@@ -13,8 +13,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 
 public class MyService extends Service {
     public MyService() {
@@ -22,15 +28,26 @@ public class MyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM_yyyy");
+        String month = simpleDateFormat.format(calendar.getTime());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference refPrd = database.getReference("coffee-poly").child("product");
-        refPrd.addValueEventListener(new ValueEventListener() {
+        capNhatListProduct(database);
+        capNhatListQuanProduct(database,month);
+        return START_NOT_STICKY;
+    }
+
+
+
+    private void capNhatListQuanProduct(FirebaseDatabase database, String month) {
+        DatabaseReference refQuanPrd  = database.getReference("coffee-poly").child("turnover_product").child(month);
+        refQuanPrd.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    ListData.listPrd.add(dataSnapshot.getValue(Product.class));
+                ListData.listQuanPrd.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    ListData.listQuanPrd.add(dataSnapshot.getValue(QuantitySoldInMonth.class));
                 }
-                Log.d("zzz", "ListData.listPrd: = "+ListData.listPrd.size());
             }
 
             @Override
@@ -38,7 +55,25 @@ public class MyService extends Service {
 
             }
         });
-        return START_NOT_STICKY;
+    }
+
+    private void capNhatListProduct(FirebaseDatabase database) {
+        DatabaseReference refPrd = database.getReference("coffee-poly").child("product");
+        refPrd.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ListData.listPrd.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    ListData.listPrd.add(dataSnapshot.getValue(Product.class));
+                }
+                Log.d("zzz", "ListData.listPrd: = " + ListData.listPrd.size());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

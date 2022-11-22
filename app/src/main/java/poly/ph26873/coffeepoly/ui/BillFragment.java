@@ -63,7 +63,7 @@ public class BillFragment extends Fragment {
                 if (bills.size() > 0) {
                     List<Bill> bills1  = new ArrayList<>();
                     for (int i = 0; i < bills.size(); i++) {
-                        if (bills.get(i).getStatus() == 1) {
+                        if (bills.get(i).getStatus() == 1 || bills.get(i).getStatus() == 0 ) {
                             bills1.add(bills.get(i));
                             Log.d("zzz", "bills1.add(bills.get(i)): "+bills.get(i).getId());
                         }

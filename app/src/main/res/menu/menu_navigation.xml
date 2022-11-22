@@ -11,7 +11,7 @@
             <item
                 android:id="@+id/nav_cart"
                 android:icon="@drawable/shopping_cart_48px"
-                android:title="Đặt hàng" />
+                android:title="Giỏ hàng" />
             <item
                 android:id="@+id/nav_bill"
                 android:icon="@drawable/bill_48px"
@@ -35,7 +35,12 @@
             <item
                 android:id="@+id/nav_order_management"
                 android:icon="@drawable/receipt_long_48px"
-                android:title="Quản lí đơn hàng" />
+                android:title="Xác nhận đơn hàng" />
+            <item
+                android:id="@+id/nav_order_management_scfl"
+                android:icon="@drawable/shipping_48px"
+                android:title="Đơn hàng đang giao" />
+
             <item
                 android:id="@+id/nav_history_bill"
                 android:icon="@drawable/bill_ok_48px"
@@ -55,6 +60,10 @@
                 android:id="@+id/nav_turnover"
                 android:icon="@drawable/turnover_48px"
                 android:title="Doanh thu" />
+            <item
+                android:id="@+id/nav_turnover_product"
+                android:icon="@drawable/turnover_48px"
+                android:title="Thống kê sản phẩm" />
             <item
                 android:id="@+id/nav_top_product"
                 android:icon="@drawable/chart_48px"

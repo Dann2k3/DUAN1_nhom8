@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -91,14 +92,19 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email, "Nam", "null","null","null");
+                            User user = new User(email1, email1, 18, email, "Nam", "null","null","https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588");
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                            intent.putExtra("email", email);
-                            intent.putExtra("pass", password);
-                            startActivity(intent);
-                            finishAffinity();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                    intent.putExtra("email", email);
+                                    intent.putExtra("pass", password);
+                                    startActivity(intent);
+                                    finishAffinity();
+                                }
+                            }, 1000);
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(SignUpActivity.this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();

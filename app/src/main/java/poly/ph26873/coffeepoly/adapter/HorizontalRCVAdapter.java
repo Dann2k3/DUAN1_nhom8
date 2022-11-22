@@ -14,7 +14,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+
+import com.bumptech.glide.Glide;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
         Product product = list.get(position);
         if (product != null) {
             holder.tv_product_name_rcm.setText(product.getName());
-            Picasso.with(context).load(product.getImage()).error(R.color.red).into(holder.imv_product_avatar_rcm);
+            Glide.with(context).load(product.getImage()).error(R.color.red).into(holder.imv_product_avatar_rcm);
             holder.onclick_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_bill_time_m"
+        android:id="@+id/tv_bill_time_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Thời gian: 18_11_2022 12:36:23"
@@ -16,7 +16,7 @@
         android:textSize="19dp" />
 
     <TextView
-        android:id="@+id/tv_bill_name_m"
+        android:id="@+id/tv_bill_name_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Thông tin chi tiết:"
@@ -29,7 +29,7 @@
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_bill_note_m"
+        android:id="@+id/tv_bill_note_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white3"
@@ -37,38 +37,38 @@
         android:text="Cà phê sữa x5 = 30k" />
 
     <TextView
-        android:id="@+id/tv_bill_address_m"
+        android:id="@+id/tv_bill_address_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Địa chỉ: Hà nội"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_bill_number_phone_m"
+        android:id="@+id/tv_bill_number_phone_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Địa chỉ: Hà nội"
         android:textColor="@color/black" />
 
     <TextView
-        android:id="@+id/tv_bill_total_m"
+        android:id="@+id/tv_bill_total_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tổng tiền: 450k"
         android:textColor="@color/red" />
 
     <TextView
-        android:id="@+id/tv_bill_status_m"
+        android:id="@+id/tv_bill_status_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Trạng thái: Đang chờ xác nhận"
-        android:textColor="@android:color/holo_orange_dark" />
+        android:text="Trạng thái: Đang giao hàng"
+        android:textColor="@color/green1" />
 
     <Button
-        android:id="@+id/btn_bill_cancle_m"
+        android:id="@+id/btn_bill_cancle_s"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@android:color/holo_orange_dark"
-        android:text="Xác nhận đơn hàng" />
+        android:backgroundTint="@color/green1"
+        android:text="Xác nhận giao hàng thành công" />
 
 </LinearLayout>

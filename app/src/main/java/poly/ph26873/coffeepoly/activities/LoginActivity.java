@@ -143,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
         });
         progressDialog = new ProgressDialog(LoginActivity.this);
         progressDialog.setTitle("Đang đăng nhập");
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Vui lòng đợi trong giây lát...");
     }
 

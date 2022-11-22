@@ -24,6 +24,7 @@
             android:layout_weight="1" />
 
         <LinearLayout
+            android:visibility="invisible"
             android:id="@+id/ln_bill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

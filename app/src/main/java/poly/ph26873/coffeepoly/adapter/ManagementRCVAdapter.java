@@ -63,12 +63,12 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                 holder.tv_bill_address_m.setText("Địa chỉ: " + bill.getAddress());
                 holder.tv_bill_number_phone_m.setText("Số điện thoại: " + bill.getNumberPhone());
                 holder.tv_bill_total_m.setText("Tổng tiền: " + bill.getTotal() + "K");
-                holder.tv_bill_status_m.setText("Trạng thái: Đang giao hàng");
+                holder.tv_bill_status_m.setText("Trạng thái: Đang chờ đang xác nhận");
                 holder.btn_bill_cancle_m.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                        builder.setTitle("Xác nhận đã giao hàng thành công?");
+                        builder.setTitle("Xác nhận đơn hàng thành công?");
                         builder.setMessage("Hãy nhấn xác nhận");
                         builder.setCancelable(true);
                         builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
@@ -80,12 +80,8 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Xác nhân hàng thành công", Toast.LENGTH_SHORT).show();
-                                        capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
-                                        capNhatSoLuongSanPham(bill.getList());
+//                                        capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
                                         notifyDataSetChanged();
-                                        Intent intent = new Intent(context, MainActivity.class);
-                                        intent.putExtra("goto", "management");
-                                        context.startActivity(intent);
                                     }
                                 });
                             }
@@ -105,18 +101,7 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         }
     }
 
-    private void capNhatSoLuongSanPham(List<Item_Bill> list) {
-        for (int i = 0; i < list.size(); i++) {
-            for (int j = 0; j < ListData.listPrd.size(); j++) {
-                if (list.get(i).getId_product() == ListData.listPrd.get(j).getId()) {
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference refQ = database.getReference("coffee-poly").child("product").child(String.valueOf(list.get(i).getId_product())).child("quantitySold");
-                    refQ.setValue(list.get(i).getQuantity() + ListData.listPrd.get(j).getQuantitySold());
-                }
-            }
 
-        }
-    }
 
 
     private void capNhatDoanthu(int total, String id, String id_user) {

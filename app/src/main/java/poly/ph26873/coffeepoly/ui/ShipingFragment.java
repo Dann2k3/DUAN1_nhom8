@@ -2,12 +2,6 @@ package poly.ph26873.coffeepoly.ui;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,39 +10,45 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.ChildEventListener;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.adapter.BillDaGiaoRCVAdapter;
+import poly.ph26873.coffeepoly.adapter.ShipingRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
 
 
-public class BillDaGiaoFragment extends Fragment {
+public class ShipingFragment extends Fragment {
 
-    private static final String TAG = "zzz";
-    private RecyclerView recyclerView;
-    private BillDaGiaoRCVAdapter adapter;
-    private FirebaseDatabase database;
-    private List<User> listUser = new ArrayList<>();
-    private List<Bill> listBill = new ArrayList<>();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_bill_da_giao, container, false);
+        return inflater.inflate(R.layout.fragment_shiping, container, false);
     }
 
+
+    private RecyclerView recyclerView;
+    private ShipingRCVAdapter adapter;
+    private FirebaseDatabase database;
+    private static final String TAG = "zzz";
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -56,92 +56,64 @@ public class BillDaGiaoFragment extends Fragment {
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.setCancelable(false);
         progressDialog.show();
-        recyclerView = view.findViewById(R.id.bill1RecyclerView);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView = view.findViewById(R.id.shipRecyclerView);
+        adapter = new ShipingRCVAdapter(getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
-        adapter = new BillDaGiaoRCVAdapter(getContext());
         database = FirebaseDatabase.getInstance();
         layListUser();
         progressDialog.dismiss();
-
     }
+
 
     private void layListUser() {
         Log.d(TAG, "layListUser");
         DatabaseReference refuser = database.getReference("coffee-poly").child("user");
-        refuser.addChildEventListener(new ChildEventListener() {
+        refuser.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                User user = snapshot.getValue(User.class);
-                if (user != null) {
-                    listUser.add(user);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<User> listUser = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    listUser.add(dataSnapshot.getValue(User.class));
                 }
                 if (listUser.size() > 0) {
+                    Log.d(TAG, "listUser: " + listUser.size());
                     layListBill(listUser);
                 }
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d(TAG, "onCancelled: layListUser");
             }
         });
     }
 
     private void layListBill(List<User> listUser) {
         DatabaseReference reference = database.getReference("coffee-poly/bill");
+        List<Bill> listBill = new ArrayList<>();
         for (int i = 0; i < listUser.size(); i++) {
-            reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
+            Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
+            reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
                 @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Bill bill = snapshot.getValue(Bill.class);
-                    if (bill != null) {
-                        if (bill.getStatus() == 4) {
-                            listBill.add(bill);
-                        }
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    listBill.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        listBill.add(dataSnapshot.getValue(Bill.class));
                     }
-
-                    Collections.reverse(listBill);
-                    adapter.setData(listBill);
-                    recyclerView.setAdapter(adapter);
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Bill bill = snapshot.getValue(Bill.class);
-                    if (bill != null) {
-                        if (bill.getStatus() == 4) {
-                            listBill.add(bill);
-                            Collections.reverse(listBill);
-                            adapter.setData(listBill);
+                    if (listBill.size() > 0) {
+                        List<Bill> list = new ArrayList<>();
+                        for (int j = 0; j < listBill.size(); j++) {
+                            if (listBill.get(j).getStatus() == 0) {
+                                list.add(listBill.get(j));
+                            }
                         }
+                        Collections.reverse(list);
+                        Log.d(TAG, "list can tim: " + list.size());
+                        adapter.setData(list);
+                        recyclerView.setAdapter(adapter);
                     }
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
                 }
 
                 @Override
@@ -151,6 +123,7 @@ public class BillDaGiaoFragment extends Fragment {
             });
         }
     }
+
 
 
     @Override
@@ -176,6 +149,5 @@ public class BillDaGiaoFragment extends Fragment {
 
         });
     }
-
 
 }

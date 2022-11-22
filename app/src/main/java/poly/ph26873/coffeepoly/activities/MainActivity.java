@@ -1,8 +1,7 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -16,11 +15,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +26,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -39,8 +33,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.gif.GifDrawable;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,7 +43,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
-import java.net.URL;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.service.MyService;
@@ -65,6 +56,8 @@ import poly.ph26873.coffeepoly.ui.HomeFragment;
 import poly.ph26873.coffeepoly.ui.ManagementFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
+import poly.ph26873.coffeepoly.ui.ShipingFragment;
+import poly.ph26873.coffeepoly.ui.ThongKeSanPhamFragment;
 import poly.ph26873.coffeepoly.ui.TopProductFragment;
 import poly.ph26873.coffeepoly.ui.TurnoverFragment;
 
@@ -81,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final int MY_REQUESTCODE = 511;
     private int IDmenu = -1;
     private Intent intent;
+    private ProgressDialog progressDialog;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -105,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Đang tải dữ liệu...");
+        progressDialog.show();
         Log.d(TAG, "---------------MainActivity---------------");
         intent = getIntent();
         initUi();
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int type = snapshot.getValue(Integer.class);
+                Log.d(TAG, "type: " + type);
                 if (type == 2) {
                     navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
                     navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
@@ -140,17 +139,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
                     replaceFragmemt(new ManagementFragment());
                     hieuUngChecked(R.id.nav_order_management);
-                    showToolBar("Quản lí hóa đơn");
+                    showToolBar("Xác nhận đơn hàng");
                     IDmenu = R.id.nav_order_management;
-
-                } else {
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
                 }
+                if (type == 0) {
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
+                    navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
+                    replaceFragmemt(new TurnoverFragment());
+                    hieuUngChecked(R.id.nav_turnover);
+                    showToolBar("Thống kê doanh thu");
+                    IDmenu = R.id.nav_turnover;
+                }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+                navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
             }
         });
     }
@@ -169,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String image = snapshot.getValue(String.class);
                 Uri uri = Uri.parse(image);
-                Log.d(TAG, "onDataChange: Uri "+uri.toString());
-                Glide.with(MainActivity.this).load(uri).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/gif_avatar.gif?alt=media&token=5755ac07-e204-491e-8f0d-8eb4df811505")).into(img_avatar);
+                Log.d(TAG, "onDataChange: Uri " + uri.toString());
+                Glide.with(MainActivity.this).load(uri).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588")).into(img_avatar);
             }
 
             @Override
@@ -231,24 +237,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_cart;
                 replaceFragmemt(new CartFragment());
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-//            } else if (gotoFrg.equals("home")) {
-//                navigationView.setCheckedItem(R.id.nav_home);
-//                IDmenu = R.id.nav_home;
-//                replaceFragmemt(new HomeFragment());
-//                navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
             } else if (gotoFrg.equals("setting")) {
                 navigationView.setCheckedItem(R.id.nav_setting);
                 IDmenu = R.id.nav_setting;
                 replaceFragmemt(new SettingFragment());
                 navigationView.getMenu().findItem(R.id.nav_setting).setChecked(true);
-            } else {
-                navigationView.setCheckedItem(R.id.nav_order_management);
-                IDmenu = R.id.nav_order_management;
-                replaceFragmemt(new ManagementFragment());
-                navigationView.getMenu().findItem(R.id.nav_order_management).setChecked(true);
             }
         }
-
+//        }
         imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
 
@@ -267,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_cart:
                 replaceFragmemt(new CartFragment());
                 hieuUngChecked(id);
-                showToolBar("Đặt hàng");
+                showToolBar("Giỏ hàng");
                 closeNavigation();
                 IDmenu = id;
                 break;
@@ -303,6 +299,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = id;
                 break;
 
+            case R.id.nav_order_management_scfl:
+                replaceFragmemt(new ShipingFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Đơn hàng đang giao");
+                IDmenu = id;
+                break;
+
             case R.id.nav_history_bill:
                 replaceFragmemt(new BillDaGiaoFragment());
                 hieuUngChecked(id);
@@ -325,6 +329,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Doanh thu");
+                IDmenu = id;
+                break;
+
+            case R.id.nav_turnover_product:
+                replaceFragmemt(new ThongKeSanPhamFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Thống kê sản phẩm");
                 IDmenu = id;
                 break;
 
@@ -376,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
+        int[] mang = {R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }
@@ -429,7 +441,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
 
 
 }

@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +29,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 
-public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.HistoryHolder>  {
+public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.HistoryHolder> {
     private Context context;
     private List<History> list;
 
@@ -75,13 +73,18 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                             holder.tv_his_number_phone.setText("Số điện thoại: " + bill.getNumberPhone());
                             holder.tv_his_total.setText("Tổng tiền: " + bill.getTotal() + "K");
                             if (bill.getStatus() == 0) {
-                                holder.tv_his_status.setTextColor(Color.GRAY);
+                                holder.tv_his_status.setTextColor(Color.BLUE);
+                                holder.tv_his_status.setText("Trạng thái đơn hàng: Đã xác nhận đơn");
                             } else if (bill.getTotal() == 1) {
                                 holder.tv_his_status.setTextColor(Color.YELLOW);
+                                holder.tv_his_status.setText("Trạng thái đơn hàng: Đang chờ nhận đơn");
                             } else if (bill.getStatus() == 2) {
                                 holder.tv_his_status.setTextColor(Color.RED);
+                                holder.tv_his_status.setText("Trạng thái đơn hàng: Đã hủy đơn");
+                            } else {
+                                holder.tv_his_status.setTextColor(Color.GREEN);
+                                holder.tv_his_status.setText("Trạng thái đơn hàng: Đã giao hàng thành công");
                             }
-                            holder.tv_his_status.setText("Trạng thái đơn hàng: " + bill.getTrangThai());
                             holder.onClick_del_his.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
                                 public boolean onLongClick(View v) {
@@ -133,7 +136,6 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
         }
         return 0;
     }
-
 
 
     public class HistoryHolder extends RecyclerView.ViewHolder {

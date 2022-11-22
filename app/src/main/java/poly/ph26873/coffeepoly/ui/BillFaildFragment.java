@@ -16,17 +16,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.BillDaGiaoRCVAdapter;
@@ -47,6 +45,8 @@ public class BillFaildFragment extends Fragment {
     private RecyclerView recyclerView;
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
+    private List<User> listUser = new ArrayList<>();
+    private List<Bill> listBill = new ArrayList<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -67,51 +67,77 @@ public class BillFaildFragment extends Fragment {
     private void layListUser() {
         Log.d(TAG, "layListUser");
         DatabaseReference refuser = database.getReference("coffee-poly").child("user");
-        refuser.addValueEventListener(new ValueEventListener() {
+        refuser.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<User> listUser = new ArrayList<>();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    listUser.add(dataSnapshot.getValue(User.class));
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    listUser.add(user);
                 }
                 if (listUser.size() > 0) {
-                    Log.d(TAG, "listUser: " + listUser.size());
                     layListBill(listUser);
                 }
             }
 
             @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "onCancelled: layListUser");
+
             }
         });
     }
 
     private void layListBill(List<User> listUser) {
         DatabaseReference reference = database.getReference("coffee-poly/bill");
-        List<Bill> listBill = new ArrayList<>();
         for (int i = 0; i < listUser.size(); i++) {
-            Log.d(TAG, listUser.get(i).getId().toUpperCase() + "");
-            reference.child(listUser.get(i).getId()).addValueEventListener(new ValueEventListener() {
+            reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        listBill.add(dataSnapshot.getValue(Bill.class));
-                    }
-                    if (listBill.size() > 0) {
-                        List<Bill> list = new ArrayList<>();
-                        for (int j = 0; j < listBill.size(); j++) {
-                            if (listBill.get(j).getStatus() == 2) {
-                                list.add(listBill.get(j));
-                            }
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Bill bill = snapshot.getValue(Bill.class);
+                    if (bill != null) {
+                        if (bill.getStatus() == 2) {
+                            listBill.add(bill);
                         }
-                        Set<Bill> set = new LinkedHashSet<Bill>(list);
-                        List<Bill> list1 = new ArrayList<>(set);
-                        Collections.reverse(list1);
-                        Log.d(TAG, "list can tim: " + list1.size());
-                        adapter.setData(list1);
-                        recyclerView.setAdapter(adapter);
                     }
+                    Collections.reverse(listBill);
+                    adapter.setData(listBill);
+                    recyclerView.setAdapter(adapter);
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Bill bill = snapshot.getValue(Bill.class);
+                    if (bill != null) {
+                        if (bill.getStatus() == 2) {
+                            listBill.add(bill);
+                            Collections.reverse(listBill);
+                            adapter.setData(listBill);
+                        }
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
                 }
 
                 @Override
