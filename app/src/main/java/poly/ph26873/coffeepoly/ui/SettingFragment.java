@@ -215,6 +215,7 @@ public class SettingFragment extends Fragment {
         btn_change_info_frgst = view.findViewById(R.id.btn_change_info_frgst);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Đang cập nhật...");
+        progressDialog.setCancelable(false);
         mainActivity = (MainActivity) getActivity();
         signUpActivity = new SignUpActivity();
         sp_gender_frgst = view.findViewById(R.id.sp_genger_frgst);
@@ -236,6 +237,7 @@ public class SettingFragment extends Fragment {
 
     public void putImageUser() {
         progressDialog.show();
+        progressDialog.setCancelable(false);
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReferenceFromUrl("gs://coffepoly-f7e3b.appspot.com");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
