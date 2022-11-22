@@ -49,6 +49,7 @@ public class TurnoverFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         tRecyclerView = view.findViewById(R.id.tRecyclerView);
         tv_turn_all_total = view.findViewById(R.id.tv_turn_all_total);

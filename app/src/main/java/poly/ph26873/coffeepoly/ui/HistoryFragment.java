@@ -47,6 +47,7 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setCancelable(false);
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.show();
         hisRecyclerView = view.findViewById(R.id.hisRecyclerView);

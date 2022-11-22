@@ -183,6 +183,7 @@ public class HomeFragment extends Fragment {
         tv_home_see_all = view.findViewById(R.id.tv_home_see_all);
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         adapter = new HorizontalRCVAdapter(getContext());
     }

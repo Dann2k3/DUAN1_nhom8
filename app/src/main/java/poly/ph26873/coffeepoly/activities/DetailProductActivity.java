@@ -82,6 +82,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private void addToCart() {
         btn_detai_product_add_to_cart.setOnClickListener(v -> {
             progressDialog.setMessage("Đang thêm vào giỏ hàng");
+            progressDialog.setCancelable(false);
             progressDialog.show();
             Item_Bill item_bill = new Item_Bill();
             item_bill.setId_product(product.getId());
@@ -175,6 +176,7 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_detail_product_favorite.setOnClickListener(v -> {
             if (PrInList == -1) {
                 progressDialog.setMessage("Đang thêm vào danh sách yêu thích");
+                progressDialog.setCancelable(false);
                 progressDialog.show();
                 favoriteList.add(product.getId());
                 reference.setValue(favoriteList, new DatabaseReference.CompletionListener() {

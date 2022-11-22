@@ -52,6 +52,7 @@ public class BillDaGiaoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Đang tải dữ liệu...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         recyclerView = view.findViewById(R.id.bill1RecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
