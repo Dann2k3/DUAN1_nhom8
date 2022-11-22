@@ -2,7 +2,11 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,9 +47,37 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                nextActivity();
+                if (kiemTraInternet() == true) {
+                    nextActivity();
+                } else {
+                    Toast.makeText(SplashActivity.this, "Hãy kiểm tra kết nối mạng", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+                    builder.setTitle("Không có kết nối mạng");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            System.exit(0);
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();;
+                    alertDialog.show();
+                    return;
+                }
             }
         }, 3000);
+    }
+
+
+    private boolean kiemTraInternet() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifi = connectivityManager.getNetworkInfo(connectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connectivityManager.getNetworkInfo(connectivityManager.TYPE_MOBILE);
+        if (wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected())) {
+            return true;
+        }else {
+            return false;
+        }
     }
 
     private void xoaFav() {
@@ -57,7 +90,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     private void nextActivity() {
@@ -79,5 +111,11 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
         }
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        kiemTraInternet();
     }
 }

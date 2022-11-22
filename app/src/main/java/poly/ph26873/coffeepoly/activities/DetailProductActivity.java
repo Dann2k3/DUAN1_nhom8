@@ -90,7 +90,6 @@ public class DetailProductActivity extends AppCompatActivity {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
             String time = simpleDateFormat.format(calendar.getTime());
             item_bill.setTime(time);
-            int total = product.getPrice() * a;
             reference = database.getReference(TABLE_NAME).child(COL_CART).child(idu).child(time);
             reference.setValue(item_bill, new DatabaseReference.CompletionListener() {
                 @Override
