@@ -214,6 +214,7 @@ public class ThongKeSanPhamFragment extends Fragment {
                 getListThongKeSanPham();
             }
         });
+        edt_thang.clearFocus();
     }
 
     private void getListThongKeSanPham() {

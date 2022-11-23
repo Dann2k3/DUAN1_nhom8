@@ -211,6 +211,7 @@ public class TurnoverFragment extends Fragment {
                 getListThongKeSanPham();
             }
         });
+        edt_thang.clearFocus();
     }
 
     private void getListThongKeSanPham() {
