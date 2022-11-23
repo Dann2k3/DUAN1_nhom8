@@ -29,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -232,6 +234,12 @@ public class ThongKeSanPhamFragment extends Fragment {
                 if (sold != null) {
                     list.add(sold);
                 }
+                Collections.sort(list, new Comparator<QuantitySoldInMonth>() {
+                    @Override
+                    public int compare(QuantitySoldInMonth o1, QuantitySoldInMonth o2) {
+                        return o2.getQuantitySold() - o1.getQuantitySold();
+                    }
+                });
                 adapter.setData(list);
                 recyclerView.setAdapter(adapter);
                 showTurnover(list);
@@ -247,6 +255,12 @@ public class ThongKeSanPhamFragment extends Fragment {
                 for (int i = 0; i < list.size(); i++) {
                     if (sold.getId_Product() == list.get(i).getId_Product()) {
                         list.set(i, sold);
+                        Collections.sort(list, new Comparator<QuantitySoldInMonth>() {
+                            @Override
+                            public int compare(QuantitySoldInMonth o1, QuantitySoldInMonth o2) {
+                                return o2.getQuantitySold() - o1.getQuantitySold();
+                            }
+                        });
                         adapter.setData(list);
                         break;
                     }
@@ -273,7 +287,7 @@ public class ThongKeSanPhamFragment extends Fragment {
         showTurnover(list);
     }
 
-    private void showTurnover(List<QuantitySoldInMonth> list){
+    private void showTurnover(List<QuantitySoldInMonth> list) {
         if (list.size() == 0) {
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     0, 0);
