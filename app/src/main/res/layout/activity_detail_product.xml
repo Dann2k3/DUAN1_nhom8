@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_detail_product"
     tools:context=".activities.DetailProductActivity">
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -89,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên sản phẩm"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="23sp"
                 tools:ignore="HardcodedText" />
 
@@ -129,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Số lượng đã bán"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="19sp"
                     tools:ignore="HardcodedText" />
 
@@ -138,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Trạng thái sản phẩm"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="19sp"
                     tools:ignore="HardcodedText" />
 
@@ -147,7 +145,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nguồn gốc"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="19sp"
                     tools:ignore="HardcodedText" />
 
@@ -156,7 +154,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Giá tiền"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="19sp"
                     tools:ignore="HardcodedText" />
 

@@ -223,6 +223,9 @@ public class ThongKeSanPhamFragment extends Fragment {
         List<QuantitySoldInMonth> list = new ArrayList<>();
         String month11 = edt_thang.getText().toString().trim().replace(".", "");
         String year11 = edt_nam.getText().toString().trim().replace(".", "");
+        if(month11.length()==1){
+            month11="0"+month11;
+        }
         String key = month11 + "_" + year11;
         Log.d(TAG, "key: " + key);
         DatabaseReference reference = database.getReference("coffee-poly").child("turnover_product").child(key);

@@ -22,7 +22,7 @@
             android:layout_height="150dp"
             android:layout_marginTop="45dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/cppl" />
+            android:src="@drawable/cppl_removebg" />
 
         <TextView
             android:layout_width="wrap_content"
