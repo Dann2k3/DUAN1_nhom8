@@ -6,7 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SplashActivity"
-    android:background="@drawable/gif_splash">
+    >
+   <pl.droidsonroids.gif.GifImageView
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:background="@drawable/gif_splash"/>
 
     <TextView
         android:id="@+id/tv_coofee_poly"

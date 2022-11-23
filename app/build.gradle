@@ -50,5 +50,7 @@ dependencies {
 
     implementation 'me.relex:circleindicator:2.1.6'
 
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
+
 
 }
