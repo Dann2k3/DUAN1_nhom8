@@ -59,7 +59,7 @@
             <item
                 android:id="@+id/nav_turnover"
                 android:icon="@drawable/turnover_48px"
-                android:title="Doanh thu" />
+                android:title="Thống kê hóa đơn" />
             <item
                 android:id="@+id/nav_turnover_product"
                 android:icon="@drawable/local_cafe_48px"

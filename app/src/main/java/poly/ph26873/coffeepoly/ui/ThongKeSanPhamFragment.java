@@ -59,8 +59,6 @@ public class ThongKeSanPhamFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         database = FirebaseDatabase.getInstance();
         initUi(view);
-        String month11 = edt_thang.getText().toString().trim();
-        String year11 = edt_nam.getText().toString().trim();
         getListThongKeSanPham();
     }
 

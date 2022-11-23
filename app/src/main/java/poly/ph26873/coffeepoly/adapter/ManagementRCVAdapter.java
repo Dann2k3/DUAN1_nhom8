@@ -101,22 +101,6 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         }
     }
 
-
-
-
-    private void capNhatDoanthu(int total, String id, String id_user) {
-        Turnover turnover = new Turnover(id_user + " " + id, total, id, id_user);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/turnover").child(id_user + " " + id);
-        reference.setValue(turnover, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Log.d("zzz", "doanh thu cap nhat : +" + total);
-            }
-        });
-
-    }
-
     @Override
     public int getItemCount() {
         if (list != null) {

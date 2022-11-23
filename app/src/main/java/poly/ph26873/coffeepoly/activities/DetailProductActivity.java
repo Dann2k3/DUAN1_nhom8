@@ -73,9 +73,29 @@ public class DetailProductActivity extends AppCompatActivity {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         idu = user.getEmail().replaceAll("@gmail.com", "");
         database = FirebaseDatabase.getInstance();
+        kiemTraLoaiTaiKhoan();
         layDanhSachYeuThich();
         onClickImagefavorite();
         addToCart();
+    }
+
+    private void kiemTraLoaiTaiKhoan() {
+        DatabaseReference reference = database.getReference("coffee-poly").child("type_user").child(idu);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int type = snapshot.getValue(Integer.class);
+                if (type != 2) {
+                    imv_detail_product_favorite.setVisibility(View.INVISIBLE);
+                    ln_out.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 

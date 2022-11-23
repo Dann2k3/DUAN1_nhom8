@@ -33,6 +33,7 @@ import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
+import poly.ph26873.coffeepoly.models.Turnover;
 
 //ShipingRCVAdapter
 public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.HistoryHolder> implements Filterable {
@@ -92,6 +93,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                                     Toast.makeText(context, "Xác nhận thành công", Toast.LENGTH_SHORT).show();
                                     capNhatSoLuongSanPhamTheoThang(bill.getList());
                                     capNhatSoLuongSanPham(bill.getList());
+                                    capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
                                     progressDialog.dismiss();
                                 }
                             });
@@ -144,6 +146,16 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                 }
             }
         }
+    }
+
+    private void capNhatDoanthu(int total, String id, String id_user) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM_yyyy");
+        String month_key = simpleDateFormat.format(calendar.getTime());
+        Turnover turnover = new Turnover(id_user + " " + id, total, id, id_user);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly/turnover_bill").child(month_key).child(id_user + " " + id);
+        reference.setValue(turnover);
     }
 
     private void capNhatSoLuongSanPham(List<Item_Bill> list) {
@@ -226,4 +238,6 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
         }
         return null;
     }
+
+
 }

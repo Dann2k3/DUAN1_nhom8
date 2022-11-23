@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.adapter.DetailTurnoverBillRCVAdapter;
 import poly.ph26873.coffeepoly.adapter.DetailTurnoverRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
@@ -30,7 +31,7 @@ public class DetailTurnoverActivity extends AppCompatActivity {
     private ImageView imv_back_layout_detail_turnover;
     private TextView tv_dt_turn_time, tv_dt_turn_name, tv_dt_turn_nbp, tv_dt_turn_email, tv_dt_turn_ad, tv_dt_turn_total;
     private RecyclerView dt_turn_RecyclerView;
-    private DetailTurnoverRCVAdapter adapter;
+    private DetailTurnoverBillRCVAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +76,10 @@ public class DetailTurnoverActivity extends AppCompatActivity {
 
     private void hienThiListSanPham(Bill bill) {
         List<Item_Bill> list = bill.getList();
-//        adapter.setData(list);
-//        dt_turn_RecyclerView.setAdapter(adapter);
-//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(DetailTurnoverActivity.this, DividerItemDecoration.VERTICAL);
-//        dt_turn_RecyclerView.addItemDecoration(itemDecoration);
+        adapter.setData(list);
+        dt_turn_RecyclerView.setAdapter(adapter);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(DetailTurnoverActivity.this, DividerItemDecoration.VERTICAL);
+        dt_turn_RecyclerView.addItemDecoration(itemDecoration);
     }
 
     private void onClicktoBack() {
@@ -102,6 +103,6 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(DetailTurnoverActivity.this, LinearLayoutManager.VERTICAL, false);
         dt_turn_RecyclerView.setLayoutManager(manager);
         dt_turn_RecyclerView.setHasFixedSize(true);
-        adapter = new DetailTurnoverRCVAdapter(DetailTurnoverActivity.this);
+        adapter = new DetailTurnoverBillRCVAdapter(DetailTurnoverActivity.this);
     }
 }
