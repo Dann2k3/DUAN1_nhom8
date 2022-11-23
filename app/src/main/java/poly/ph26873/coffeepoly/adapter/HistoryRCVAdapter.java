@@ -75,13 +75,13 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                             if (bill.getStatus() == 0) {
                                 holder.tv_his_status.setTextColor(Color.BLUE);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã xác nhận đơn");
-                            } else if (bill.getTotal() == 1) {
-                                holder.tv_his_status.setTextColor(Color.YELLOW);
+                            } else if (bill.getStatus() == 1) {
+                                holder.tv_his_status.setTextColor(Color.BLACK);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đang chờ nhận đơn");
                             } else if (bill.getStatus() == 2) {
                                 holder.tv_his_status.setTextColor(Color.RED);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã hủy đơn");
-                            } else {
+                            } else if (bill.getStatus() == 4){
                                 holder.tv_his_status.setTextColor(Color.GREEN);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã giao hàng thành công");
                             }

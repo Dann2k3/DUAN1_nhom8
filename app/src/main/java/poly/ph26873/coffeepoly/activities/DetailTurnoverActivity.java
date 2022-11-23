@@ -75,10 +75,10 @@ public class DetailTurnoverActivity extends AppCompatActivity {
 
     private void hienThiListSanPham(Bill bill) {
         List<Item_Bill> list = bill.getList();
-        adapter.setData(list);
-        dt_turn_RecyclerView.setAdapter(adapter);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(DetailTurnoverActivity.this, DividerItemDecoration.VERTICAL);
-        dt_turn_RecyclerView.addItemDecoration(itemDecoration);
+//        adapter.setData(list);
+//        dt_turn_RecyclerView.setAdapter(adapter);
+//        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(DetailTurnoverActivity.this, DividerItemDecoration.VERTICAL);
+//        dt_turn_RecyclerView.addItemDecoration(itemDecoration);
     }
 
     private void onClicktoBack() {

@@ -123,6 +123,12 @@ public class CartFragment extends Fragment {
                         break;
                     }
                 }
+                if (list.size() == 0) {
+                    tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    ln_bill.setVisibility(View.INVISIBLE);
+                } else {
+                    tv_cart_mess.setText("");
+                }
             }
 
             @Override

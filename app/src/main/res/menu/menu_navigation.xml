@@ -62,7 +62,7 @@
                 android:title="Doanh thu" />
             <item
                 android:id="@+id/nav_turnover_product"
-                android:icon="@drawable/turnover_48px"
+                android:icon="@drawable/local_cafe_48px"
                 android:title="Thống kê sản phẩm" />
             <item
                 android:id="@+id/nav_top_product"

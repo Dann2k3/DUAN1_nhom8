@@ -25,16 +25,17 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailProductActivity;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 
 public class DetailTurnoverRCVAdapter extends RecyclerView.Adapter<DetailTurnoverRCVAdapter.DTurnoverHolder> {
     private Context context;
-    private List<Item_Bill> list;
+    private List<QuantitySoldInMonth> list;
 
     public DetailTurnoverRCVAdapter(Context context) {
         this.context = context;
     }
 
-    public void setData(List<Item_Bill> list) {
+    public void setData(List<QuantitySoldInMonth> list) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -48,10 +49,10 @@ public class DetailTurnoverRCVAdapter extends RecyclerView.Adapter<DetailTurnove
 
     @Override
     public void onBindViewHolder(@NonNull DetailTurnoverRCVAdapter.DTurnoverHolder holder, int position) {
-        Item_Bill item_bill = list.get(position);
-        if (item_bill != null) {
+        QuantitySoldInMonth sold = list.get(position);
+        if (sold != null) {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference reference = database.getReference("coffee-poly").child("product").child(String.valueOf(item_bill.getId_product()));
+            DatabaseReference reference = database.getReference("coffee-poly").child("product").child(String.valueOf(sold.getId_Product()));
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -60,7 +61,7 @@ public class DetailTurnoverRCVAdapter extends RecyclerView.Adapter<DetailTurnove
                         Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_prd_in_turn_avatar);
                         holder.tv_prd_in_turn_name.setText(product.getName());
                         holder.tv_prd_in_turn_price.setText("Đơn giá: " + product.getPrice() + "K");
-                        holder.tv_prd_in_turn_quantity.setText("Số lương: " + item_bill.getQuantity());
+                        holder.tv_prd_in_turn_quantity.setText("Số lương bán trong tháng: " + sold.getQuantitySold());
                         DatabaseReference reference1 = database.getReference("coffee-poly").child("type_product").child(String.valueOf(product.getType())).child("country");
                         reference1.addValueEventListener(new ValueEventListener() {
                             @Override
