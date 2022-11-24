@@ -42,7 +42,6 @@ public class ManagementFragment extends Fragment {
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
     private List<User> listUser = new ArrayList<>();
-    private List<Bill> listBill = new ArrayList<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class ManagementFragment extends Fragment {
 
 
     private void layListUser() {
+        listUser.clear();
         Log.d(TAG, "layListUser");
         DatabaseReference refuser = database.getReference("coffee-poly").child("user");
         refuser.addChildEventListener(new ChildEventListener() {
@@ -67,15 +67,23 @@ public class ManagementFragment extends Fragment {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
                     listUser.add(user);
-                }
-                if (listUser.size() > 0) {
                     layListBill();
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                User user = snapshot.getValue(User.class);
+                if (user == null || listUser.isEmpty()) {
+                    return;
+                }
+                for (int i = 0; i < listUser.size(); i++) {
+                    if (listUser.get(i).getId() == user.getId()) {
+                        listUser.set(i, user);
+                        layListBill();
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -96,13 +104,20 @@ public class ManagementFragment extends Fragment {
     }
 
     private void layListBill() {
+        Log.d(TAG, "layListBill");
+        List<Bill> listBill = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
+            final int index = i;
             reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if (index == 0) {
+                        Log.d(TAG, "index[0]: "+index);
+                        listBill.clear();
+                    }
                     Bill bill = snapshot.getValue(Bill.class);
-                    if (bill != null && bill.getStatus() == 1) {
+                    if (bill != null && bill.getStatus() == 1 && !listBill.contains(bill)) {
                         listBill.add(bill);
                         Collections.reverse(listBill);
                         managementRCVAdapter.setData(listBill);
