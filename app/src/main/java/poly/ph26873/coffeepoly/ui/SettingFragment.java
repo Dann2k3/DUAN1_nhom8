@@ -284,6 +284,7 @@ public class SettingFragment extends Fragment {
                                                     intent1.putExtra("return", "return");
                                                     startActivity(intent1);
                                                     getActivity().finish();
+                                                    getActivity().getIntent().removeExtra("goto");
                                                 }
                                             }
                                         } else {
