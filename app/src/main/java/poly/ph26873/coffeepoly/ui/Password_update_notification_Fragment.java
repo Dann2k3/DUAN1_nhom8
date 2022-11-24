@@ -1,6 +1,5 @@
 package poly.ph26873.coffeepoly.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +9,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.MainActivity;
 
 
 public class Password_update_notification_Fragment extends Fragment {
@@ -33,8 +32,8 @@ public class Password_update_notification_Fragment extends Fragment {
         btn_back_to_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                startActivity(intent);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.content_frame, new HomeFragment()).commitAllowingStateLoss();
             }
         });
     }
