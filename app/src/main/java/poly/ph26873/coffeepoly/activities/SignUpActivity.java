@@ -106,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 }
                             }, 1000);
                         } else {
-                            // If sign in fails, display a message to the user.
+                            Log.d(TAG, "tao tai khoan that bai");
                             Toast.makeText(SignUpActivity.this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -123,6 +123,7 @@ public class SignUpActivity extends AppCompatActivity {
                 DatabaseReference keyRef = database.getReference(TABLE_NAME).child("type_user").child(email1);
                 keyRef.setValue(2);
             }
+
         });
     }
 

@@ -47,7 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@android:color/holo_blue_light">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -101,7 +102,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Mô tả sản phẩm:"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="19sp"
                     tools:ignore="HardcodedText" />
 
@@ -109,7 +110,7 @@
                     android:id="@+id/scrV_content"
                     android:layout_width="match_parent"
                     android:layout_height="174dp"
-                    android:background="@android:color/holo_orange_dark"
+                    android:background="@color/black2"
                     android:padding="5dp">
 
                     <TextView
