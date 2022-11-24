@@ -62,6 +62,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                 holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
                 holder.btn_bill_cancle.setVisibility(View.INVISIBLE);
             } else {
+                holder.btn_bill_cancle.setVisibility(View.VISIBLE);
                 holder.tv_bill_status.setTextColor(Color.BLACK);
                 holder.tv_bill_status.setText("Trạng thái: Đang chờ xác nhận");
                 holder.btn_bill_cancle.setOnClickListener(new View.OnClickListener() {

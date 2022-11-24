@@ -46,7 +46,6 @@ public class BillFaildFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
-    private List<Bill> listBill = new ArrayList<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -102,6 +101,7 @@ public class BillFaildFragment extends Fragment {
     }
 
     private void layListBill(List<User> listUser) {
+        List<Bill> listBill = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
             reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {

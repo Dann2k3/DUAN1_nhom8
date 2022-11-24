@@ -39,7 +39,6 @@ public class BillDaGiaoFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
-    private List<Bill> listBill = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,11 +104,16 @@ public class BillDaGiaoFragment extends Fragment {
     }
 
     private void layListBill(List<User> listUser) {
+        List<Bill> listBill = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
+            final int index = i;
             reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if (index == 0) {
+                        listBill.clear();
+                    }
                     Bill bill = snapshot.getValue(Bill.class);
                     if (bill != null) {
                         if (bill.getStatus() == 4) {
