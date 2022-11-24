@@ -143,7 +143,6 @@ public class SettingFragment extends Fragment {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "User profile updated.");
-                        Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                         mainActivity.showInfomationUser();
                         putImageUser();
                     }
@@ -285,6 +284,7 @@ public class SettingFragment extends Fragment {
                                                     startActivity(intent1);
                                                     getActivity().finish();
                                                     getActivity().getIntent().removeExtra("goto");
+                                                    Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         } else {
