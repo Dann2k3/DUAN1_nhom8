@@ -104,9 +104,13 @@ public class BillFaildFragment extends Fragment {
         List<Bill> listBill = new ArrayList<>();
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         for (int i = 0; i < listUser.size(); i++) {
+            final int index = i;
             reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if (index == 0) {
+                        listBill.clear();
+                    }
                     Bill bill = snapshot.getValue(Bill.class);
                     if (bill != null) {
                         if (bill.getStatus() == 2) {
