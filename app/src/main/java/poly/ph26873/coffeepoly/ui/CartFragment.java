@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -117,9 +118,10 @@ public class CartFragment extends Fragment {
                     return;
                 }
                 for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getId_product() == item_bill.getId_product()) {
+                    if (list.get(i).getTime() == item_bill.getTime()) {
                         list.set(i, item_bill);
                         cartRCVAdapter.setData(list);
+                        layDanhSachTinhTien();
                         break;
                     }
                 }
@@ -138,9 +140,10 @@ public class CartFragment extends Fragment {
                     return;
                 }
                 for (int i = 0; i < list.size(); i++) {
-                    if(list.get(i).getId_product()==item_bill.getId_product()){
+                    if(list.get(i).getTime()==item_bill.getTime()){
                         list.remove(list.get(i));
                         cartRCVAdapter.setData(list);
+                        layDanhSachTinhTien();
                         break;
                     }
                 }

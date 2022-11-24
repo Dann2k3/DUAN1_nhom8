@@ -68,7 +68,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
     @Override
     public void onBindViewHolder(@NonNull CartRCVAdapter.ItemBillHolder holder, int position) {
         Item_Bill item_bill = list.get(position);
-        if (item_bill != null) {
+        if (item_bill != null && item_bill.getId_product() > 0) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             String email = user.getEmail().replaceAll("@gmail.com", "");
             List<Product> products = new ArrayList<>();
@@ -83,11 +83,14 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                         itemBills.add(dataSnapshot.getValue(Item_Bill.class));
                     }
                     for (int i = 0; i < itemBills.size(); i++) {
-                        if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
-                            holder.chk_item_bill_selected.setChecked(true);
+                        if (itemBills.contains(item_bill)) {
+                            if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
+                                holder.chk_item_bill_selected.setChecked(true);
+                            } else {
+                                holder.chk_item_bill_selected.setChecked(false);
+                            }
                         }
                     }
-
                 }
 
                 @Override
