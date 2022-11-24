@@ -296,6 +296,7 @@ public class SettingFragment extends Fragment {
                             }
                         });
                     } else {
+                        Toast.makeText(mainActivity, "Hãy thử lại", Toast.LENGTH_SHORT).show();
                         progressDialog.dismiss();
                     }
                 }
