@@ -43,7 +43,7 @@ public class TopProductFragment extends Fragment {
     private RecyclerView topRecyclerView;
     private TopProductRCVAdapter topProductRCVAdapter;
     private List<Product> list;
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

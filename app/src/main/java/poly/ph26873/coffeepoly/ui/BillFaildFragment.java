@@ -48,7 +48,7 @@ public class BillFaildFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

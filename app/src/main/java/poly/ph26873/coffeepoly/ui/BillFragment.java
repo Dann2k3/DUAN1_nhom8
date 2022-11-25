@@ -41,7 +41,7 @@ public class BillFragment extends Fragment {
 
     private RecyclerView billRecyclerView;
     private BillRCVAdapter billRCVAdapter;
-
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -73,7 +73,10 @@ public class BillFragment extends Fragment {
                     }
                     Collections.reverse(bills1);
                     billRCVAdapter.setData(bills1);
-                    setAL();
+                    if (isFirst == true) {
+                        setAL();
+                        isFirst = false;
+                    }
                     billRecyclerView.setAdapter(billRCVAdapter);
                 }
 

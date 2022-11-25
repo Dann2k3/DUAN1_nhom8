@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,10 +70,10 @@ public class CartFragment extends Fragment {
     private String thong_ke = "";
     private int tong_tien = 0;
     private List<Item_Bill> list1 = new ArrayList<>();
-    ;
     private static final String TAG = "zzz";
     private List<String> listSPdel;
     private LinearLayout ln_bill;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -100,6 +101,10 @@ public class CartFragment extends Fragment {
                     list.add(item_bill);
                     Collections.reverse(list);
                     cartRCVAdapter.setData(list);
+                    if (isFirst == true) {
+                        setAL();
+                        isFirst = false;
+                    }
                     cartRecyclerView.setAdapter(cartRCVAdapter);
                     layDanhSachTinhTien();
                 }
@@ -140,7 +145,7 @@ public class CartFragment extends Fragment {
                     return;
                 }
                 for (int i = 0; i < list.size(); i++) {
-                    if(list.get(i).getTime()==item_bill.getTime()){
+                    if (list.get(i).getTime() == item_bill.getTime()) {
                         list.remove(list.get(i));
                         cartRCVAdapter.setData(list);
                         layDanhSachTinhTien();
@@ -380,6 +385,11 @@ public class CartFragment extends Fragment {
             }
 
         });
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        cartRecyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
 }

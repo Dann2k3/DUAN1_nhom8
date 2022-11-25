@@ -44,7 +44,7 @@ public class ManagementFragment extends Fragment {
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
     private List<User> listUser = new ArrayList<>();
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

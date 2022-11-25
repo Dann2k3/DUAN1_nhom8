@@ -57,7 +57,7 @@ public class ThongKeSanPhamFragment extends Fragment {
     private RecyclerView recyclerView;
     private DetailTurnoverRCVAdapter adapter;
     private TextView tv_doanh_thu_tksp;
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

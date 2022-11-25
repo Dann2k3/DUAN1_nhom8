@@ -41,7 +41,7 @@ public class BillDaGiaoFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -190,7 +190,8 @@ public class BillDaGiaoFragment extends Fragment {
 
         });
     }
-    private void setAL(){
+
+    private void setAL() {
         LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
         recyclerView.setLayoutAnimation(layoutAnimationController);
     }

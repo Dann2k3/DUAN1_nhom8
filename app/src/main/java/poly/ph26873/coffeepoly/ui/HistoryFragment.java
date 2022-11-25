@@ -43,7 +43,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView hisRecyclerView;
     private HistoryRCVAdapter historyRCVAdapter;
     private List<History> list;
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

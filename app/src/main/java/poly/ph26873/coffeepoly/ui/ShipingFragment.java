@@ -49,7 +49,7 @@ public class ShipingFragment extends Fragment {
     private ShipingRCVAdapter adapter;
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

@@ -53,7 +53,7 @@ public class TurnoverFragment extends Fragment {
     private RecyclerView recyclerView;
     private TurnoverRCVAdapter adapter;
     private TextView tv_doanh_thu_tkb;
-    private static boolean isFirst = true;
+    private boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
