@@ -51,6 +51,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.MainActivity;
 import poly.ph26873.coffeepoly.activities.SignUpActivity;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
 public class SettingFragment extends Fragment {
@@ -134,6 +135,10 @@ public class SettingFragment extends Fragment {
         edt_user_name_frgst.clearFocus();
         edt_age_frgst.clearFocus();
         edt_number_phone_frgst.clearFocus();
+        if (MyReceiver.isConnected == false) {
+            Toast.makeText(getActivity(), "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+            return;
+        }
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
                 .setPhotoUri(mUri)

@@ -48,6 +48,7 @@ import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
 public class CartFragment extends Fragment {
@@ -165,6 +166,10 @@ public class CartFragment extends Fragment {
         btn_cart_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (MyReceiver.isConnected == false) {
+                    Toast.makeText(getContext(), "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 ProgressDialog progressDialog = new ProgressDialog(getContext());
                 progressDialog.setCancelable(false);
                 progressDialog.setMessage("Đang tiến hàng đặt hàng....");

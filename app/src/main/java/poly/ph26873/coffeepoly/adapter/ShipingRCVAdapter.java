@@ -34,6 +34,7 @@ import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 import poly.ph26873.coffeepoly.models.Turnover;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 //ShipingRCVAdapter
 public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.HistoryHolder> implements Filterable {
@@ -81,6 +82,10 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                     builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            if (MyReceiver.isConnected == false) {
+                                Toast.makeText(context, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                                return;
+                            }
                             ProgressDialog progressDialog = new ProgressDialog(context);
                             progressDialog.setCancelable(false);
                             progressDialog.setTitle("Đang xác nhận giao hàng thành công...");

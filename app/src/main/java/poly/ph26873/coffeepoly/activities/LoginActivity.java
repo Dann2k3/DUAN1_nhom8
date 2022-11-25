@@ -2,6 +2,8 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 
 import pl.droidsonroids.gif.GifImageView;
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
@@ -40,11 +43,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private int count = 0;
     private GifImageView gifImageView;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        myReceiver = new MyReceiver();
         Log.d(TAG, "---------LoginActivity------------- ");
         initUi();
         initAccount();
@@ -100,32 +105,34 @@ public class LoginActivity extends AppCompatActivity {
             til_pass.setError("");
             edtPass.clearFocus();
             progressDialog.show();
-            mAuth = FirebaseAuth.getInstance();
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(LoginActivity.this, task -> {
-                        progressDialog.dismiss();
-                        if (task.isSuccessful()) {
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + email.replaceAll("@gmail.com", ""));
-                            myRef1.removeValue(new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                }
-                            });
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
-                            Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finishAffinity();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu sai",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
+            if (MyReceiver.isConnected == false) {
+                Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+            } else {
+                mAuth = FirebaseAuth.getInstance();
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, task -> {
+                            if (task.isSuccessful()) {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + email.replaceAll("@gmail.com", ""));
+                                myRef1.removeValue(new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                    }
+                                });
+                                Log.d(TAG, "signInWithEmail:success");
+                                Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finishAffinity();
+                            } else {
+                                progressDialog.dismiss();
+                                Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu sai",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
         });
 
     }
@@ -164,4 +171,18 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
+    }
+
 }

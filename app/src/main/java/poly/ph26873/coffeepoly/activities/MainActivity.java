@@ -3,9 +3,11 @@ package poly.ph26873.coffeepoly.activities;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,7 +18,6 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 import poly.ph26873.coffeepoly.service.MyService;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFaildFragment;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int IDmenu = -1;
     private Intent intent;
     private ProgressDialog progressDialog;
+    private MyReceiver myReceiver;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -104,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Đang tải dữ liệu...");
         progressDialog.show();
+        myReceiver = new MyReceiver();
         Log.d(TAG, "---------------MainActivity---------------");
         intent = getIntent();
         initUi();
@@ -441,6 +445,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(this, "Hãy cấp quyền truy cập bộ nhớ", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
     }
 
 

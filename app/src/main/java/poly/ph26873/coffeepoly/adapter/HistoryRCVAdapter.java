@@ -28,6 +28,7 @@ import java.util.List;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.HistoryHolder> {
     private Context context;
@@ -81,7 +82,7 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                             } else if (bill.getStatus() == 2) {
                                 holder.tv_his_status.setTextColor(Color.RED);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã hủy đơn");
-                            } else if (bill.getStatus() == 4){
+                            } else if (bill.getStatus() == 4) {
                                 holder.tv_his_status.setTextColor(Color.GREEN);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã giao hàng thành công");
                             }
@@ -94,6 +95,10 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                                     builder.setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
+                                            if (MyReceiver.isConnected == false) {
+                                                Toast.makeText(builder.getContext(), "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                                                return;
+                                            }
                                             history.setStatus(1);
                                             DatabaseReference reference1 = database.getReference("coffee-poly/history/" + email + "/" + history.getId());
                                             reference1.setValue(history, new DatabaseReference.CompletionListener() {

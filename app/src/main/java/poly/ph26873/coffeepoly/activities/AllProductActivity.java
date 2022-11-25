@@ -3,6 +3,8 @@ package poly.ph26873.coffeepoly.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -18,17 +20,20 @@ import java.util.List;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
 import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class AllProductActivity extends AppCompatActivity {
 
     private ImageView imv_back_layout_all_product;
     private RecyclerView recyclerView;
     private HorizontalRCVAdapter adapter;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_product);
+        myReceiver = new MyReceiver();
         initUi();
         back();
         showAllProduct();
@@ -82,4 +87,16 @@ public class AllProductActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
+    }
 }

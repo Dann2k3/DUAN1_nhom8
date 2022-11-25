@@ -28,6 +28,7 @@ import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Turnover;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdapter.BillHolder> {
     private Context context;
@@ -74,6 +75,10 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                         builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if (MyReceiver.isConnected == false) {
+                                    Toast.makeText(builder.getContext(), "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(bill.getId_user()).child(bill.getId()).child("status");
                                 reference.setValue(0, new DatabaseReference.CompletionListener() {

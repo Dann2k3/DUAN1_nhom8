@@ -2,6 +2,8 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
@@ -39,11 +42,13 @@ public class SignUpActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        myReceiver = new MyReceiver();
         Log.d(TAG, "---------SignUpActivity------------- ");
         initUi();
         signInAccount();
@@ -82,6 +87,10 @@ public class SignUpActivity extends AppCompatActivity {
             }
             til_pass1.setError("");
             edtPass.clearFocus();
+            if (MyReceiver.isConnected == false) {
+                Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                return;
+            }
             progressDialog.setTitle("Đang tiến hành tạo tài khoản...");
             progressDialog.show();
             mAuth = FirebaseAuth.getInstance();
@@ -92,7 +101,7 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email, "Nam", "null","null","https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588");
+                            User user = new User(email1, email1, 18, email, "Nam", "null", "null", "https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588");
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                             new Handler().postDelayed(new Runnable() {
@@ -137,5 +146,18 @@ public class SignUpActivity extends AppCompatActivity {
         til_pass1 = findViewById(R.id.til_pass1);
         progressDialog = new ProgressDialog(SignUpActivity.this);
         progressDialog.setTitle("Đang tạo tài khoản...");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
     }
 }

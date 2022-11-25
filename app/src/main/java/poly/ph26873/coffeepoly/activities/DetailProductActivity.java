@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +40,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.TypeProduct;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class DetailProductActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
@@ -60,11 +63,13 @@ public class DetailProductActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private List<Item_Bill> item_billList;
     private LinearLayout ln_out;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
+        myReceiver = new MyReceiver();
         initUi();
         Intent intent = getIntent();
         product = (Product) intent.getSerializableExtra("product");
@@ -101,6 +106,10 @@ public class DetailProductActivity extends AppCompatActivity {
 
     private void addToCart() {
         btn_detai_product_add_to_cart.setOnClickListener(v -> {
+            if (MyReceiver.isConnected == false) {
+                Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+                return;
+            }
             progressDialog.setMessage("Đang thêm vào giỏ hàng");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -194,6 +203,10 @@ public class DetailProductActivity extends AppCompatActivity {
 
     private void onClickImagefavorite() {
         imv_detail_product_favorite.setOnClickListener(v -> {
+            if (MyReceiver.isConnected == false) {
+                Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+                return;
+            }
             if (PrInList == -1) {
                 progressDialog.setMessage("Đang thêm vào danh sách yêu thích");
                 progressDialog.setCancelable(false);
@@ -309,5 +322,17 @@ public class DetailProductActivity extends AppCompatActivity {
         item_billList = new ArrayList<>();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
+    }
 
 }

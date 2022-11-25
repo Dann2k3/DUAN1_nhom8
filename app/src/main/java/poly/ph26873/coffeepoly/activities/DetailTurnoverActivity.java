@@ -1,6 +1,8 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,21 +24,23 @@ import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.DetailTurnoverBillRCVAdapter;
-import poly.ph26873.coffeepoly.adapter.DetailTurnoverRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Turnover;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class DetailTurnoverActivity extends AppCompatActivity {
     private ImageView imv_back_layout_detail_turnover;
     private TextView tv_dt_turn_time, tv_dt_turn_name, tv_dt_turn_nbp, tv_dt_turn_email, tv_dt_turn_ad, tv_dt_turn_total;
     private RecyclerView dt_turn_RecyclerView;
     private DetailTurnoverBillRCVAdapter adapter;
+    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_turnover);
+        myReceiver = new MyReceiver();
         initUi();
         Turnover turnover = (Turnover) getIntent().getSerializableExtra("turnover");
         if (turnover != null) {
@@ -104,5 +108,18 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         dt_turn_RecyclerView.setLayoutManager(manager);
         dt_turn_RecyclerView.setHasFixedSize(true);
         adapter = new DetailTurnoverBillRCVAdapter(DetailTurnoverActivity.this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(myReceiver);
     }
 }

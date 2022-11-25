@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
 public class PassWordFragment extends Fragment {
@@ -68,7 +69,7 @@ public class PassWordFragment extends Fragment {
                     edt_pass_new.requestFocus();
                     return;
                 }
-                if(passNew.length()<=5){
+                if (passNew.length() <= 5) {
                     til_pass_new.setError("Mật khẩu mới phải nhiều hơn 5 kí tự!");
                     edt_pass_new.requestFocus();
                     return;
@@ -86,6 +87,10 @@ public class PassWordFragment extends Fragment {
                     return;
                 }
                 til_pass_new1.setError("");
+                if (MyReceiver.isConnected == false) {
+                    Toast.makeText(getContext(), "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 progressDialog.show();
                 UserAuthentication(passOld, passNew1);
             }
@@ -111,7 +116,7 @@ public class PassWordFragment extends Fragment {
                                                 Log.d(TAG, "User password updated: " + passNew1);
 //                                                Toast.makeText(getActivity(), "Thay đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
                                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                                transaction.replace(R.id.content_frame,new Password_update_notification_Fragment()).commitAllowingStateLoss();
+                                                transaction.replace(R.id.content_frame, new Password_update_notification_Fragment()).commitAllowingStateLoss();
                                             }
                                         }
                                     });
