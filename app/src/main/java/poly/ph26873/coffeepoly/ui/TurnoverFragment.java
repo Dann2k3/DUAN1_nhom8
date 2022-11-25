@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -51,6 +53,7 @@ public class TurnoverFragment extends Fragment {
     private RecyclerView recyclerView;
     private TurnoverRCVAdapter adapter;
     private TextView tv_doanh_thu_tkb;
+    private static boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -232,6 +235,10 @@ public class TurnoverFragment extends Fragment {
                     list.add(turnover);
                 }
                 adapter.setData(list);
+                if (isFirst == true) {
+                    setAL();
+                    isFirst = false;
+                }
                 recyclerView.setAdapter(adapter);
                 showTurnover(list);
             }
@@ -286,5 +293,10 @@ public class TurnoverFragment extends Fragment {
             }
             tv_doanh_thu_tkb.setText("Doanh thu: " + dt + "K");
         }
+    }
+
+    private void setAL(){
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        recyclerView.setLayoutAnimation(layoutAnimationController);
     }
 }

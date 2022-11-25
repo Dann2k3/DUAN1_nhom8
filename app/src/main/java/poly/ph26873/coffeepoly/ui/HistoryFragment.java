@@ -1,10 +1,11 @@
 package poly.ph26873.coffeepoly.ui;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +43,7 @@ public class HistoryFragment extends Fragment {
     private RecyclerView hisRecyclerView;
     private HistoryRCVAdapter historyRCVAdapter;
     private List<History> list;
+    private static boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -64,6 +66,10 @@ public class HistoryFragment extends Fragment {
                     list.add(history);
                     Collections.reverse(list);
                     historyRCVAdapter.setData(list);
+                    if (isFirst == true) {
+                        setAL();
+                        isFirst = false;
+                    }
                     hisRecyclerView.setAdapter(historyRCVAdapter);
                 }
             }
@@ -74,15 +80,15 @@ public class HistoryFragment extends Fragment {
                 if (list == null || history == null) {
                     return;
                 }
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getId() == history.getId()) {
-                            list.remove(list.get(i));
-                            Collections.reverse(list);
-                            historyRCVAdapter.setData(list);
-                            break;
-                        }
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getId() == history.getId()) {
+                        list.remove(list.get(i));
+                        Collections.reverse(list);
+                        historyRCVAdapter.setData(list);
+                        break;
                     }
                 }
+            }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
@@ -99,23 +105,10 @@ public class HistoryFragment extends Fragment {
 
             }
         });
-//        reference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                list.clear();
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    list.add(dataSnapshot.getValue(History.class));
-//                }
-//                Collections.reverse(list);
-//                historyRCVAdapter.setData(list);
-//                hisRecyclerView.setAdapter(historyRCVAdapter);
-//                progressDialog.dismiss();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        hisRecyclerView.setLayoutAnimation(layoutAnimationController);
     }
 }

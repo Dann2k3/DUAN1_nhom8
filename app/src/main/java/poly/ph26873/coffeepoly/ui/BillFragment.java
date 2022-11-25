@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,7 @@ public class BillFragment extends Fragment {
     private RecyclerView billRecyclerView;
     private BillRCVAdapter billRCVAdapter;
 
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -61,15 +64,16 @@ public class BillFragment extends Fragment {
                     bills.add(dataSnapshot.getValue(Bill.class));
                 }
                 if (bills.size() > 0) {
-                    List<Bill> bills1  = new ArrayList<>();
+                    List<Bill> bills1 = new ArrayList<>();
                     for (int i = 0; i < bills.size(); i++) {
-                        if (bills.get(i).getStatus() == 1 || bills.get(i).getStatus() == 0 ) {
+                        if (bills.get(i).getStatus() == 1 || bills.get(i).getStatus() == 0) {
                             bills1.add(bills.get(i));
-                            Log.d("zzz", "bills1.add(bills.get(i)): "+bills.get(i).getId());
+                            Log.d("zzz", "bills1.add(bills.get(i)): " + bills.get(i).getId());
                         }
                     }
                     Collections.reverse(bills1);
                     billRCVAdapter.setData(bills1);
+                    setAL();
                     billRecyclerView.setAdapter(billRCVAdapter);
                 }
 
@@ -81,5 +85,10 @@ public class BillFragment extends Fragment {
             }
         });
 
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        billRecyclerView.setLayoutAnimation(layoutAnimationController);
     }
 }

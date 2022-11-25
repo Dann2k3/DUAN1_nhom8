@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +48,7 @@ public class BillFaildFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
+    private static boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -119,6 +122,10 @@ public class BillFaildFragment extends Fragment {
                     }
                     Collections.reverse(listBill);
                     adapter.setData(listBill);
+                    if (isFirst == true) {
+                        setAL();
+                        isFirst = false;
+                    }
                     recyclerView.setAdapter(adapter);
                 }
 
@@ -175,6 +182,11 @@ public class BillFaildFragment extends Fragment {
             }
 
         });
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        recyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
 }

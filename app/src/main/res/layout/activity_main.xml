@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.MainActivity">
+    tools:context=".activities.MainActivity"
+    tools:openDrawer="start"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +27,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/holo_orange_dark"
+                android:fitsSystemWindows="true"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"
                 app:titleTextAppearance="@font/font_1" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -39,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:fitsSystemWindows="true"
         app:headerLayout="@layout/layout_header"
         app:menu="@menu/menu_navigation" />
-
 </androidx.drawerlayout.widget.DrawerLayout>

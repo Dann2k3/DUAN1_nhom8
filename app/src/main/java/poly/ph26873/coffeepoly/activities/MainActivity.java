@@ -16,6 +16,7 @@ import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;

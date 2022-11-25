@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +41,7 @@ public class BillDaGiaoFragment extends Fragment {
     private BillDaGiaoRCVAdapter adapter;
     private FirebaseDatabase database;
     private List<User> listUser = new ArrayList<>();
+    private static boolean isFirst = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +61,8 @@ public class BillDaGiaoFragment extends Fragment {
         recyclerView = view.findViewById(R.id.bill1RecyclerView);
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        recyclerView.setLayoutAnimation(layoutAnimationController);
         recyclerView.setHasFixedSize(true);
         adapter = new BillDaGiaoRCVAdapter(getContext());
         database = FirebaseDatabase.getInstance();
@@ -123,6 +128,11 @@ public class BillDaGiaoFragment extends Fragment {
 
                     Collections.reverse(listBill);
                     adapter.setData(listBill);
+                    if (isFirst == true) {
+                        setAL();
+                        isFirst = false;
+                    }
+                    setAL();
                     recyclerView.setAdapter(adapter);
                 }
 
@@ -180,6 +190,9 @@ public class BillDaGiaoFragment extends Fragment {
 
         });
     }
-
+    private void setAL(){
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        recyclerView.setLayoutAnimation(layoutAnimationController);
+    }
 
 }

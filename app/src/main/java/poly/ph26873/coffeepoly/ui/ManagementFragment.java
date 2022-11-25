@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +44,7 @@ public class ManagementFragment extends Fragment {
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
     private List<User> listUser = new ArrayList<>();
+    private static boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -113,7 +116,7 @@ public class ManagementFragment extends Fragment {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     if (index == 0) {
-                        Log.d(TAG, "index[0]: "+index);
+                        Log.d(TAG, "index[0]: " + index);
                         listBill.clear();
                     }
                     Bill bill = snapshot.getValue(Bill.class);
@@ -121,6 +124,10 @@ public class ManagementFragment extends Fragment {
                         listBill.add(bill);
                         Collections.reverse(listBill);
                         managementRCVAdapter.setData(listBill);
+                        if (isFirst == true) {
+                            setAL();
+                            isFirst = false;
+                        }
                         maRecyclerView.setAdapter(managementRCVAdapter);
                     }
                 }
@@ -157,6 +164,11 @@ public class ManagementFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        maRecyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
 }

@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +49,7 @@ public class ShipingFragment extends Fragment {
     private ShipingRCVAdapter adapter;
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
+    private static boolean isFirst = true;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -121,6 +124,10 @@ public class ShipingFragment extends Fragment {
                             Collections.reverse(listBill);
                             Log.d(TAG, "list can tim: " + listBill.size());
                             adapter.setData(listBill);
+                            if (isFirst == true) {
+                                setAL();
+                                isFirst = false;
+                            }
                             recyclerView.setAdapter(adapter);
                         }
                     }
@@ -135,7 +142,7 @@ public class ShipingFragment extends Fragment {
                                 adapter.setData(listBill);
                             } else if (bill.getStatus() != 0 && !listBill.isEmpty()) {
                                 for (int j = 0; j < listBill.size(); j++) {
-                                    if(listBill.get(j).getId()==bill.getId()){
+                                    if (listBill.get(j).getId() == bill.getId()) {
                                         listBill.remove(listBill.get(j));
                                         Collections.reverse(listBill);
                                         adapter.setData(listBill);
@@ -191,6 +198,11 @@ public class ShipingFragment extends Fragment {
             }
 
         });
+    }
+
+    private void setAL() {
+        LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
+        recyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
 }
