@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -125,17 +124,16 @@ public class LoginActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         ListData.type_user_current = snapshot.getValue(Integer.class);
+                                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finishAffinity();
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
                                     }
                                 });
-                                Log.d(TAG, "signInWithEmail:success");
-                                Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finishAffinity();
                             } else {
                                 progressDialog.dismiss();
                                 Log.w(TAG, "signInWithEmail:failure", task.getException());

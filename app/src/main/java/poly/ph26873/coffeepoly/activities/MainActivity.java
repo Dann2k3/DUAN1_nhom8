@@ -138,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             IDmenu = R.id.nav_turnover;
         }
         progressDialog.dismiss();
+        Log.d("aaa", "checkAccountType: " + ListData.type_user_current);
     }
 
     public void showInfomationUser() {

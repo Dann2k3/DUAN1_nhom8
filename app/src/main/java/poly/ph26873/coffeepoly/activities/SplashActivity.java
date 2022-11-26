@@ -45,30 +45,30 @@ public class SplashActivity extends AppCompatActivity {
         animatorSet.play(ob1).with(ob2);
         animatorSet.start();
         Log.d(TAG, "--------------SplashActivity--------------");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (kiemTraInternet() == true) {
-                    serviceConnection();
+
+        if (kiemTraInternet() == true) {
+            serviceConnection();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     nextActivity();
-                } else {
-                    Toast.makeText(SplashActivity.this, "Hãy kiểm tra kết nối mạng", Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-                    builder.setTitle("Không có kết nối mạng");
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            System.exit(0);
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    ;
-                    alertDialog.show();
-                    return;
                 }
-            }
-        }, 3000);
+            }, 3000);
+        } else {
+            Toast.makeText(SplashActivity.this, "Hãy kiểm tra kết nối mạng", Toast.LENGTH_SHORT).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
+            builder.setTitle("Không có kết nối mạng");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.exit(0);
+                }
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return;
+        }
     }
 
     private void serviceConnection() {
