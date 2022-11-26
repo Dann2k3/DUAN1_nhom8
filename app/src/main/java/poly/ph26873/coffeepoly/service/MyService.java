@@ -40,19 +40,20 @@ public class MyService extends Service {
 
     private void layLoaiTaiKhoan(FirebaseDatabase database) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user.getEmail() != null;
-        String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
-        DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
-        readUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ListData.type_user_current = snapshot.getValue(Integer.class);
-            }
+        if (user != null) {
+            String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
+            DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
+            readUser.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ListData.type_user_current = snapshot.getValue(Integer.class);
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+        }
     }
 
 
