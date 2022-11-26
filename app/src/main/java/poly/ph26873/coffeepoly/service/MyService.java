@@ -7,6 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,9 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Product;
@@ -33,19 +33,36 @@ public class MyService extends Service {
         String month = simpleDateFormat.format(calendar.getTime());
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         capNhatListProduct(database);
-        capNhatListQuanProduct(database,month);
+        capNhatListQuanProduct(database, month);
+        layLoaiTaiKhoan(database);
         return START_NOT_STICKY;
     }
 
+    private void layLoaiTaiKhoan(FirebaseDatabase database) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user.getEmail() != null;
+        String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
+        DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
+        readUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ListData.type_user_current = snapshot.getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
 
     private void capNhatListQuanProduct(FirebaseDatabase database, String month) {
-        DatabaseReference refQuanPrd  = database.getReference("coffee-poly").child("turnover_product").child(month);
+        DatabaseReference refQuanPrd = database.getReference("coffee-poly").child("turnover_product").child(month);
         refQuanPrd.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 ListData.listQuanPrd.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     ListData.listQuanPrd.add(dataSnapshot.getValue(QuantitySoldInMonth.class));
                 }
             }

@@ -18,14 +18,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
 import pl.droidsonroids.gif.GifImageView;
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class LoginActivity extends AppCompatActivity {
@@ -115,9 +118,17 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + email.replaceAll("@gmail.com", ""));
-                                myRef1.removeValue(new DatabaseReference.CompletionListener() {
+                                myRef1.removeValue();
+                                String chilgPath = email.replaceAll("@gmail.com", "");
+                                DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
+                                readUser.addValueEventListener(new ValueEventListener() {
                                     @Override
-                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ListData.type_user_current = snapshot.getValue(Integer.class);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
                                     }
                                 });
                                 Log.d(TAG, "signInWithEmail:success");

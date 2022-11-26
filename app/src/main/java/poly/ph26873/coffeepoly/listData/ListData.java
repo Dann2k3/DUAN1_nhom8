@@ -9,4 +9,5 @@ import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 public class ListData {
     public static List<Product> listPrd = new ArrayList<>();
     public static List<QuantitySoldInMonth> listQuanPrd = new ArrayList<>();
+    public static int type_user_current = -1;
 }

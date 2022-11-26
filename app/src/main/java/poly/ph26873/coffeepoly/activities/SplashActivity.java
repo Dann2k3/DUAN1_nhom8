@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.service.MyService;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -48,6 +49,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (kiemTraInternet() == true) {
+                    serviceConnection();
                     nextActivity();
                 } else {
                     Toast.makeText(SplashActivity.this, "Hãy kiểm tra kết nối mạng", Toast.LENGTH_SHORT).show();
@@ -60,12 +62,18 @@ public class SplashActivity extends AppCompatActivity {
                             System.exit(0);
                         }
                     });
-                    AlertDialog alertDialog = builder.create();;
+                    AlertDialog alertDialog = builder.create();
+                    ;
                     alertDialog.show();
                     return;
                 }
             }
         }, 3000);
+    }
+
+    private void serviceConnection() {
+        Intent intent = new Intent(SplashActivity.this, MyService.class);
+        startService(intent);
     }
 
 
@@ -75,7 +83,7 @@ public class SplashActivity extends AppCompatActivity {
         NetworkInfo mobile = connectivityManager.getNetworkInfo(connectivityManager.TYPE_MOBILE);
         if (wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected())) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

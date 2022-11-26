@@ -47,8 +47,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.service.MyReceiver;
-import poly.ph26873.coffeepoly.service.MyService;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFaildFragment;
 import poly.ph26873.coffeepoly.ui.BillFragment;
@@ -115,55 +115,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         showToolBar("Trang chủ");
         toolbarAddNav();
         showInfomationUser();
-        serviceConnection();
-    }
-
-    private void serviceConnection() {
-        Intent intent = new Intent(MainActivity.this, MyService.class);
-        startService(intent);
     }
 
 
     private void checkAccountType(FirebaseUser user) {
-        assert user.getEmail() != null;
-        String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
-        Log.d(TAG, "chilgPath: " + chilgPath);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference readUser = database.getReference(TABLE_NAME).child("type_user").child(chilgPath);
-        readUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int type = snapshot.getValue(Integer.class);
-                Log.d(TAG, "type: " + type);
-                if (type == 2) {
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
-                }
-                if (type == 1) {
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
-                    replaceFragmemt(new ManagementFragment());
-                    hieuUngChecked(R.id.nav_order_management);
-                    showToolBar("Xác nhận đơn hàng");
-                    IDmenu = R.id.nav_order_management;
-                }
-                if (type == 0) {
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
-                    replaceFragmemt(new TurnoverFragment());
-                    hieuUngChecked(R.id.nav_turnover);
-                    showToolBar("Thống kê doanh thu");
-                    IDmenu = R.id.nav_turnover;
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
-                navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
-            }
-        });
+        if (ListData.type_user_current == 2) {
+            navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
+        } else if (ListData.type_user_current == 1) {
+            navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
+            replaceFragmemt(new ManagementFragment());
+            hieuUngChecked(R.id.nav_order_management);
+            showToolBar("Xác nhận đơn hàng");
+            IDmenu = R.id.nav_order_management;
+        } else if (ListData.type_user_current == 0) {
+            navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
+            navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
+            replaceFragmemt(new TurnoverFragment());
+            hieuUngChecked(R.id.nav_turnover);
+            showToolBar("Thống kê doanh thu");
+            IDmenu = R.id.nav_turnover;
+        }
+        progressDialog.dismiss();
     }
 
     public void showInfomationUser() {
