@@ -12,6 +12,7 @@ public class Bill {
     private String note;
     private int status;
     private String id_user;
+    private String mess;
     // status = 0 - đã xac nhan
     // status = 1 - đang xac nhan
     // status = 2 - đã hủy
@@ -23,7 +24,7 @@ public class Bill {
     public Bill() {
     }
 
-    public Bill(String id, String name, List<Item_Bill> list, int total, String address, String numberPhone, String note, int status,String id_user) {
+    public Bill(String id, String name, List<Item_Bill> list, int total, String address, String numberPhone, String note, int status, String id_user, String mess) {
         this.id = id;
         this.list = list;
         this.total = total;
@@ -33,6 +34,7 @@ public class Bill {
         this.name = name;
         this.numberPhone = numberPhone;
         this.id_user = id_user;
+        this.mess = mess;
     }
 
     public String getName() {
@@ -107,4 +109,11 @@ public class Bill {
         this.id_user = id_user;
     }
 
+    public String getMess() {
+        return mess;
+    }
+
+    public void setMess(String mess) {
+        this.mess = mess;
+    }
 }

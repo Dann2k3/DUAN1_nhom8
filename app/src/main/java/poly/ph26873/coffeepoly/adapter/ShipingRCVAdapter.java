@@ -72,6 +72,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
             holder.tv_his_note1s.setText(note);
             holder.tv_his_address1s.setText("Địa chỉ: " + bill.getAddress());
             holder.tv_his_number_phone1s.setText("Số điện thoại: " + bill.getNumberPhone());
+            holder.tv_bill_mess_s.setText("Ghi chú: " + bill.getMess());
             holder.tv_his_total1s.setText("Tổng tiền: " + bill.getTotal() + "K");
             holder.btn_bill_cancle_s.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -187,12 +188,13 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
     }
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
-        private TextView tv_his_time1s, tv_his_name1s, tv_his_number_phone1s, tv_his_note1s, tv_his_address1s, tv_his_total1s, tv_his_status1s;
+        private TextView tv_bill_mess_s, tv_his_time1s, tv_his_name1s, tv_his_number_phone1s, tv_his_note1s, tv_his_address1s, tv_his_total1s, tv_his_status1s;
         private Button btn_bill_cancle_s;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
             tv_his_number_phone1s = itemView.findViewById(R.id.tv_bill_number_phone_s);
+            tv_bill_mess_s = itemView.findViewById(R.id.tv_bill_mess_s);
             tv_his_name1s = itemView.findViewById(R.id.tv_bill_name_s);
             tv_his_time1s = itemView.findViewById(R.id.tv_bill_time_s);
             tv_his_note1s = itemView.findViewById(R.id.tv_bill_note_s);

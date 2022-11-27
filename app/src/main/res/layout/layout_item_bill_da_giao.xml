@@ -46,6 +46,12 @@
         android:layout_height="wrap_content"
         android:text="số điện thoại"
         android:textColor="@color/black" />
+    <TextView
+        android:id="@+id/tv_his_mess_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="số điện thoại"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_his_total_1"

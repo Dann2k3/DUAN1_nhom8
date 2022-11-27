@@ -75,10 +75,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final String TAG = "zzz";
     private final SettingFragment settingFragment = new SettingFragment();
     public static final int MY_REQUESTCODE = 511;
-    private int IDmenu = -1;
+    public static int IDmenu = -1;
     private Intent intent;
     private ProgressDialog progressDialog;
     private MyReceiver myReceiver;
+    public static String tt;
+    public static int idMain;
+    public static Fragment fragment;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -112,7 +115,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         intent = getIntent();
         initUi();
         setSupportActionBar(toolbar);
-        showToolBar("Trang chủ");
         toolbarAddNav();
         showInfomationUser();
     }
@@ -120,6 +122,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void checkAccountType(FirebaseUser user) {
         if (ListData.type_user_current == 2) {
+            tt = "Trang chủ";
+            fragment = new HomeFragment();
+            IDmenu = R.id.nav_home;
+            idMain = R.id.nav_home;
             navigationView.getMenu().findItem(R.id.nav_all_setting_1).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
         } else if (ListData.type_user_current == 1) {
@@ -129,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             hieuUngChecked(R.id.nav_order_management);
             showToolBar("Xác nhận đơn hàng");
             IDmenu = R.id.nav_order_management;
+            idMain = R.id.nav_order_management;
+            tt = "Xác nhận đơn hàng";
+            fragment = new ManagementFragment();
         } else if (ListData.type_user_current == 0) {
             navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
@@ -136,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             hieuUngChecked(R.id.nav_turnover);
             showToolBar("Thống kê doanh thu");
             IDmenu = R.id.nav_turnover;
+            idMain = R.id.nav_turnover;
+            tt = "Thống kê doanh thu";
+            fragment = new TurnoverFragment();
         }
         progressDialog.dismiss();
         Log.d("aaa", "checkAccountType: " + ListData.type_user_current);
@@ -178,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void showToolBar(String title) {
+    public void showToolBar(String title) {
         int max = title.length();
         SpannableString string = new SpannableString(title);
         string.setSpan(new RelativeSizeSpan(1.5f), 0, max, 0);
@@ -206,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         String gotoFrg = intent.getStringExtra("goto");
         if (gotoFrg == null) {
+            showToolBar("Trang chủ");
             navigationView.setCheckedItem(R.id.nav_home);
             IDmenu = R.id.nav_home;
             replaceFragmemt(new HomeFragment());
@@ -217,14 +230,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_cart;
                 replaceFragmemt(new CartFragment());
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-            } else if (gotoFrg.equals("setting")) {
-                navigationView.setCheckedItem(R.id.nav_setting);
-                IDmenu = R.id.nav_setting;
-                replaceFragmemt(new SettingFragment());
-                navigationView.getMenu().findItem(R.id.nav_setting).setChecked(true);
             }
         }
-//        }
         imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
 
@@ -341,6 +348,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showToolBar("Thay đổi mật khẩu");
                 IDmenu = id;
                 break;
+
             case R.id.nav_logout:
                 hieuUngChecked(id);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -367,14 +375,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return false;
     }
 
-    private void hieuUngChecked(int id) {
+    public void hieuUngChecked(int id) {
         int[] mang = {R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }
     }
 
-    private void replaceFragmemt(Fragment fragment) {
+    public void replaceFragmemt(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.content_frame, fragment).addToBackStack("back");
         transaction.commitAllowingStateLoss();

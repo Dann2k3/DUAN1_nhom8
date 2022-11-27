@@ -48,11 +48,18 @@
         android:textColor="@color/black" />
 
     <TextView
+        android:id="@+id/tv_bill_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tổng tiền: 450k"
+        android:textColor="@color/black" />
+    <TextView
         android:id="@+id/tv_bill_total"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Tổng tiền: 450k"
         android:textColor="@color/red" />
+
 
     <TextView
         android:id="@+id/tv_bill_status"

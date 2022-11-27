@@ -3,8 +3,6 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.MainActivity;
-import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
-import poly.ph26873.coffeepoly.models.Item_Bill;
-import poly.ph26873.coffeepoly.models.Turnover;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdapter.BillHolder> {
@@ -63,6 +57,7 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                 holder.tv_bill_note_m.setText(note);
                 holder.tv_bill_address_m.setText("Địa chỉ: " + bill.getAddress());
                 holder.tv_bill_number_phone_m.setText("Số điện thoại: " + bill.getNumberPhone());
+                holder.tv_bill_mess_m.setText("Ghi chú: " + bill.getMess());
                 holder.tv_bill_total_m.setText("Tổng tiền: " + bill.getTotal() + "K");
                 holder.tv_bill_status_m.setText("Trạng thái: Đang chờ đang xác nhận");
                 holder.btn_bill_cancle_m.setOnClickListener(new View.OnClickListener() {
@@ -115,12 +110,13 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
     }
 
     public class BillHolder extends RecyclerView.ViewHolder {
-        private TextView tv_bill_time_m, tv_bill_name_m, tv_bill_number_phone_m, tv_bill_note_m, tv_bill_address_m, tv_bill_total_m, tv_bill_status_m;
+        private TextView tv_bill_mess_m, tv_bill_time_m, tv_bill_name_m, tv_bill_number_phone_m, tv_bill_note_m, tv_bill_address_m, tv_bill_total_m, tv_bill_status_m;
         private Button btn_bill_cancle_m;
 
         public BillHolder(@NonNull View itemView) {
             super(itemView);
             tv_bill_number_phone_m = itemView.findViewById(R.id.tv_bill_number_phone_m);
+            tv_bill_mess_m = itemView.findViewById(R.id.tv_bill_mess_m);
             tv_bill_name_m = itemView.findViewById(R.id.tv_bill_name_m);
             tv_bill_time_m = itemView.findViewById(R.id.tv_bill_time_m);
             tv_bill_note_m = itemView.findViewById(R.id.tv_bill_note_m);

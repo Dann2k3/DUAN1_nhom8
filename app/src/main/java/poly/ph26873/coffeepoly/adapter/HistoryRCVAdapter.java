@@ -73,6 +73,7 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                             holder.tv_his_address.setText("Địa chỉ: " + bill.getAddress());
                             holder.tv_his_number_phone.setText("Số điện thoại: " + bill.getNumberPhone());
                             holder.tv_his_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+                            holder.tv_his_mess.setText("Ghi chú: " + bill.getMess());
                             if (bill.getStatus() == 0) {
                                 holder.tv_his_status.setTextColor(Color.BLUE);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã xác nhận đơn");
@@ -144,12 +145,13 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
 
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
-        private TextView tv_his_time, tv_his_name, tv_his_number_phone, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
+        private TextView tv_his_mess, tv_his_time, tv_his_name, tv_his_number_phone, tv_his_note, tv_his_address, tv_his_total, tv_his_status;
         private LinearLayout onClick_del_his;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
             tv_his_number_phone = itemView.findViewById(R.id.tv_his_number_phone);
+            tv_his_mess = itemView.findViewById(R.id.tv_his_mess);
             tv_his_name = itemView.findViewById(R.id.tv_his_name);
             tv_his_time = itemView.findViewById(R.id.tv_his_time);
             tv_his_note = itemView.findViewById(R.id.tv_his_note);
