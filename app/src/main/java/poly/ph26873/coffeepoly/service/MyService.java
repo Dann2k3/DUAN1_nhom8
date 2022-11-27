@@ -56,7 +56,7 @@ public class MyService extends Service {
         }
     }
 
-
+    //ham update
     private void capNhatListQuanProduct(FirebaseDatabase database, String month) {
         DatabaseReference refQuanPrd = database.getReference("coffee-poly").child("turnover_product").child(month);
         refQuanPrd.addValueEventListener(new ValueEventListener() {
