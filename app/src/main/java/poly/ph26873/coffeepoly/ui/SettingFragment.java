@@ -4,7 +4,6 @@ import static poly.ph26873.coffeepoly.activities.MainActivity.MY_REQUESTCODE;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +24,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -278,24 +276,8 @@ public class SettingFragment extends Fragment {
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         progressDialog.dismiss();
                                         Log.d(TAG, "Cập nhật dữ liệu user");
-                                        Intent intent = getActivity().getIntent();
-                                        if (intent.getStringExtra("goto") != null) {
-                                            String set = getActivity().getIntent().getExtras().getString("goto");
-                                            if (set != null) {
-                                                if (set.equalsIgnoreCase("setting")) {
-                                                    Intent intent1 = new Intent(getContext(), MainActivity.class);
-                                                    intent1.putExtra("goto", "cart");
-                                                    intent1.putExtra("return", "return");
-                                                    startActivity(intent1);
-                                                    getActivity().finish();
-                                                    getActivity().getIntent().removeExtra("goto");
-                                                    Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        } else {
-                                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                                            transaction.replace(R.id.content_frame, new Password_update_notification_Fragment()).commitAllowingStateLoss();
-                                        }
+                                        Log.d("lllll", "onComplete: lll");
+                                        ((MainActivity) getActivity()).replaceFragmemt(new Password_update_notification_Fragment());
                                     }
                                 });
                             }

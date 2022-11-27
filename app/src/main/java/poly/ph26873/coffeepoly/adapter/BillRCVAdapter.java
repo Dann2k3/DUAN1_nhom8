@@ -58,6 +58,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
             holder.tv_bill_address.setText("Địa chỉ: " + bill.getAddress());
             holder.tv_bill_number_phone.setText("Số điện thoại: " + bill.getNumberPhone());
             holder.tv_bill_total.setText("Tổng tiền: " + bill.getTotal() + "K");
+            holder.tv_bill_mess.setText("Ghi chú: " + bill.getMess());
             if (bill.getStatus() == 0) {
                 holder.tv_bill_status.setTextColor(Color.GREEN);
                 holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
@@ -117,13 +118,14 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     }
 
     public class BillHolder extends RecyclerView.ViewHolder {
-        private TextView tv_bill_name, tv_bill_number_phone, tv_bill_time, tv_bill_note, tv_bill_address, tv_bill_total, tv_bill_status;
+        private TextView tv_bill_mess, tv_bill_name, tv_bill_number_phone, tv_bill_time, tv_bill_note, tv_bill_address, tv_bill_total, tv_bill_status;
         private Button btn_bill_cancle;
 
         public BillHolder(@NonNull View itemView) {
             super(itemView);
             tv_bill_number_phone = itemView.findViewById(R.id.tv_bill_number_phone);
             tv_bill_name = itemView.findViewById(R.id.tv_bill_name);
+            tv_bill_mess = itemView.findViewById(R.id.tv_bill_mess);
             tv_bill_time = itemView.findViewById(R.id.tv_bill_time);
             tv_bill_note = itemView.findViewById(R.id.tv_bill_note);
             tv_bill_address = itemView.findViewById(R.id.tv_bill_address);

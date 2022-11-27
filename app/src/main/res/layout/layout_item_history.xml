@@ -47,7 +47,12 @@
         android:layout_height="wrap_content"
         android:text="số điện thoại"
         android:textColor="@color/black" />
-
+    <TextView
+        android:id="@+id/tv_his_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tổng tiền: 450k"
+        android:textColor="@color/black" />
     <TextView
         android:id="@+id/tv_his_total"
         android:layout_width="match_parent"

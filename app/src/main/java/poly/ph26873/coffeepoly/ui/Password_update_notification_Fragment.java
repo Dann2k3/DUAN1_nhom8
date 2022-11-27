@@ -9,9 +9,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.MainActivity;
 
 
 public class Password_update_notification_Fragment extends Fragment {
@@ -32,8 +32,10 @@ public class Password_update_notification_Fragment extends Fragment {
         btn_back_to_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.content_frame, new HomeFragment()).commitAllowingStateLoss();
+                ((MainActivity) getActivity()).replaceFragmemt(((MainActivity) getActivity()).fragment);
+                ((MainActivity) getActivity()).showToolBar(((MainActivity) getActivity()).tt);
+                ((MainActivity) getActivity()).hieuUngChecked(((MainActivity) getActivity()).idMain);
+                ((MainActivity) getActivity()).IDmenu = ((MainActivity) getActivity()).idMain;
             }
         });
     }

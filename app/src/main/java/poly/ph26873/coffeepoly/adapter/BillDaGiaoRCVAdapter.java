@@ -54,6 +54,7 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
             holder.tv_his_note1.setText(note);
             holder.tv_his_address1.setText("Địa chỉ: " + bill.getAddress());
             holder.tv_his_number_phone1.setText("Số điện thoại: " + bill.getNumberPhone());
+            holder.tv_his_mess_1.setText("Ghi chú: " + bill.getMess());
             holder.tv_his_total1.setText("Tổng tiền: " + bill.getTotal() + "K");
             if (bill.getStatus() == 2) {
                 holder.tv_his_status1.setTextColor(Color.RED);
@@ -75,17 +76,19 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
     }
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
-        private TextView tv_his_time1, tv_his_name1, tv_his_number_phone1, tv_his_note1, tv_his_address1, tv_his_total1, tv_his_status1;
+        private TextView tv_his_mess_1, tv_his_time1, tv_his_name1, tv_his_number_phone1, tv_his_note1, tv_his_address1, tv_his_total1, tv_his_status1;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
             tv_his_number_phone1 = itemView.findViewById(R.id.tv_his_number_phone_1);
             tv_his_name1 = itemView.findViewById(R.id.tv_his_name_1);
+            tv_his_mess_1 = itemView.findViewById(R.id.tv_his_mess_1);
             tv_his_time1 = itemView.findViewById(R.id.tv_his_time_1);
             tv_his_note1 = itemView.findViewById(R.id.tv_his_note_1);
             tv_his_address1 = itemView.findViewById(R.id.tv_his_address_1);
             tv_his_total1 = itemView.findViewById(R.id.tv_his_total_1);
             tv_his_status1 = itemView.findViewById(R.id.tv_his_status_1);
+
         }
     }
 

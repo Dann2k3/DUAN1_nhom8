@@ -2,8 +2,6 @@ package poly.ph26873.coffeepoly.ui;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -41,7 +41,6 @@ import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.MainActivity;
 import poly.ph26873.coffeepoly.adapter.CartRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
@@ -75,6 +74,7 @@ public class CartFragment extends Fragment {
     private List<String> listSPdel;
     private LinearLayout ln_bill;
     private boolean isFirst = true;
+    private AlertDialog alertDialog;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -193,80 +193,98 @@ public class CartFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         progressDialog.dismiss();
                         User user1 = snapshot.getValue(User.class);
-                        String ad = user1.getAddress();
-                        String nb = user1.getNumberPhone();
-                        if (ad.equalsIgnoreCase("null") || nb.equalsIgnoreCase("null")) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            builder.setTitle("Tài khoản chưa cập nhật đầy đủ thông tin cần thiết");
-                            builder.setMessage("Hãy cập nhật đủ thông tin trước khi đặt hàng");
-                            builder.setCancelable(true);
-                            builder.setPositiveButton("Cập nhật ngay", new DialogInterface.OnClickListener() {
+                        if (tong_tien > 0) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setCancelable(false);
+                            View view1 = LayoutInflater.from(builder.getContext()).inflate(R.layout.layout_thong_tin_dat_hang, null);
+                            TextView tv_xac_nhan_time = view1.findViewById(R.id.tv_xac_nhan_time);
+                            TextView tv_xac_nhan_total = view1.findViewById(R.id.tv_xac_nhan_total);
+                            TextView tv_xac_nhan_note = view1.findViewById(R.id.tv_xac_nhan_note);
+                            EditText edt_xac_nhan_name = view1.findViewById(R.id.edt_xac_nhan_name);
+                            EditText edt_xac_nhan_address = view1.findViewById(R.id.edt_xac_nhan_address);
+                            EditText edt_xac_nhan_nb = view1.findViewById(R.id.edt_xac_nhan_nb);
+                            EditText edt_xac_nhan_mess = view1.findViewById(R.id.edt_xac_nhan_mess);
+                            TextInputLayout til_xac_nhan_name = view1.findViewById(R.id.til_xac_nhan_name);
+                            TextInputLayout til_xac_nhan_address = view1.findViewById(R.id.til_xac_nhan_address);
+                            TextInputLayout til_xac_nhan_nb = view1.findViewById(R.id.til_xac_nhan_nb);
+                            Button btn_xac_nhan_dat_hang = view1.findViewById(R.id.btn_xac_nhan_dat_hang);
+                            Button btn_xac_nhan_huy = view1.findViewById(R.id.btn_xac_nhan_huy);
+                            Calendar calendar = Calendar.getInstance();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
+                            String time = simpleDateFormat.format(calendar.getTime());
+                            tv_xac_nhan_time.setText("Thời gian: " + time);
+                            edt_xac_nhan_name.setText(user1.getName());
+                            edt_xac_nhan_address.setText(user1.getAddress());
+                            edt_xac_nhan_nb.setText(user1.getNumberPhone());
+                            tv_xac_nhan_total.setText("Tổng tiền: " + tong_tien + "K");
+                            tv_xac_nhan_note.setText("Chi tiết: \n" + thong_ke);
+                            edt_xac_nhan_mess.setText("Trống");
+                            btn_xac_nhan_dat_hang.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(getContext(), MainActivity.class);
-                                    intent.putExtra("goto", "setting");
-                                    startActivity(intent);
+                                public void onClick(View v) {
+                                    if (edt_xac_nhan_name.getText().toString().trim().isEmpty()) {
+                                        til_xac_nhan_name.setError("Không được để trống trường này!");
+                                        edt_xac_nhan_name.requestFocus();
+                                        return;
+                                    }
+                                    til_xac_nhan_name.setError("");
+                                    if (edt_xac_nhan_address.getText().toString().trim().isEmpty()) {
+                                        til_xac_nhan_address.setError("Không được để trống trường này!");
+                                        edt_xac_nhan_address.requestFocus();
+                                        return;
+                                    }
+                                    til_xac_nhan_address.setError("");
+                                    String regex = "/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/";
+                                    if (edt_xac_nhan_nb.getText().toString().trim().matches(regex)) {
+                                        til_xac_nhan_nb.setError("Kiểm tra lại số điện thoại");
+                                        edt_xac_nhan_nb.requestFocus();
+                                        edt_xac_nhan_nb.setSelection(edt_xac_nhan_nb.length());
+                                        return;
+                                    }
+                                    til_xac_nhan_nb.setError("");
+                                    if (edt_xac_nhan_mess.getText().toString().isEmpty()) {
+                                        edt_xac_nhan_mess.setText("Trống");
+                                    }
+                                    Bill bill = new Bill();
+                                    bill.setId(time);
+                                    bill.setName(edt_xac_nhan_name.getText().toString().trim());
+                                    bill.setList(list1);
+                                    bill.setTotal(tong_tien);
+                                    bill.setAddress(edt_xac_nhan_address.getText().toString().trim());
+                                    bill.setNumberPhone(edt_xac_nhan_nb.getText().toString().trim());
+                                    bill.setNote(thong_ke);
+                                    bill.setId_user(email);
+                                    bill.setStatus(1);
+                                    bill.setMess(edt_xac_nhan_mess.getText().toString().trim());
+                                    DatabaseReference myBill = database.getReference("coffee-poly/bill/" + email + "/" + time);
+                                    myBill.setValue(bill, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                            Log.d(TAG, "Đã cập nhật đơn hàng lên bill");
+                                            Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
+                                            DatabaseReference delBillcurrent = database.getReference("coffee-poly/bill_current/" + email);
+                                            delBillcurrent.removeValue(new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                    Log.d(TAG, "Đã xóa bill hiện thời");
+                                                    capNhatLichSuDatHang(time);
+                                                    alertDialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
                             });
-                            builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            btn_xac_nhan_huy.setOnClickListener(new View.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
+                                public void onClick(View v) {
+                                    Toast.makeText(getContext(), "Đã hủy thao tác đặt hàng", Toast.LENGTH_SHORT).show();
+                                    alertDialog.dismiss();
                                 }
                             });
-                            AlertDialog alertDialog = builder.create();
+                            builder.setView(view1);
+                            alertDialog = builder.create();
                             alertDialog.show();
-                        } else {
-                            if (tong_tien > 0) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setTitle("Xác nhận đặt hàng?");
-                                builder.setCancelable(false);
-                                builder.setPositiveButton("Đặt hàng", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Calendar calendar = Calendar.getInstance();
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
-                                        String time = simpleDateFormat.format(calendar.getTime());
-                                        Bill bill = new Bill();
-                                        bill.setId(time);
-                                        bill.setName(user1.getName());
-                                        bill.setList(list1);
-                                        bill.setTotal(tong_tien);
-                                        bill.setAddress(ad);
-                                        bill.setNumberPhone(nb);
-                                        bill.setNote(thong_ke);
-                                        bill.setId_user(email);
-                                        bill.setStatus(1);
-                                        DatabaseReference myBill = database.getReference("coffee-poly/bill/" + email + "/" + time);
-                                        myBill.setValue(bill, new DatabaseReference.CompletionListener() {
-                                            @Override
-                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                Log.d(TAG, "Đã cập nhật đơn hàng lên bill");
-                                                Toast.makeText(getContext(), "Đặt hàng thành công", Toast.LENGTH_SHORT).show();
-                                                DatabaseReference delBillcurrent = database.getReference("coffee-poly/bill_current/" + email);
-                                                delBillcurrent.removeValue(new DatabaseReference.CompletionListener() {
-                                                    @Override
-                                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                        Log.d(TAG, "Đã xóa bill hiện thời");
-                                                        capNhatLichSuDatHang(time);
-                                                    }
-                                                });
-                                            }
-                                        });
-
-
-                                    }
-                                });
-                                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Toast.makeText(getContext(), "Đã hủy thao tác đặt hàng", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-
-                            }
                         }
 
                     }
@@ -367,10 +385,10 @@ public class CartFragment extends Fragment {
             }
         }
         tong_tien = 0;
-        thong_ke = " ";
+        thong_ke = "";
         for (int i = 0; i < list3.size(); i++) {
             tong_tien += list1.get(i).getQuantity() * list3.get(i).getPrice();
-            thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K" + "\n ";
+            thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K\n";
         }
         ln_bill.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
