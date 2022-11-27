@@ -276,8 +276,10 @@ public class SettingFragment extends Fragment {
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         progressDialog.dismiss();
                                         Log.d(TAG, "Cập nhật dữ liệu user");
-                                        Log.d("lllll", "onComplete: lll");
+                                        ((MainActivity) getActivity()).showToolBar("Thiết lập tài khoản");
                                         ((MainActivity) getActivity()).replaceFragmemt(new Password_update_notification_Fragment());
+                                        ((MainActivity) getActivity()).hieuUngChecked(R.id.nav_setting);
+                                        ((MainActivity) getActivity()).IDmenu = R.id.nav_setting;
                                     }
                                 });
                             }
