@@ -148,6 +148,12 @@ public class CartFragment extends Fragment {
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getTime() == item_bill.getTime()) {
                         list.remove(list.get(i));
+                        if (list.isEmpty()) {
+                            tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                            ln_bill.setVisibility(View.INVISIBLE);
+                        } else {
+                            tv_cart_mess.setText("");
+                        }
                         cartRCVAdapter.setData(list);
                         layDanhSachTinhTien();
                         break;
@@ -162,7 +168,14 @@ public class CartFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
+
         });
+        if (list.isEmpty()) {
+            tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+            ln_bill.setVisibility(View.INVISIBLE);
+        } else {
+            tv_cart_mess.setText("");
+        }
         btn_cart_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
