@@ -88,6 +88,7 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
             tv_his_address1 = itemView.findViewById(R.id.tv_his_address_1);
             tv_his_total1 = itemView.findViewById(R.id.tv_his_total_1);
             tv_his_status1 = itemView.findViewById(R.id.tv_his_status_1);
+
         }
     }
 
