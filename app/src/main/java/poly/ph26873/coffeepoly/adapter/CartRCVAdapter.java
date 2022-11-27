@@ -146,6 +146,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     }
                                 }
                             });
+                            // xoa bill o der
                             holder.chk_item_bill_selected.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -167,6 +168,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     }
                                 }
                             });
+
                             holder.imv_item_bill_image.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
