@@ -191,12 +191,10 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                             progressDialog.setMessage("Đang xóa sản phẩm...");
                                             progressDialog.show();
                                             DatabaseReference reference3 = database.getReference("coffee-poly/cart/" + email + "/" + item_bill.getTime());
-                                            reference3.removeValue(new DatabaseReference.CompletionListener() {
-                                                @Override
-                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
+                                            reference3.removeValue();
+                                            DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime());
+                                            reference4.removeValue();
+                                            progressDialog.dismiss();
                                         }
                                     });
                                     builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
