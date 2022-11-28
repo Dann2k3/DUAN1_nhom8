@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SignUpActivity">
-    <pl.droidsonroids.gif.GifImageView
-        android:background="@drawable/signup1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<!--    <pl.droidsonroids.gif.GifImageView-->
+<!--        android:background="@drawable/signup1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
     <LinearLayout
         android:layout_width="match_parent"

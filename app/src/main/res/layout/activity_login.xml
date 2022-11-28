@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gifimv_login"
-        android:background="@drawable/login"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+<!--    <pl.droidsonroids.gif.GifImageView-->
+<!--        android:id="@+id/gifimv_login"-->
+<!--        android:background="@drawable/login"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"/>-->
 
     <LinearLayout
         android:layout_width="match_parent"

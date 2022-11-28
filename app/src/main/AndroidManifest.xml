@@ -17,10 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoffeePoly"
         tools:targetApi="31">
-        <!-- <receiver -->
-        <!-- android:name=".service.MyReceiver" -->
-        <!-- android:enabled="true" -->
-        <!-- android:exported="true"></receiver> -->
+<!--        <receiver-->
+<!--            android:name=".service.MyReceiver"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true"-->
+<!--            android:process="aaa" />-->
         <service
             android:name=".service.MyService"
             android:enabled="true"

@@ -44,7 +44,6 @@ public class LoginActivity extends AppCompatActivity {
             Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
 
     private int count = 0;
-    private GifImageView gifImageView;
     private MyReceiver myReceiver;
 
     @Override
@@ -148,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void initUi() {
-        gifImageView = findViewById(R.id.gifimv_login);
         edtEmail = findViewById(R.id.edt_email);
         edtPass = findViewById(R.id.edt_pass);
         btnLogin = findViewById(R.id.btn_login);
