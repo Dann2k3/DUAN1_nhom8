@@ -434,4 +434,5 @@ public class CartFragment extends Fragment {
         DatabaseReference referenceOnPause = database.getReference("coffee-poly/bill_current/" + email);
         referenceOnPause.removeValue();
     }
+
 }
