@@ -42,6 +42,7 @@ public class MyService extends Service {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String chilgPath = user.getEmail().replaceAll("@gmail.com", "");
+            Log.d("zzz", "layLoaiTaiKhoan: "+chilgPath);
             DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
             readUser.addValueEventListener(new ValueEventListener() {
                 @Override

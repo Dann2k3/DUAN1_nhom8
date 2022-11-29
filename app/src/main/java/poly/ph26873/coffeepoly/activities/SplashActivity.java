@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.service.MyService;
 
 public class SplashActivity extends AppCompatActivity {
@@ -51,7 +52,14 @@ public class SplashActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    nextActivity();
+                    if (ListData.type_user_current == -1) {
+                        Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi",Toast.LENGTH_SHORT).show();
+                        System.exit(0);
+                        return;
+                    }else {
+                        nextActivity();
+                    }
+
                 }
             }, 3000);
         } else {
