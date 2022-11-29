@@ -15,16 +15,20 @@
         android:textSize="23dp" />
 
     <TextView
+        android:textSize="20dp"
+        android:textStyle="bold"
         android:id="@+id/tv_xac_nhan_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Thời gian đặt hàng:"
-        android:textColor="@color/green1" />
+        android:textColor="@color/green1"
+        android:layout_marginBottom="15dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_xac_nhan_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/darker_gray">
 
         <EditText
             android:id="@+id/edt_xac_nhan_name"
@@ -40,7 +44,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_xac_nhan_address"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/darker_gray">
 
         <EditText
             android:id="@+id/edt_xac_nhan_address"
@@ -56,7 +61,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_xac_nhan_nb"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/darker_gray">
 
         <EditText
             android:id="@+id/edt_xac_nhan_nb"
@@ -87,7 +93,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:textColorHint="@android:color/darker_gray">
 
         <EditText
             android:id="@+id/edt_xac_nhan_mess"
