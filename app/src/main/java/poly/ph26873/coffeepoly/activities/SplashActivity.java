@@ -52,16 +52,7 @@ public class SplashActivity extends AppCompatActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (ListData.type_user_current == -1) {
-                        Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi",Toast.LENGTH_SHORT).show();
-                        FirebaseAuth.getInstance().signOut();
-                        System.exit(0);
-                        return;
-                    }else {
                         nextActivity();
-                        //uuuuuu
-                    }
-
                 }
             }, 3000);
         } else {
@@ -116,6 +107,12 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {
+            if (ListData.type_user_current == -1) {
+                Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi",Toast.LENGTH_SHORT).show();
+                FirebaseAuth.getInstance().signOut();
+                System.exit(0);
+                return;
+            }
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + user.getEmail().replaceAll("@gmail.com", ""));
             myRef1.removeValue(new DatabaseReference.CompletionListener() {
