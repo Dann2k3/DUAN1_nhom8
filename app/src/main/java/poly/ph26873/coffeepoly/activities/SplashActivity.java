@@ -59,7 +59,7 @@ public class SplashActivity extends AppCompatActivity {
                         return;
                     }else {
                         nextActivity();
-                        //222
+                        //uuuuuu
                     }
 
                 }
