@@ -54,6 +54,7 @@ public class SplashActivity extends AppCompatActivity {
                 public void run() {
                     if (ListData.type_user_current == -1) {
                         Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi",Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
                         System.exit(0);
                         return;
                     }else {
