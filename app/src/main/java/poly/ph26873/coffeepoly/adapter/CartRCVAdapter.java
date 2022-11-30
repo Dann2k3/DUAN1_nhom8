@@ -83,7 +83,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                         itemBills.add(dataSnapshot.getValue(Item_Bill.class));
                     }
                     for (int i = 0; i < itemBills.size(); i++) {
-                        if (itemBills.contains(item_bill)) {
+                        if (itemBills.get(i).getTime().equals(item_bill.getTime())) {
                             if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
                                 holder.chk_item_bill_selected.setChecked(true);
                             } else {
@@ -142,7 +142,12 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                                     reference2.setValue(sl);
                                     if (holder.chk_item_bill_selected.isChecked()) {
                                         DatabaseReference reference4 = database.getReference("coffee-poly/bill_current/" + email + "/" + item_bill.getTime() + "/quantity");
-                                        reference4.setValue(sl);
+                                        reference4.setValue(sl, new DatabaseReference.CompletionListener() {
+                                            @Override
+                                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                notifyDataSetChanged();
+                                            }
+                                        });
                                     }
                                 }
                             });
@@ -233,7 +238,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
     public class ItemBillHolder extends RecyclerView.ViewHolder {
         private ImageView imv_item_bill_image, imv_item_bill_remove, imv_item_bill_add;
         private TextView tv_item_bill_name, tv_item_bill_price, tv_item_bill_total, tv_item_bill_quantity;
-        private CheckBox chk_item_bill_selected;
+        public CheckBox chk_item_bill_selected;
         private LinearLayout onClick_delete;
 
         public ItemBillHolder(@NonNull View itemView) {

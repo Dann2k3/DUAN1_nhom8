@@ -428,11 +428,4 @@ public class CartFragment extends Fragment {
         cartRecyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        DatabaseReference referenceOnPause = database.getReference("coffee-poly/bill_current/" + email);
-        referenceOnPause.removeValue();
-    }
-
 }
