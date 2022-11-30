@@ -100,7 +100,6 @@ public class CartFragment extends Fragment {
                 Item_Bill item_bill = snapshot.getValue(Item_Bill.class);
                 if (item_bill != null) {
                     list.add(item_bill);
-                    Collections.reverse(list);
                     cartRCVAdapter.setData(list);
                     if (isFirst == true) {
                         setAL();

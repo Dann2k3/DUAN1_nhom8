@@ -82,8 +82,9 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         itemBills.add(dataSnapshot.getValue(Item_Bill.class));
                     }
+
                     for (int i = 0; i < itemBills.size(); i++) {
-                        if (itemBills.get(i).getTime().equals(item_bill.getTime())) {
+                        if (itemBills.get(i).getTime().equals(item_bill.getTime())&&itemBills.get(i).getId_product()==item_bill.getId_product()&&itemBills.get(i).getQuantity()==item_bill.getQuantity()) {
                             if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
                                 holder.chk_item_bill_selected.setChecked(true);
                             } else {
