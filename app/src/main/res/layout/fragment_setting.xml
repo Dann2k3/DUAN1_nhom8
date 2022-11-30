@@ -10,10 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/image2" />
+        <!--        <pl.droidsonroids.gif.GifImageView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:background="@drawable/image2" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,8 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
-                android:hint="Họ Và Tên">
+                android:hint="Họ Và Tên"
+                android:textColorHint="@android:color/holo_orange_dark">
 
                 <EditText
                     android:id="@+id/edt_user_name_frgst"
@@ -53,7 +54,8 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Tuổi">
+                android:hint="Tuổi"
+                android:textColorHint="@android:color/holo_orange_dark">
 
                 <EditText
                     android:id="@+id/edt_age_frgst"
@@ -73,22 +75,21 @@
                 android:layout_marginTop="15dp"
                 android:background="@android:color/transparent"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="8dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Giới tính"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
+                    android:textColor="@android:color/holo_orange_dark"
+                    android:textSize="12dp" />
 
                 <Spinner
                     android:id="@+id/sp_genger_frgst"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="62dp"
-                    android:textAlignment="center" />
+                    android:textAlignment="center"
+                    />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -96,7 +97,8 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Địa chỉ">
+                android:hint="Địa chỉ"
+                android:textColorHint="@android:color/holo_orange_dark">
 
                 <EditText
                     android:id="@+id/edt_address_frgst"
@@ -115,7 +117,8 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:hint="Số điện thoại">
+                android:hint="Số điện thoại"
+                android:textColorHint="@android:color/holo_orange_dark">
 
                 <EditText
                     android:id="@+id/edt_number_phone_frgst"
