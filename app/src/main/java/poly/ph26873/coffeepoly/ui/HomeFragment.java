@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
                         intent.putExtra("list", (Serializable) list_rcm_product);
                         startActivity(intent);
                     });
-                    showRecommentProduct();
+                    showRecommentProduct(list_rcm_product);
                     showAllProduct();
                 }
             }
@@ -145,18 +145,29 @@ public class HomeFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(getContext(), 3);
         mRecycerView_all_product.setLayoutManager(manager);
         mRecycerView_all_product.setHasFixedSize(true);
+        Collections.shuffle(list_rcm_product);
         adapter.setData(list_rcm_product);
         mRecycerView_all_product.setAdapter(adapter);
     }
 
-    private void showRecommentProduct() {
+    private void showRecommentProduct(List<Product> list_rcm_product1) {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, true);
         recyclerView_rcm_product.setLayoutManager(manager);
         recyclerView_rcm_product.setHasFixedSize(true);
         HorizontalRCVAdapter adapter1 = new HorizontalRCVAdapter(getContext());
-        List<Product> listProductRecoomment = list_rcm_product;
-        Collections.shuffle(listProductRecoomment);
-        adapter1.setData(listProductRecoomment);
+        List<Product> listProductRecoomment = list_rcm_product1;
+        Collections.sort(listProductRecoomment, new Comparator<Product>() {
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o1.getQuantitySold() - o2.getQuantitySold();
+            }
+        });
+        List<Product> listrcm = new ArrayList<>();
+        for (int i = 0; i < listProductRecoomment.size()*0.25; i++) {
+            listrcm.add(listProductRecoomment.get(i));
+        }
+
+        adapter1.setData(listrcm);
         recyclerView_rcm_product.setAdapter(adapter1);
     }
 
