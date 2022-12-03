@@ -230,7 +230,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 IDmenu = R.id.nav_cart;
                 replaceFragmemt(new CartFragment());
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
+            }else if(gotoFrg.equals("bill")){
+                showToolBar("Đơn hàng của bạn");
+                navigationView.setCheckedItem(R.id.nav_bill);
+                IDmenu = R.id.nav_bill;
+                replaceFragmemt(new BillFragment());
+                navigationView.getMenu().findItem(R.id.nav_bill).setChecked(true);
+            }else {
+                showToolBar("Lịch sử");
+                navigationView.setCheckedItem(R.id.nav_history);
+                IDmenu = R.id.nav_history;
+                replaceFragmemt(new HistoryFragment());
+                navigationView.getMenu().findItem(R.id.nav_history).setChecked(true);
             }
+
         }
         imv_back_layout_header.setOnClickListener(v -> closeNavigation());
     }
