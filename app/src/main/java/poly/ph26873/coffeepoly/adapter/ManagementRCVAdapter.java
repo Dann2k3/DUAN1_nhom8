@@ -18,10 +18,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdapter.BillHolder> {
@@ -80,7 +83,7 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
                                     @Override
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Xác nhân hàng thành công", Toast.LENGTH_SHORT).show();
-//                                        capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
+                                        CapNhatthongBao(bill);
                                         notifyDataSetChanged();
                                     }
                                 });
@@ -99,6 +102,20 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
             }
 
         }
+    }
+
+    private void CapNhatthongBao(Bill bill) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+        String thoigian = simpleDateFormat.format(calendar.getTime());
+        Notify notify = new Notify();
+        notify.setId(bill.getId());
+        notify.setStatus(0);
+        notify.setTime(thoigian);
+        notify.setType(0);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
+        reference.setValue(notify);
     }
 
     @Override

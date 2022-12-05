@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +20,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHolder> {
@@ -63,6 +67,9 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                 holder.tv_bill_status.setTextColor(Color.GREEN);
                 holder.tv_bill_status.setText("Trạng thái: Đang giao hàng");
                 holder.btn_bill_cancle.setVisibility(View.INVISIBLE);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        0, 0);
+                holder.btn_bill_cancle.setLayoutParams(lp);
             } else {
                 holder.btn_bill_cancle.setVisibility(View.VISIBLE);
                 holder.tv_bill_status.setTextColor(Color.BLACK);
@@ -88,6 +95,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                         Toast.makeText(builder.getContext(), "Hủy đơn hàng thành công", Toast.LENGTH_SHORT).show();
                                         list.remove(bill);
+                                        CapNhatThongBao(bill);
                                         notifyDataSetChanged();
                                     }
                                 });
@@ -107,6 +115,16 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
 
 
         }
+    }
+
+    private void CapNhatThongBao(Bill bill) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+        String thoigian = simpleDateFormat.format(calendar.getTime());
+        Notify notify = new Notify(bill.getId(), 0, thoigian, 2);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
+        reference.setValue(notify);
     }
 
     @Override

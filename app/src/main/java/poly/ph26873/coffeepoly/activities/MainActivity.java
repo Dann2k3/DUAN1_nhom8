@@ -1,5 +1,8 @@
 package poly.ph26873.coffeepoly.activities;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -17,7 +21,10 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +32,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +46,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,9 +54,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFaildFragment;
@@ -82,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static String tt;
     public static int idMain;
     public static Fragment fragment;
+    private FrameLayout redCircle;
+    private TextView countTextView;
+    private int alertCount = 0;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -448,6 +463,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onStart();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(myReceiver, intentFilter);
+
     }
 
     @Override
@@ -456,5 +472,97 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         unregisterReceiver(myReceiver);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_notify, menu);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String em = user.getEmail().replace("@gmail.com", "");
+        DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
+        List<Notify> list = new ArrayList<>();
+        alertCount = list.size();
+        myRef1.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Notify notify = snapshot.getValue(Notify.class);
+                if (notify != null && notify.getStatus() == 0) {
+                    list.add(notify);
+                    alertCount = list.size();
+                    hieuUng(menu);
+                }
+            }
 
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Notify notify = snapshot.getValue(Notify.class);
+                if (notify != null && !list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getTime() == notify.getTime()) {
+                            if (notify.getStatus() == 1) {
+                                list.remove(i);
+                                alertCount = list.size();
+                                hieuUng(menu);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        hieuUng(menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_notify) {
+            Intent intent = new Intent(this, NotifycationActivity.class);
+            startActivity(intent);
+            alertCount = 0;
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                overridePendingTransition(R.anim.next_enter, R.anim.next_exit);
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void hieuUng(Menu menu) {
+        final MenuItem alertMenuItem = menu.findItem(R.id.action_notify);
+        FrameLayout rootView = (FrameLayout) alertMenuItem.getActionView();
+        redCircle = (FrameLayout) rootView.findViewById(R.id.view_alert_red_circle);
+        countTextView = (TextView) rootView.findViewById(R.id.view_alert_count_textview);
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(alertMenuItem);
+            }
+        });
+        updateAlertIcon();
+    }
+
+    private void updateAlertIcon() {
+        if (0 < alertCount && alertCount < 10) {
+            countTextView.setText(String.valueOf(alertCount));
+        } else {
+            countTextView.setText("");
+        }
+        redCircle.setVisibility((alertCount > 0) ? VISIBLE : GONE);
+    }
 }
