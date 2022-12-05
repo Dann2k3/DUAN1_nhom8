@@ -32,6 +32,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 import poly.ph26873.coffeepoly.models.Turnover;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -100,6 +101,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                                     capNhatSoLuongSanPhamTheoThang(bill.getList());
                                     capNhatSoLuongSanPham(bill.getList());
                                     capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
+                                    CapNhatthongBao(bill);
                                     progressDialog.dismiss();
                                 }
                             });
@@ -116,6 +118,16 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                 }
             });
         }
+    }
+
+    private void CapNhatthongBao(Bill bill) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+        String thoigian = simpleDateFormat.format(calendar.getTime());
+        Notify notify = new Notify(bill.getId(), 0, thoigian, 4);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
+        reference.setValue(notify);
     }
 
     private void capNhatSoLuongSanPhamTheoThang(List<Item_Bill> list) {

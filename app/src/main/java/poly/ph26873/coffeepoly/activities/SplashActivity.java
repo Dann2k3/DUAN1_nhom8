@@ -20,12 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyService;
 
 public class SplashActivity extends AppCompatActivity {
@@ -108,19 +111,16 @@ public class SplashActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             if (ListData.type_user_current == -1) {
-                Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi",Toast.LENGTH_SHORT).show();
+                Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi", Toast.LENGTH_SHORT).show();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 return;
             }
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + user.getEmail().replaceAll("@gmail.com", ""));
-            myRef1.removeValue(new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                }
-            });
+            String em = user.getEmail().replaceAll("@gmail.com", "");
+            DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + em);
+            myRef1.removeValue();
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "user: " + user.getEmail());
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
@@ -128,11 +128,9 @@ public class SplashActivity extends AppCompatActivity {
         }
         finish();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         kiemTraInternet();
     }
-    //hhfkrhghfkhghghg
 }

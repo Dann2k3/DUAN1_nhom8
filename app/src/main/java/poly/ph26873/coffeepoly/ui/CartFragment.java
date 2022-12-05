@@ -37,7 +37,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -45,6 +44,7 @@ import poly.ph26873.coffeepoly.adapter.CartRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.models.Item_Bill;
+import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.User;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -267,6 +267,7 @@ public class CartFragment extends Fragment {
                                                 public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                                                     Log.d(TAG, "Đã xóa bill hiện thời");
                                                     capNhatLichSuDatHang(time);
+                                                    thongbao(time);
                                                     alertDialog.dismiss();
                                                 }
                                             });
@@ -295,6 +296,12 @@ public class CartFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void thongbao(String time) {
+        Notify notify = new Notify(time, 0, time, 1);
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(email).child(time);
+        reference.setValue(notify);
     }
 
     private void capNhatLichSuDatHang(String time) {
@@ -401,7 +408,7 @@ public class CartFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
+//        menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
@@ -418,9 +425,9 @@ public class CartFragment extends Fragment {
                 cartRCVAdapter.getFilter().filter(newText);
                 return false;
             }
-
         });
     }
+
 
     private void setAL() {
         LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
