@@ -1,7 +1,5 @@
 package poly.ph26873.coffeepoly.service;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,12 +8,14 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Handler;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,16 +24,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.models.Bill;
+import poly.ph26873.coffeepoly.models.Notify;
 
 public class MyReceiver extends BroadcastReceiver {
     private int a = 0;
     public static boolean isConnected = false;
+    public static int indexMess = 0;
+    public static int thongbao1 = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -44,6 +47,7 @@ public class MyReceiver extends BroadcastReceiver {
                     Toast.makeText(context, "Internet connected", Toast.LENGTH_SHORT).show();
                     a = 0;
                 }
+                kiemTraThongBao(context);
             } else {
                 isConnected = false;
                 a++;
@@ -52,6 +56,102 @@ public class MyReceiver extends BroadcastReceiver {
         }
     }
 
+    private void kiemTraThongBao(Context context) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String em = user.getEmail().replaceAll("@gmail.com", "");
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference("coffee-poly").child("type_user").child(em);
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int typeU = snapshot.getValue(Integer.class);
+                    if (typeU == 2) {
+                        layThongBaoMoi(database, em, context);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private void layThongBaoMoi(FirebaseDatabase database, String em, Context context) {
+        List<Notify> list = new ArrayList<>();
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(em);
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                if (indexMess != 0) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            indexMess = 0;
+                        }
+                    }, 3000);
+                    return;
+                }
+                Notify notify = snapshot.getValue(Notify.class);
+                if (notify != null && notify.getStatus() == 0) {
+                    list.add(notify);
+                    if (list.size() > 0) {
+                        if(thongbao1==0){
+                            hienThongBao(context);
+                            thongbao1++;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                Notify notify = snapshot.getValue(Notify.class);
+                if (notify != null && notify.getStatus() == 1 && !list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getTime() == notify.getTime()) {
+                            list.remove(i);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                Notify notify = snapshot.getValue(Notify.class);
+                if (notify != null && !list.isEmpty()) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getTime() == notify.getTime()) {
+                            list.remove(i);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void hienThongBao(Context context) {
+        View view1 = LayoutInflater.from(context).inflate(R.layout.layout_toast, null);
+        Toast toast = new Toast(context);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -800);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(view1);
+        toast.show();
+    }
 
 
 

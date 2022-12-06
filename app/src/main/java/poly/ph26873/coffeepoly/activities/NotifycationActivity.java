@@ -32,6 +32,7 @@ import java.util.List;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.NotifyRCVAdapter;
 import poly.ph26873.coffeepoly.models.Notify;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class NotifycationActivity extends AppCompatActivity {
 
@@ -47,6 +48,7 @@ public class NotifycationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation);
+        MyReceiver.indexMess++;
         back();
         showListNotifyCation();
     }
@@ -153,6 +155,7 @@ public class NotifycationActivity extends AppCompatActivity {
         LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation);
         recyclerView.setLayoutAnimation(layoutAnimationController);
     }
+
 
     @Override
     protected void onStop() {

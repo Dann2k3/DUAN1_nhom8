@@ -534,12 +534,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Intent intent = new Intent(this, NotifycationActivity.class);
             startActivity(intent);
             alertCount = 0;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                overridePendingTransition(R.anim.next_enter, R.anim.next_exit);
-            }
-
+            hieuUngChuyenMan();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void hieuUngChuyenMan() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            overridePendingTransition(R.anim.next_enter, R.anim.next_exit);
+        }
     }
 
 
