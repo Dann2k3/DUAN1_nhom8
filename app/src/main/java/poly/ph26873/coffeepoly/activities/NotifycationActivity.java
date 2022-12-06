@@ -48,7 +48,6 @@ public class NotifycationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation);
-        MyReceiver.indexMess++;
         back();
         showListNotifyCation();
     }
@@ -129,12 +128,23 @@ public class NotifycationActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    overridePendingTransition(R.anim.prev_enter, R.anim.prev_exit);
-                }
+                chuyenListdaXem();
+                DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
+                myRef1.setValue(list, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        Mfinish();
+                    }
+                });
             }
         });
+    }
+
+    private void Mfinish() {
+        finish();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            overridePendingTransition(R.anim.prev_enter, R.anim.prev_exit);
+        }
     }
 
     @Override
@@ -160,10 +170,16 @@ public class NotifycationActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        for (int i = 0; i < list.size(); i++) {
-            list.get(i).setStatus(1);
-        }
+        chuyenListdaXem();
         DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
         myRef1.setValue(list);
+    }
+
+    private void chuyenListdaXem() {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getStatus() == 0) {
+                list.get(i).setStatus(1);
+            }
+        }
     }
 }

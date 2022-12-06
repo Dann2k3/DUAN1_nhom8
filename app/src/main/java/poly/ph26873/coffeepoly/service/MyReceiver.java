@@ -9,6 +9,7 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +36,6 @@ import poly.ph26873.coffeepoly.models.Notify;
 public class MyReceiver extends BroadcastReceiver {
     private int a = 0;
     public static boolean isConnected = false;
-    public static int indexMess = 0;
-    public static int thongbao1 = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -85,23 +84,13 @@ public class MyReceiver extends BroadcastReceiver {
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if (indexMess != 0) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            indexMess = 0;
-                        }
-                    }, 3000);
-                    return;
-                }
                 Notify notify = snapshot.getValue(Notify.class);
                 if (notify != null && notify.getStatus() == 0) {
                     list.add(notify);
+                    Log.d("mmm", "+1");
                     if (list.size() > 0) {
-                        if(thongbao1==0){
                             hienThongBao(context);
-                            thongbao1++;
-                        }
+                            list.clear();
                     }
                 }
             }
@@ -151,6 +140,12 @@ public class MyReceiver extends BroadcastReceiver {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(view1);
         toast.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toast.cancel();
+            }
+        }, 2000);
     }
 
 
