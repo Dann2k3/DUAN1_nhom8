@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import poly.ph26873.coffeepoly.service.MyReceiver;
 public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdapter.BillHolder> {
     private Context context;
     private List<Bill> list;
+    private static final String TAG = "zzz";
 
     public ManagementRCVAdapter(Context context) {
         this.context = context;
@@ -109,12 +111,12 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
         String thoigian = simpleDateFormat.format(calendar.getTime());
         Notify notify = new Notify();
-        notify.setId(bill.getId());
         notify.setStatus(0);
         notify.setTime(thoigian);
-        notify.setType(0);
+        notify.setContent("Đơn hàng " + bill.getId() + " đã được nhân viên xác nhận");
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
+        Log.d(TAG, "CapNhatthongBao: " + thoigian);
         reference.setValue(notify);
     }
 

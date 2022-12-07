@@ -1,10 +1,8 @@
 package poly.ph26873.coffeepoly.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,20 +25,17 @@ import poly.ph26873.coffeepoly.adapter.DetailTurnoverBillRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Turnover;
-import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class DetailTurnoverActivity extends AppCompatActivity {
     private ImageView imv_back_layout_detail_turnover;
     private TextView tv_dt_turn_time, tv_dt_turn_name, tv_dt_turn_nbp, tv_dt_turn_email, tv_dt_turn_ad, tv_dt_turn_total;
     private RecyclerView dt_turn_RecyclerView;
     private DetailTurnoverBillRCVAdapter adapter;
-    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_turnover);
-        myReceiver = new MyReceiver();
         initUi();
         Turnover turnover = (Turnover) getIntent().getSerializableExtra("turnover");
         if (turnover != null) {
@@ -56,6 +51,7 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(turnover.getPath()).child(turnover.getTime());
         reference.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 progressDialog.dismiss();
@@ -87,12 +83,7 @@ public class DetailTurnoverActivity extends AppCompatActivity {
     }
 
     private void onClicktoBack() {
-        imv_back_layout_detail_turnover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imv_back_layout_detail_turnover.setOnClickListener(v -> finish());
     }
 
     private void initUi() {
@@ -110,16 +101,4 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         adapter = new DetailTurnoverBillRCVAdapter(DetailTurnoverActivity.this);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
-    }
 }

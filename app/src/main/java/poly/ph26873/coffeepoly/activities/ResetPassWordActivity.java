@@ -3,9 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class ResetPassWordActivity extends AppCompatActivity {
     private static final String TAG = "zzz";
@@ -32,13 +29,11 @@ public class ResetPassWordActivity extends AppCompatActivity {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private ProgressDialog progressDialog;
-    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_pass_word);
-        myReceiver = new MyReceiver();
         Log.d(TAG, "------------ResetPassWordActivity----------------");
         initUi();
         SendCode();
@@ -98,17 +93,5 @@ public class ResetPassWordActivity extends AppCompatActivity {
         if (VALID_EMAIL_ADDRESS_REGEX.matcher(email_rs).find()) {
             edt_rs_email.setText(email_rs);
         }
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
     }
 }

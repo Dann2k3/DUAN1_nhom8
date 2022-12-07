@@ -2,8 +2,6 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -25,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
-import pl.droidsonroids.gif.GifImageView;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -38,19 +35,15 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
     private TextView tv_reset_password;
     private TextInputLayout til_email, til_pass;
-    //    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-//            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
 
     private int count = 0;
-    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        myReceiver = new MyReceiver();
         Log.d(TAG, "---------LoginActivity------------- ");
         initUi();
         initAccount();
@@ -106,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
             til_pass.setError("");
             edtPass.clearFocus();
             progressDialog.show();
-            if (MyReceiver.isConnected == false) {
+            if (!MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
             } else {
@@ -180,18 +173,4 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
-    }
-
 }

@@ -2,9 +2,10 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -13,33 +14,31 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Objects;
+
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
-import poly.ph26873.coffeepoly.models.Notify;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 import poly.ph26873.coffeepoly.service.MyService;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "zzz";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        xoaFav();
         TextView tv_coofee_poly = findViewById(R.id.tv_coofee_poly);
         ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f, 360f);
         ob1.setDuration(2000);
@@ -50,28 +49,17 @@ public class SplashActivity extends AppCompatActivity {
         animatorSet.start();
         Log.d(TAG, "--------------SplashActivity--------------");
 
-        if (kiemTraInternet() == true) {
+        if (kiemTraInternet()) {
             serviceConnection();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                        nextActivity();
-                }
-            }, 3000);
+            new Handler().postDelayed(this::nextActivity, 3000);
         } else {
             Toast.makeText(SplashActivity.this, "Hãy kiểm tra kết nối mạng", Toast.LENGTH_SHORT).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
             builder.setTitle("Không có kết nối mạng");
             builder.setCancelable(false);
-            builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    System.exit(0);
-                }
-            });
+            builder.setPositiveButton("Thoát", (dialog, which) -> System.exit(0));
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
-            return;
         }
     }
 
@@ -83,24 +71,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private boolean kiemTraInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connectivityManager.getNetworkInfo(connectivityManager.TYPE_WIFI);
-        NetworkInfo mobile = connectivityManager.getNetworkInfo(connectivityManager.TYPE_MOBILE);
-        if (wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void xoaFav() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference reference = database.getReference("coffee-poly/cart");
-        reference.removeValue(new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Toast.makeText(SplashActivity.this, "delete", Toast.LENGTH_SHORT).show();
-            }
-        });
+        NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        return wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected());
     }
 
 
@@ -118,7 +91,7 @@ public class SplashActivity extends AppCompatActivity {
                 return;
             }
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            String em = user.getEmail().replaceAll("@gmail.com", "");
+            String em = Objects.requireNonNull(user.getEmail()).replaceAll("@gmail.com", "");
             DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + em);
             myRef1.removeValue();
             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
@@ -133,4 +106,5 @@ public class SplashActivity extends AppCompatActivity {
         super.onResume();
         kiemTraInternet();
     }
+
 }

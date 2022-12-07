@@ -23,7 +23,6 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +55,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
@@ -77,7 +77,6 @@ import poly.ph26873.coffeepoly.ui.TopProductFragment;
 import poly.ph26873.coffeepoly.ui.TurnoverFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TABLE_NAME = "coffee-poly";
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
@@ -90,13 +89,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static int IDmenu = -1;
     private Intent intent;
     private ProgressDialog progressDialog;
-    private MyReceiver myReceiver;
+
     public static String tt;
     public static int idMain;
     public static Fragment fragment;
     private FrameLayout redCircle;
     private TextView countTextView;
     private int alertCount = 0;
+    private MyReceiver myReceiver;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -121,11 +121,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myReceiver = new MyReceiver();
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Đang tải dữ liệu...");
         progressDialog.show();
-        myReceiver = new MyReceiver();
         Log.d(TAG, "---------------MainActivity---------------");
         intent = getIntent();
         initUi();
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void checkAccountType(FirebaseUser user) {
+    private void checkAccountType() {
         if (ListData.type_user_current == 2) {
             tt = "Trang chủ";
             fragment = new HomeFragment();
@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String name = user.getDisplayName();
         String email = user.getEmail();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+        assert email != null;
         DatabaseReference reference = database.getReference("coffee-poly").child("user").child(email.replaceAll("@gmail.com", "")).child("image");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -194,14 +195,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (name != null && !name.trim().isEmpty()) {
             tv_name.setText(name);
         } else {
-            assert email != null;
             name = email.replaceAll("@gmail.com", "");
             tv_name.setText(name);
         }
         tv_email.setText(email);
         Log.d(TAG, "name user: " + name);
         Log.d(TAG, "email user: " + email);
-        checkAccountType(user);
+        checkAccountType();
     }
 
 
@@ -459,28 +459,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_notify, menu);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String em = user.getEmail().replace("@gmail.com", "");
+        assert user != null;
+        String em = Objects.requireNonNull(user.getEmail()).replace("@gmail.com", "");
         DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
         List<Notify> list = new ArrayList<>();
-        alertCount = list.size();
+        alertCount = 0;
         myRef1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -497,7 +484,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Notify notify = snapshot.getValue(Notify.class);
                 if (notify != null && !list.isEmpty()) {
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getTime() == notify.getTime()) {
+                        if (list.get(i).getTime().equals(notify.getTime())) {
                             if (notify.getStatus() == 1) {
                                 list.remove(i);
                                 alertCount = list.size();
@@ -549,14 +536,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void hieuUng(Menu menu) {
         final MenuItem alertMenuItem = menu.findItem(R.id.action_notify);
         FrameLayout rootView = (FrameLayout) alertMenuItem.getActionView();
-        redCircle = (FrameLayout) rootView.findViewById(R.id.view_alert_red_circle);
-        countTextView = (TextView) rootView.findViewById(R.id.view_alert_count_textview);
-        rootView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(alertMenuItem);
-            }
-        });
+        redCircle = rootView.findViewById(R.id.view_alert_red_circle);
+        countTextView = rootView.findViewById(R.id.view_alert_count_textview);
+        rootView.setOnClickListener(v -> onOptionsItemSelected(alertMenuItem));
         updateAlertIcon();
     }
 
@@ -567,5 +549,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             countTextView.setText("");
         }
         redCircle.setVisibility((alertCount > 0) ? VISIBLE : GONE);
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
     }
 }

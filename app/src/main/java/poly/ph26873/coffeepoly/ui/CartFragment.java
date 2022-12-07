@@ -299,7 +299,11 @@ public class CartFragment extends Fragment {
     }
 
     private void thongbao(String time) {
-        Notify notify = new Notify(time, 0, time, 1);
+        Log.d(TAG, "thongbao: "+time);
+        Notify notify = new Notify();
+        notify.setTime(time);
+        notify.setContent("Đơn hàng "+time+" đã đặt hàng thành công.");
+        notify.setStatus(0);
         DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(email).child(time);
         reference.setValue(notify);
     }
