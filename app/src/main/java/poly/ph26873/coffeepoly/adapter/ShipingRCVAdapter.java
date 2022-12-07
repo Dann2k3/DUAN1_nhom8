@@ -124,7 +124,10 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
         String thoigian = simpleDateFormat.format(calendar.getTime());
-        Notify notify = new Notify(bill.getId(), 0, thoigian, 4);
+        Notify notify = new Notify();
+        notify.setTime(thoigian);
+        notify.setContent("Đơn hàng " + bill.getId() + " đã giao thành công");
+        notify.setStatus(0);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
         reference.setValue(notify);

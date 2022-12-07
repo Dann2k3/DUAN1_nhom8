@@ -46,16 +46,8 @@ public class Product implements Serializable {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public int getPrice() {
         return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
     }
 
     public String getContent() {
@@ -76,10 +68,6 @@ public class Product implements Serializable {
 
     public int getQuantitySold() {
         return quantitySold;
-    }
-
-    public void setQuantitySold(int quantitySold) {
-        this.quantitySold = quantitySold;
     }
 
     public int getType() {

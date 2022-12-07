@@ -2,8 +2,6 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,13 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -35,20 +30,16 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView tvSignIn;
     private TextInputLayout til_email1, til_pass1;
     private FirebaseAuth mAuth;
-    //    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-//            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
     private ProgressDialog progressDialog;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
-    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        myReceiver = new MyReceiver();
         Log.d(TAG, "---------SignUpActivity------------- ");
         initUi();
         signInAccount();
@@ -87,7 +78,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             til_pass1.setError("");
             edtPass.clearFocus();
-            if (MyReceiver.isConnected == false) {
+            if (!MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -104,15 +95,12 @@ public class SignUpActivity extends AppCompatActivity {
                             User user = new User(email1, email1, 18, email, "Nam", "Trống", "Trống", "https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588");
                             CreateFrofileUser(user, email1);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                                    intent.putExtra("email", email);
-                                    intent.putExtra("pass", password);
-                                    startActivity(intent);
-                                    finishAffinity();
-                                }
+                            new Handler().postDelayed(() -> {
+                                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                                intent.putExtra("email", email);
+                                intent.putExtra("pass", password);
+                                startActivity(intent);
+                                finishAffinity();
                             }, 1000);
                         } else {
                             Log.d(TAG, "tao tai khoan that bai");
@@ -125,14 +113,10 @@ public class SignUpActivity extends AppCompatActivity {
     public void CreateFrofileUser(User user, String email1) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(email1);
-        newUser.setValue(user, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                Log.d(TAG, "tạo user trên firebase thành công... ");
-                DatabaseReference keyRef = database.getReference(TABLE_NAME).child("type_user").child(email1);
-                keyRef.setValue(2);
-            }
-
+        newUser.setValue(user, (error, ref) -> {
+            Log.d(TAG, "tạo user trên firebase thành công... ");
+            DatabaseReference keyRef = database.getReference(TABLE_NAME).child("type_user").child(email1);
+            keyRef.setValue(2);
         });
     }
 
@@ -146,18 +130,5 @@ public class SignUpActivity extends AppCompatActivity {
         til_pass1 = findViewById(R.id.til_pass1);
         progressDialog = new ProgressDialog(SignUpActivity.this);
         progressDialog.setTitle("Đang tạo tài khoản...");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
     }
 }

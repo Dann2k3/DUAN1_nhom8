@@ -88,10 +88,10 @@ public class MyReceiver extends BroadcastReceiver {
                 if (notify != null && notify.getStatus() == 0) {
                     list.add(notify);
                     Log.d("mmm", "+1");
-                    if (list.size() > 0) {
-                            hienThongBao(context);
-                            list.clear();
-                    }
+                }
+                if (list.size() > 0) {
+                    hienThongBao(context);
+                    list.clear();
                 }
             }
 
@@ -136,16 +136,10 @@ public class MyReceiver extends BroadcastReceiver {
     private void hienThongBao(Context context) {
         View view1 = LayoutInflater.from(context).inflate(R.layout.layout_toast, null);
         Toast toast = new Toast(context);
-        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -800);
+        toast.setGravity(Gravity.CENTER_HORIZONTAL, 0, -850);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(view1);
         toast.show();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                toast.cancel();
-            }
-        }, 2000);
     }
 
 

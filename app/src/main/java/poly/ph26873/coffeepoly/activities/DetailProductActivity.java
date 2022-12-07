@@ -3,10 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Item_Bill;
@@ -53,7 +50,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private int a = 1;
     private Button btn_detai_product_add_to_cart;
     private static final String COL_FAVORITE = "favorite";
-    private List<Integer> favoriteList = new ArrayList<>();
+    private final List<Integer> favoriteList = new ArrayList<>();
     private Product product;
     private String idu;
     private DatabaseReference reference;
@@ -61,22 +58,20 @@ public class DetailProductActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private int ViTri;
     private FirebaseDatabase database;
-    private List<Item_Bill> item_billList;
     private LinearLayout ln_out;
-    private MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
-        myReceiver = new MyReceiver();
         initUi();
         Intent intent = getIntent();
         product = (Product) intent.getSerializableExtra("product");
         backActivity();
         showInformationProduct();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        idu = user.getEmail().replaceAll("@gmail.com", "");
+        assert user != null;
+        idu = Objects.requireNonNull(user.getEmail()).replaceAll("@gmail.com", "");
         database = FirebaseDatabase.getInstance();
         kiemTraLoaiTaiKhoan();
         layDanhSachYeuThich();
@@ -89,7 +84,7 @@ public class DetailProductActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int type = snapshot.getValue(Integer.class);
+                int type = Objects.requireNonNull(snapshot).getValue(Integer.class);
                 if (type != 2) {
                     imv_detail_product_favorite.setVisibility(View.INVISIBLE);
                     ln_out.setVisibility(View.INVISIBLE);
@@ -106,7 +101,7 @@ public class DetailProductActivity extends AppCompatActivity {
 
     private void addToCart() {
         btn_detai_product_add_to_cart.setOnClickListener(v -> {
-            if (MyReceiver.isConnected == false) {
+            if (!MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -117,36 +112,27 @@ public class DetailProductActivity extends AppCompatActivity {
             item_bill.setId_product(product.getId());
             item_bill.setQuantity(a);
             Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
             String time = simpleDateFormat.format(calendar.getTime());
             item_bill.setTime(time);
             reference = database.getReference(TABLE_NAME).child(COL_CART).child(idu).child(time);
-            reference.setValue(item_bill, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                    progressDialog.dismiss();
-                    Log.d(TAG, "Đã thêm vào giỏ hàng ");
-                    Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this);
-                    builder.setTitle("Sản phẩm đã được chuyển đến giở hàng");
-                    builder.setMessage("Bạn có muốn chuyển đến giỏ hàng?");
-                    builder.setPositiveButton("Đưa tôi đến giỏ hàng", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
-                            intent.putExtra("goto", "cart");
-                            startActivity(intent);
-                        }
-                    });
-                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    });
-                    builder.setCancelable(true);
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+            reference.setValue(item_bill, (error, ref) -> {
+                progressDialog.dismiss();
+                Log.d(TAG, "Đã thêm vào giỏ hàng ");
+                Toast.makeText(DetailProductActivity.this, "Đã thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this);
+                builder.setTitle("Sản phẩm đã được chuyển đến giở hàng");
+                builder.setMessage("Bạn có muốn chuyển đến giỏ hàng?");
+                builder.setPositiveButton("Đưa tôi đến giỏ hàng", (dialog, which) -> {
+                    Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
+                    intent.putExtra("goto", "cart");
+                    startActivity(intent);
+                });
+                builder.setNegativeButton("Hủy", (dialog, which) -> {
+                });
+                builder.setCancelable(true);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             });
         });
     }
@@ -175,7 +161,6 @@ public class DetailProductActivity extends AppCompatActivity {
     private void kiemTraIdProductTrongList(List<Integer> favoriteList1) {
         PrInList = -1;
         if (favoriteList1.size() == 0) {
-            PrInList = -1;
             imv_detail_product_favorite.setImageResource(R.drawable.heart);
             Log.d(TAG, " listfavorite trống");
             Log.d(TAG, " PrInList :" + PrInList);
@@ -203,7 +188,7 @@ public class DetailProductActivity extends AppCompatActivity {
 
     private void onClickImagefavorite() {
         imv_detail_product_favorite.setOnClickListener(v -> {
-            if (MyReceiver.isConnected == false) {
+            if (!MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -212,23 +197,17 @@ public class DetailProductActivity extends AppCompatActivity {
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 favoriteList.add(product.getId());
-                reference.setValue(favoriteList, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                        layDanhSachYeuThich();
-                        progressDialog.dismiss();
-                    }
+                reference.setValue(favoriteList, (error, ref) -> {
+                    layDanhSachYeuThich();
+                    progressDialog.dismiss();
                 });
             } else {
                 progressDialog.setMessage("Đang xoá khỏi danh sách yêu thích");
                 progressDialog.show();
                 favoriteList.remove(ViTri);
-                reference.setValue(favoriteList, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                        layDanhSachYeuThich();
-                        progressDialog.dismiss();
-                    }
+                reference.setValue(favoriteList, (error, ref) -> {
+                    layDanhSachYeuThich();
+                    progressDialog.dismiss();
                 });
             }
         });
@@ -293,12 +272,7 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void backActivity() {
-        imv_back_layout_detail_product.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        imv_back_layout_detail_product.setOnClickListener(v -> finish());
     }
 
     private void initUi() {
@@ -319,20 +293,5 @@ public class DetailProductActivity extends AppCompatActivity {
         ln_out = findViewById(R.id.ln_out);
         scrV_content = findViewById(R.id.scrV_content);
         progressDialog = new ProgressDialog(DetailProductActivity.this);
-        item_billList = new ArrayList<>();
     }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        unregisterReceiver(myReceiver);
-    }
-
 }

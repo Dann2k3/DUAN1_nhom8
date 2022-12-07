@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Collections;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -49,17 +49,16 @@ public class NotifyRCVAdapter extends RecyclerView.Adapter<NotifyRCVAdapter.Noti
         Notify notify = list.get(position);
         if (notify != null) {
             holder.tv_time.setText("Thời gian: " + notify.getTime());
-            String trangthai = "";
-            if (notify.getType() == 1) {
-                trangthai = "đã đặt hàng thành công";
-            } else if (notify.getType() == 0) {
-                trangthai = "đang vận chuyển";
-            } else if (notify.getType() == 2) {
-                trangthai = "đã hủy";
+            if (notify.getContent().contains("hủy")) {
+                holder.tv_content.setTextColor(Color.RED);
+            } else if (notify.getContent().contains("giao")) {
+                holder.tv_content.setTextColor(Color.GREEN);
+            } else if (notify.getContent().contains("đặt")) {
+                holder.tv_content.setTextColor(Color.BLACK);
             } else {
-                trangthai = "đã giao thành công";
+                holder.tv_content.setTextColor(Color.BLUE);
             }
-            holder.tv_content.setText("Đơn hàng " + notify.getId() + " " + trangthai);
+            holder.tv_content.setText(notify.getContent());
             if (notify.getStatus() == 0) {
                 holder.imv_status.setVisibility(View.VISIBLE);
             } else {

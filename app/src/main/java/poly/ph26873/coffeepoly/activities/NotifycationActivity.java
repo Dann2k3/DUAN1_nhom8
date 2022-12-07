@@ -26,17 +26,15 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.NotifyRCVAdapter;
 import poly.ph26873.coffeepoly.models.Notify;
-import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class NotifycationActivity extends AppCompatActivity {
 
-    private ImageView imageView;
     private int count = 0;
     private RecyclerView recyclerView;
     private List<Notify> list;
@@ -48,9 +46,23 @@ public class NotifycationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation);
+        list = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        em = Objects.requireNonNull(user.getEmail()).replace("@gmail.com", "");
         back();
         showListNotifyCation();
+        delete();
     }
+
+    private void delete() {
+        ImageView imageView = findViewById(R.id.imv_del_layout_notify);
+        imageView.setOnClickListener(v -> {
+            DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(em);
+            reference.removeValue();
+        });
+    }
+
 
     private void showListNotifyCation() {
         recyclerView = findViewById(R.id.notiRecyclerView);
@@ -59,10 +71,7 @@ public class NotifycationActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
         NotifyRCVAdapter adapter = new NotifyRCVAdapter(this);
-        list = new ArrayList<>();
         database = FirebaseDatabase.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        em = user.getEmail().replace("@gmail.com", "");
         DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
         myRef1.addChildEventListener(new ChildEventListener() {
             @Override
@@ -70,15 +79,14 @@ public class NotifycationActivity extends AppCompatActivity {
                 Notify notify = snapshot.getValue(Notify.class);
                 if (notify != null) {
                     list.add(notify);
-                    Collections.sort(list, new Comparator<Notify>() {
-                        @Override
-                        public int compare(Notify o1, Notify o2) {
-                            return o1.getStatus()-o2.getStatus();
-                        }
-                    });
+                    if (notify.getStatus() == 0) {
+                        Collections.sort(list, (o1, o2) -> o1.getStatus() - o2.getStatus());
+                    } else {
+                        Collections.reverse(list);
+                    }
                     adapter.setData(list);
                     recyclerView.setAdapter(adapter);
-                    if (isFirts == true) {
+                    if (isFirts) {
                         setAL();
                         isFirts = false;
                     }
@@ -96,7 +104,7 @@ public class NotifycationActivity extends AppCompatActivity {
                 Notify notify = snapshot.getValue(Notify.class);
                 if (notify != null && !list.isEmpty()) {
                     for (int i = 0; i < list.size(); i++) {
-                        if (notify.getId() == list.get(i).getId()) {
+                        if (notify.getTime().equals(list.get(i).getTime())) {
                             list.remove(i);
                             adapter.setData(list);
                             recyclerView.setAdapter(adapter);
@@ -124,19 +132,10 @@ public class NotifycationActivity extends AppCompatActivity {
     }
 
     private void back() {
-        imageView = findViewById(R.id.imv_back_layout_notify);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chuyenListdaXem();
-                DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
-                myRef1.setValue(list, new DatabaseReference.CompletionListener() {
-                    @Override
-                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                        Mfinish();
-                    }
-                });
-            }
+        ImageView imageView = findViewById(R.id.imv_back_layout_notify);
+        imageView.setOnClickListener(v -> {
+            chuyenListdaXem();
+            Mfinish();
         });
     }
 
@@ -168,17 +167,16 @@ public class NotifycationActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         chuyenListdaXem();
-        DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
-        myRef1.setValue(list);
     }
 
     private void chuyenListdaXem() {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getStatus() == 0) {
-                list.get(i).setStatus(1);
+                DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em + "/" + list.get(i).getTime() + "/status");
+                myRef1.setValue(1);
             }
         }
     }
