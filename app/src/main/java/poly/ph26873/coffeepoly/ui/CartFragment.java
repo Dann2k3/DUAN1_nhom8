@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.CartRCVAdapter;
@@ -233,8 +234,8 @@ public class CartFragment extends Fragment {
                                         return;
                                     }
                                     til_xac_nhan_address.setError("");
-                                    String regex = "/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/";
-                                    if (edt_xac_nhan_nb.getText().toString().trim().matches(regex)) {
+
+                                    if (!android.util.Patterns.PHONE.matcher(edt_xac_nhan_nb.getText().toString().trim()).matches()) {
                                         til_xac_nhan_nb.setError("Kiểm tra lại số điện thoại");
                                         edt_xac_nhan_nb.requestFocus();
                                         edt_xac_nhan_nb.setSelection(edt_xac_nhan_nb.length());

@@ -33,6 +33,7 @@ import poly.ph26873.coffeepoly.service.MyService;
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "zzz";
+    private MyReceiver myReceiver;
 
 
     @Override
@@ -101,10 +102,18 @@ public class SplashActivity extends AppCompatActivity {
         }
         finish();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         kiemTraInternet();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(myReceiver, intentFilter);
+    }
 }
