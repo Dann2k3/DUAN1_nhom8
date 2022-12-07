@@ -138,7 +138,9 @@ public class MyService extends Service {
             readUser.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    ListData.type_user_current = snapshot.getValue(Integer.class);
+                    if(snapshot.getValue(Integer.class)!=null){
+                        ListData.type_user_current = snapshot.getValue(Integer.class);
+                    }
                 }
 
                 @Override

@@ -78,7 +78,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             til_pass1.setError("");
             edtPass.clearFocus();
-            if (!MyReceiver.isConnected) {
+            if (MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
                 return;
             }

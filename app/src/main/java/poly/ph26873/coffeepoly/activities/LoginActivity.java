@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
             til_pass.setError("");
             edtPass.clearFocus();
             progressDialog.show();
-            if (!MyReceiver.isConnected) {
+            if (MyReceiver.isConnected) {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
             } else {
