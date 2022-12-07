@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FrameLayout redCircle;
     private TextView countTextView;
     private int alertCount = 0;
-    private MyReceiver myReceiver;
 
 
     final private ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -121,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        myReceiver = new MyReceiver();
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setTitle("Đang tải dữ liệu...");
@@ -549,11 +547,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             countTextView.setText("");
         }
         redCircle.setVisibility((alertCount > 0) ? VISIBLE : GONE);
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(myReceiver, intentFilter);
     }
 }

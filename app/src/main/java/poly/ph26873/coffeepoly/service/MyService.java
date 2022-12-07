@@ -36,6 +36,7 @@ import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
+import poly.ph26873.coffeepoly.models.User;
 
 public class MyService extends Service {
     public MyService() {
@@ -58,7 +59,41 @@ public class MyService extends Service {
         capNhatListQuanProduct(database, month);
         layLoaiTaiKhoan(database);
         thongBao(database);
+        laydanhsachUser(database);
         return START_NOT_STICKY;
+    }
+
+    private void laydanhsachUser(FirebaseDatabase database) {
+        DatabaseReference reference = database.getReference("coffee-poly").child("user");
+        reference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                if (user != null) {
+                    ListData.listUser.add(user);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void thongBao(FirebaseDatabase database) {

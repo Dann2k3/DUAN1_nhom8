@@ -35,7 +35,7 @@ import poly.ph26873.coffeepoly.models.Notify;
 
 public class MyReceiver extends BroadcastReceiver {
     private int a = 0;
-    public static boolean isConnected = false;
+    public static boolean isConnected = true;
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -73,7 +73,7 @@ public class SettingFragment extends Fragment {
     private SignUpActivity signUpActivity;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
-    private String regex = "/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/";
+    private String regex = "/^(0)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/";
 
 
     @Override
@@ -123,7 +123,7 @@ public class SettingFragment extends Fragment {
             edt_number_phone_frgst.requestFocus();
             return;
         }
-        if (edt_number_phone_frgst.getText().toString().trim().matches(regex)) {
+        if (!android.util.Patterns.PHONE.matcher(edt_number_phone_frgst.getText().toString().trim()).matches()) {
             til_number_phone_frgst.setError("Số điện thoại không hợp lệ!");
             edt_number_phone_frgst.requestFocus();
             return;
