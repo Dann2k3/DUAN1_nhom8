@@ -86,6 +86,9 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                             } else if (bill.getStatus() == 4) {
                                 holder.tv_his_status.setTextColor(Color.GREEN);
                                 holder.tv_his_status.setText("Trạng thái đơn hàng: Đã giao hàng thành công");
+                            }else {
+                                holder.tv_his_status.setTextColor(Color.RED);
+                                holder.tv_his_status.setText("Trạng thái đơn hàng: Đã hủy đơn bởi nhân viên");
                             }
                             holder.onClick_del_his.setOnLongClickListener(new View.OnLongClickListener() {
                                 @Override
