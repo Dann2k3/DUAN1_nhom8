@@ -46,7 +46,7 @@ public class MyService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
+//        createNotificationChannel();
     }
 
     @Override
@@ -58,9 +58,9 @@ public class MyService extends Service {
         capNhatListProduct(database);
         capNhatListQuanProduct(database, month);
         layLoaiTaiKhoan(database);
-        thongBao(database);
+//        thongBao(database);
         laydanhsachUser(database);
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     private void laydanhsachUser(FirebaseDatabase database) {

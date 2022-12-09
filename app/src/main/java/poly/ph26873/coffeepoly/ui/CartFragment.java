@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,7 +67,7 @@ public class CartFragment extends Fragment {
     private CartRCVAdapter cartRCVAdapter;
     private List<Item_Bill> list;
     private TextView tv_cart_thong_ke, tv_cart_tong_tien, tv_cart_mess;
-    private Button btn_cart_order;
+    private ImageButton btn_cart_order;
     private String email;
     private FirebaseDatabase database;
     private String thong_ke = "";
@@ -407,7 +409,7 @@ public class CartFragment extends Fragment {
         thong_ke = "";
         for (int i = 0; i < list3.size(); i++) {
             tong_tien += list1.get(i).getQuantity() * list3.get(i).getPrice();
-            thong_ke += list3.get(i).getName() + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K\n";
+            thong_ke += list3.get(i).getName().replaceAll("Cà phê", "") + "  x" + list1.get(i).getQuantity() + "  *" + list3.get(i).getPrice() + "K  = " + list1.get(i).getQuantity() * list3.get(i).getPrice() + "K\n";
         }
         ln_bill.setVisibility(View.VISIBLE);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
