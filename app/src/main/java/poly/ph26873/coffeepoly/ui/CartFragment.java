@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -150,17 +149,17 @@ public class CartFragment extends Fragment {
                 for (int i = 0; i < list.size(); i++) {
                     if (list.get(i).getTime() == item_bill.getTime()) {
                         list.remove(list.get(i));
-                        if (list.isEmpty()) {
-                            tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
-                            ln_bill.setVisibility(View.INVISIBLE);
-                        } else {
-                            tv_cart_mess.setText("");
-                        }
-                        cartRCVAdapter.setData(list);
-                        layDanhSachTinhTien();
                         break;
                     }
                 }
+                if (list.isEmpty()) {
+                    tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    ln_bill.setVisibility(View.INVISIBLE);
+                } else {
+                    tv_cart_mess.setText("");
+                }
+                cartRCVAdapter.setData(list);
+                layDanhSachTinhTien();
             }
 
             @Override
@@ -183,6 +182,9 @@ public class CartFragment extends Fragment {
             public void onClick(View v) {
                 if (MyReceiver.isConnected == false) {
                     Toast.makeText(getContext(), "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (tong_tien == 0) {
                     return;
                 }
                 ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -272,6 +274,7 @@ public class CartFragment extends Fragment {
                                                     thongbao(time);
                                                     thongbaonhanvien(time);
                                                     alertDialog.dismiss();
+                                                    tong_tien = 0;
                                                 }
                                             });
                                         }
@@ -369,9 +372,14 @@ public class CartFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        0, 0);
+                ln_bill.setLayoutParams(lp);
             }
         });
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                0, 0);
+        ln_bill.setLayoutParams(lp);
     }
 
     private void layDanhSachSanPham(List<Item_Bill> list1) {

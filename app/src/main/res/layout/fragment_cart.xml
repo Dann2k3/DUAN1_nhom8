@@ -30,7 +30,7 @@
             android:background="@drawable/custom_bb"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="invisible"
 
             >
 
