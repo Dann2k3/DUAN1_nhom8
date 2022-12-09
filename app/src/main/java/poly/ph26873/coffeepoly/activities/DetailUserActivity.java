@@ -21,9 +21,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
@@ -39,6 +36,9 @@ public class DetailUserActivity extends AppCompatActivity {
     private Button btn_ycmk, btn_dis, btn_ena;
     private FirebaseDatabase database;
     private String pa;
+    private static int a = 0;
+    private static int b = 0;
+    private static int c = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,29 +174,28 @@ public class DetailUserActivity extends AppCompatActivity {
 
                     }
                 });
-                List<Bill> list4 = new ArrayList<>();
-                List<Bill> list2 = new ArrayList<>();
-                List<Bill> list5 = new ArrayList<>();
-
                 DatabaseReference reference1 = database.getReference("coffee-poly").child("bill").child(user.getId());
                 reference1.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        a = 0;
+                        b = 0;
+                        c = 0;
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             Bill bill = dataSnapshot.getValue(Bill.class);
                             if (bill != null) {
                                 if (bill.getStatus() == 2) {
-                                    list2.add(bill);
+                                    a++;
                                 } else if (bill.getStatus() == 4) {
-                                    list4.add(bill);
-                                } else {
-                                    list5.add(bill);
+                                    b++;
+                                } else if (bill.getStatus() == 5) {
+                                    c++;
                                 }
                             }
                         }
-                        tv_bill_tc.setText(String.valueOf(list4.size()));
-                        tv_bill_tb.setText(String.valueOf(list2.size()));
-                        tv_bill_tb1.setText(String.valueOf(list5.size()));
+                        tv_bill_tc.setText(String.valueOf(b));
+                        tv_bill_tb.setText(String.valueOf(a));
+                        tv_bill_tb1.setText(String.valueOf(c));
                     }
 
                     @Override
