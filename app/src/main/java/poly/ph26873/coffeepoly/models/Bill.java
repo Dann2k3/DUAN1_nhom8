@@ -17,7 +17,7 @@ public class Bill {
     // status = 1 - đang xac nhan
     // status = 2 - đã hủy
     // status = 3 - dang giao
-    // status = 4 - giao thanh cong
+    // status = 4 - giao thanh cong,==5 boom hang
     //id chính là thời gian đặt hàng định dạng: dd_MM_yyyy kk:mm:ss
 
 

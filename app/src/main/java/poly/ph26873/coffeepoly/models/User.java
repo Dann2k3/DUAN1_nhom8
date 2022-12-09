@@ -1,6 +1,8 @@
 package poly.ph26873.coffeepoly.models;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String id;
     private String name;
     private int age;
@@ -9,11 +11,19 @@ public class User {
     private String address;
     private String numberPhone;
     private String image;
+    private int enable;
+
+    //type = 2 user
+    //type = 1 nhanvien
+    //type = 0 admin
+    //enable = 0
+    //disable =1
+
 
     public User() {
     }
 
-    public User(String id, String name, int age, String email, String gender, String address, String numberPhone, String image) {
+    public User(String id, String name, int age, String email, String gender, String address, String numberPhone, String image, int enable) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -22,6 +32,7 @@ public class User {
         this.address = address;
         this.numberPhone = numberPhone;
         this.image = image;
+        this.enable = enable;
     }
 
 
@@ -87,5 +98,13 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getEnable() {
+        return enable;
+    }
+
+    public void setEnable(int enable) {
+        this.enable = enable;
     }
 }

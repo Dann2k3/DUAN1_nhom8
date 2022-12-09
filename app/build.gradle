@@ -52,4 +52,6 @@ dependencies {
 
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
+    implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
+
 }

@@ -22,6 +22,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -117,6 +119,7 @@ public class PassWordFragment extends Fragment {
 //                                                Toast.makeText(getActivity(), "Thay đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
                                                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                                                 transaction.replace(R.id.content_frame, new Password_update_notification_Fragment()).commitAllowingStateLoss();
+                                                putPW(user.getEmail().replaceAll("@gmail.com", ""), passNew1);
                                             }
                                         }
                                     });
@@ -125,6 +128,12 @@ public class PassWordFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    private void putPW(String id, String passNew1) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("pw_user").child(id);
+        reference.setValue(passNew1);
     }
 
     private void initUi(View view) {

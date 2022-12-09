@@ -1,15 +1,22 @@
 package poly.ph26873.coffeepoly.adapter;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +27,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;
@@ -37,7 +46,6 @@ import poly.ph26873.coffeepoly.models.QuantitySoldInMonth;
 import poly.ph26873.coffeepoly.models.Turnover;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
-//ShipingRCVAdapter
 public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.HistoryHolder> implements Filterable {
     private Context context;
     private List<Bill> list;
@@ -101,7 +109,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                                     capNhatSoLuongSanPhamTheoThang(bill.getList());
                                     capNhatSoLuongSanPham(bill.getList());
                                     capNhatDoanthu(bill.getTotal(), bill.getId(), bill.getId_user());
-                                    CapNhatthongBao(bill);
+                                    CapNhatthongBao(bill, 4);
                                     progressDialog.dismiss();
                                 }
                             });
@@ -117,20 +125,93 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
                     alertDialog.show();
                 }
             });
+            holder.imv_more_vert_sp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(context, holder.imv_more_vert_sp);
+                    MenuInflater menuInflater = popupMenu.getMenuInflater();
+                    menuInflater.inflate(R.menu.menu_item_bill1, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int id = item.getItemId();
+                            switch (id) {
+                                case R.id.mn_contact1:
+                                    PermissionListener permissionlistener = new PermissionListener() {
+                                        @Override
+                                        public void onPermissionGranted() {
+                                            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + bill.getNumberPhone()));
+                                            context.startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onPermissionDenied(List<String> deniedPermissions) {
+                                            Toast.makeText(context, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    };
+                                    TedPermission.create()
+                                            .setPermissionListener(permissionlistener)
+                                            .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
+                                            .setPermissions(Manifest.permission.CALL_PHONE)
+                                            .check();
+                                    break;
+                                case R.id.mn_cancel1:
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                    builder.setTitle("Xác nhận hủy đơn?");
+                                    builder.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (MyReceiver.isConnected == false) {
+                                                Toast.makeText(builder.getContext(), "Không có kết nối mạng", Toast.LENGTH_LONG).show();
+                                                return;
+                                            }
+                                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                            DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(bill.getId_user()).child(bill.getId()).child("status");
+                                            reference.setValue(5, new DatabaseReference.CompletionListener() {
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                                    Toast.makeText(builder.getContext(), "Hủy đơn thành công", Toast.LENGTH_SHORT).show();
+                                                    CapNhatthongBao(bill, 2);
+                                                }
+                                            });
+                                        }
+                                    });
+                                    builder.setNegativeButton("Quay lại", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    builder.create().show();
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
+                }
+            });
         }
     }
 
-    private void CapNhatthongBao(Bill bill) {
+
+    private void CapNhatthongBao(Bill bill, int i) {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
         String thoigian = simpleDateFormat.format(calendar.getTime());
         Notify notify = new Notify();
         notify.setTime(thoigian);
-        notify.setContent("Đơn hàng " + bill.getId() + " đã giao thành công");
+        if (i == 4) {
+            notify.setContent("Đơn hàng " + bill.getId() + " đã giao thành công");
+        } else {
+            notify.setContent("Đơn hàng " + bill.getId() + " đã hủy bởi người giao hàng");
+        }
         notify.setStatus(0);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(bill.getId_user()).child(thoigian);
         reference.setValue(notify);
+        DatabaseReference reference1 = database.getReference("coffee-poly").child("notify").child("Staff_Ox3325").child(thoigian);
+        reference1.setValue(notify);
     }
 
     private void capNhatSoLuongSanPhamTheoThang(List<Item_Bill> list) {
@@ -205,6 +286,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
     public class HistoryHolder extends RecyclerView.ViewHolder {
         private TextView tv_bill_mess_s, tv_his_time1s, tv_his_name1s, tv_his_number_phone1s, tv_his_note1s, tv_his_address1s, tv_his_total1s, tv_his_status1s;
         private Button btn_bill_cancle_s;
+        private ImageView imv_more_vert_sp;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
@@ -217,6 +299,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
             tv_his_total1s = itemView.findViewById(R.id.tv_bill_total_s);
             tv_his_status1s = itemView.findViewById(R.id.tv_bill_status_s);
             btn_bill_cancle_s = itemView.findViewById(R.id.btn_bill_cancle_s);
+            imv_more_vert_sp = itemView.findViewById(R.id.imv_more_vert_sp);
         }
     }
 

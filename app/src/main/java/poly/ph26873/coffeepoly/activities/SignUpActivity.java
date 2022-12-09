@@ -92,8 +92,9 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             String email1 = email.replaceAll("@gmail.com", "");
-                            User user = new User(email1, email1, 18, email, "Nam", "Trống", "Trống", "https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588");
+                            User user = new User(email1, email1, 18, email, "Nam", "Trống", "Trống", "https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588", 0);
                             CreateFrofileUser(user, email1);
+                            putPassWord(email1, password);
                             Toast.makeText(SignUpActivity.this, "Tạo tài khoản thành công", Toast.LENGTH_SHORT).show();
                             new Handler().postDelayed(() -> {
                                 Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
@@ -108,6 +109,12 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    private void putPassWord(String email1, String password) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("pw_user").child(email1);
+        reference.setValue(password);
     }
 
     public void CreateFrofileUser(User user, String email1) {

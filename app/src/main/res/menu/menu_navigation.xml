@@ -68,6 +68,10 @@
                 android:id="@+id/nav_top_product"
                 android:icon="@drawable/chart_48px"
                 android:title="Bảng xếp hạng sản phẩm" />
+            <item
+                android:id="@+id/nav_list_user"
+                android:icon="@drawable/list_user_48px"
+                android:title="Danh sách người dùng" />
         </menu>
     </item>
 

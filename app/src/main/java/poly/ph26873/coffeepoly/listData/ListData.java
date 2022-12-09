@@ -11,5 +11,6 @@ public class ListData {
     public static List<Product> listPrd = new ArrayList<>();
     public static List<QuantitySoldInMonth> listQuanPrd = new ArrayList<>();
     public static int type_user_current = -1;
+    public static int enable_user_current = -1;
     public static List<User> listUser = new ArrayList<>();
 }

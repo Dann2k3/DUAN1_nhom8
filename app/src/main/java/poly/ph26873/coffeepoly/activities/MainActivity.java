@@ -6,11 +6,9 @@ import static android.view.View.VISIBLE;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,7 +58,6 @@ import java.util.Objects;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Notify;
-import poly.ph26873.coffeepoly.service.MyReceiver;
 import poly.ph26873.coffeepoly.ui.BillDaGiaoFragment;
 import poly.ph26873.coffeepoly.ui.BillFaildFragment;
 import poly.ph26873.coffeepoly.ui.BillFragment;
@@ -68,6 +65,7 @@ import poly.ph26873.coffeepoly.ui.CartFragment;
 import poly.ph26873.coffeepoly.ui.FavouriteFragment;
 import poly.ph26873.coffeepoly.ui.HistoryFragment;
 import poly.ph26873.coffeepoly.ui.HomeFragment;
+import poly.ph26873.coffeepoly.ui.ListUserFragment;
 import poly.ph26873.coffeepoly.ui.ManagementFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
@@ -130,6 +128,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         toolbarAddNav();
         showInfomationUser();
+
+//        fix();
+    }
+
+    private void fix() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        for (int i = 0; i < ListData.listUser.size(); i++) {
+            DatabaseReference reference = database.getReference("coffee-poly").child("pw_user").child(ListData.listUser.get(i).getId());
+            reference.setValue(123456+"");
+        }
     }
 
 
@@ -152,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             tt = "Xác nhận đơn hàng";
             fragment = new ManagementFragment();
         } else if (ListData.type_user_current == 0) {
-            navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
+//            navigationView.getMenu().findItem(R.id.nav_all_setting_2).setVisible(false);
             navigationView.getMenu().findItem(R.id.nav_all_setting_0).setVisible(false);
             replaceFragmemt(new TurnoverFragment());
             hieuUngChecked(R.id.nav_turnover);
@@ -360,6 +368,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showToolBar("Bảng xếp hạng sản phẩm");
                 IDmenu = id;
                 break;
+            case R.id.nav_list_user:
+                replaceFragmemt(new ListUserFragment());
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Danh sách người dùng");
+                IDmenu = id;
+                break;
             case R.id.nav_setting:
                 replaceFragmemt(settingFragment);
                 hieuUngChecked(id);
@@ -402,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
+        int[] mang = {R.id.nav_list_user, R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }
@@ -463,9 +478,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         assert user != null;
         String em = Objects.requireNonNull(user.getEmail()).replace("@gmail.com", "");
-        DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
         List<Notify> list = new ArrayList<>();
         alertCount = 0;
+        if (ListData.type_user_current == 2) {
+            DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child(em);
+            layData(myRef1, list, menu);
+        } else {
+            DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child("Staff_Ox3325");
+            layData(myRef1, list, menu);
+        }
+
+        hieuUng(menu);
+        return true;
+    }
+
+    private void layData(DatabaseReference myRef1, List<Notify> list, Menu menu) {
         myRef1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -509,8 +536,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-        hieuUng(menu);
-        return true;
     }
 
     @Override
@@ -533,6 +558,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void hieuUng(Menu menu) {
         final MenuItem alertMenuItem = menu.findItem(R.id.action_notify);
+        if (alertMenuItem == null) {
+            return;
+        }
         FrameLayout rootView = (FrameLayout) alertMenuItem.getActionView();
         redCircle = rootView.findViewById(R.id.view_alert_red_circle);
         countTextView = rootView.findViewById(R.id.view_alert_count_textview);

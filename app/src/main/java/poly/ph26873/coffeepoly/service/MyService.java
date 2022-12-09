@@ -173,13 +173,25 @@ public class MyService extends Service {
             readUser.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.getValue(Integer.class)!=null){
+                    if (snapshot.getValue(Integer.class) != null) {
                         ListData.type_user_current = snapshot.getValue(Integer.class);
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
+            DatabaseReference readUserE = database.getReference("coffee-poly").child("user").child(chilgPath).child("enable");
+            readUserE.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ListData.enable_user_current = snapshot.getValue(Integer.class);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
                 }
             });
         }

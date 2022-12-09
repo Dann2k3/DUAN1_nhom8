@@ -49,16 +49,18 @@ public class NotifyRCVAdapter extends RecyclerView.Adapter<NotifyRCVAdapter.Noti
         Notify notify = list.get(position);
         if (notify != null) {
             holder.tv_time.setText("Thời gian: " + notify.getTime());
-            if (notify.getContent().contains("hủy")) {
-                holder.tv_content.setTextColor(Color.RED);
-            } else if (notify.getContent().contains("giao")) {
-                holder.tv_content.setTextColor(Color.GREEN);
-            } else if (notify.getContent().contains("đặt")) {
-                holder.tv_content.setTextColor(Color.BLACK);
-            } else {
-                holder.tv_content.setTextColor(Color.BLUE);
+            if(notify.getContent()!=null){
+                if (notify.getContent().contains("hủy")) {
+                    holder.tv_content.setTextColor(Color.RED);
+                } else if (notify.getContent().contains("giao") || notify.getContent().contains("xác nhận")) {
+                    holder.tv_content.setTextColor(Color.GREEN);
+                } else if (notify.getContent().contains("đặt")) {
+                    holder.tv_content.setTextColor(Color.BLACK);
+                } else {
+                    holder.tv_content.setTextColor(Color.BLUE);
+                }
+                holder.tv_content.setText(notify.getContent());
             }
-            holder.tv_content.setText(notify.getContent());
             if (notify.getStatus() == 0) {
                 holder.imv_status.setVisibility(View.VISIBLE);
             } else {

@@ -45,5 +45,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/layout_header"
-        app:menu="@menu/menu_navigation" />
+        app:menu="@menu/menu_navigation"
+        android:elevation="150dp" />
+
 </androidx.drawerlayout.widget.DrawerLayout>

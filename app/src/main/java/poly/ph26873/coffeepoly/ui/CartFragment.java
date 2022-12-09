@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.CartRCVAdapter;
@@ -191,7 +191,6 @@ public class CartFragment extends Fragment {
                 AddressRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        progressDialog.dismiss();
                         User user1 = snapshot.getValue(User.class);
                         if (tong_tien > 0) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -208,7 +207,7 @@ public class CartFragment extends Fragment {
                             TextInputLayout til_xac_nhan_address = view1.findViewById(R.id.til_xac_nhan_address);
                             TextInputLayout til_xac_nhan_nb = view1.findViewById(R.id.til_xac_nhan_nb);
                             Button btn_xac_nhan_dat_hang = view1.findViewById(R.id.btn_xac_nhan_dat_hang);
-                            Button btn_xac_nhan_huy = view1.findViewById(R.id.btn_xac_nhan_huy);
+                            ImageView btn_xac_nhan_huy = view1.findViewById(R.id.btn_xac_nhan_huy);
                             Calendar calendar = Calendar.getInstance();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
                             String time = simpleDateFormat.format(calendar.getTime());
@@ -269,6 +268,7 @@ public class CartFragment extends Fragment {
                                                     Log.d(TAG, "Đã xóa bill hiện thời");
                                                     capNhatLichSuDatHang(time);
                                                     thongbao(time);
+                                                    thongbaonhanvien(time);
                                                     alertDialog.dismiss();
                                                 }
                                             });
@@ -279,13 +279,13 @@ public class CartFragment extends Fragment {
                             btn_xac_nhan_huy.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Toast.makeText(getContext(), "Đã hủy thao tác đặt hàng", Toast.LENGTH_SHORT).show();
                                     alertDialog.dismiss();
                                 }
                             });
                             builder.setView(view1);
                             alertDialog = builder.create();
                             alertDialog.show();
+                            progressDialog.dismiss();
                         }
 
                     }
@@ -299,11 +299,19 @@ public class CartFragment extends Fragment {
         });
     }
 
-    private void thongbao(String time) {
-        Log.d(TAG, "thongbao: "+time);
+    private void thongbaonhanvien(String time) {
         Notify notify = new Notify();
         notify.setTime(time);
-        notify.setContent("Đơn hàng "+time+" đã đặt hàng thành công.");
+        notify.setContent("Có đơn mới : " + time);
+        notify.setStatus(0);
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child("Staff_Ox3325").child(time);
+        reference.setValue(notify);
+    }
+
+    private void thongbao(String time) {
+        Notify notify = new Notify();
+        notify.setTime(time);
+        notify.setContent("Đơn hàng " + time + " đã đặt hàng thành công.");
         notify.setStatus(0);
         DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(email).child(time);
         reference.setValue(notify);

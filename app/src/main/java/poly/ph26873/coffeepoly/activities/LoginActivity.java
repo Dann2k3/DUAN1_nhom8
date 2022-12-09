@@ -111,21 +111,39 @@ public class LoginActivity extends AppCompatActivity {
                                 DatabaseReference myRef1 = database.getReference("coffee-poly/bill_current/" + email.replaceAll("@gmail.com", ""));
                                 myRef1.removeValue();
                                 String chilgPath = email.replaceAll("@gmail.com", "");
-                                DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
-                                readUser.addValueEventListener(new ValueEventListener() {
+                                DatabaseReference readUserE = database.getReference("coffee-poly").child("user").child(chilgPath).child("enable");
+                                readUserE.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        ListData.type_user_current = snapshot.getValue(Integer.class);
-                                        Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finishAffinity();
+                                        ListData.enable_user_current = snapshot.getValue(Integer.class);
+                                        if (ListData.enable_user_current != 0) {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(LoginActivity.this, "Tài khoản của bạn đã bị vô hiệu hóa", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            putMK(email,password);
+                                            DatabaseReference readUser = database.getReference("coffee-poly").child("type_user").child(chilgPath);
+                                            readUser.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    ListData.type_user_current = snapshot.getValue(Integer.class);
+                                                    Toast.makeText(LoginActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                    startActivity(intent);
+                                                    finishAffinity();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu sai",
+                                                            Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
                                     }
 
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(LoginActivity.this, "Tài khoản hoặc mật khẩu sai",
-                                                Toast.LENGTH_SHORT).show();
+
                                     }
                                 });
                             } else {
@@ -138,6 +156,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void putMK(String email, String password) {
+        String email1 = email.replaceAll("@gmail.com","");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference("coffee-poly").child("pw_user").child(email1);
+        reference.setValue(password);
     }
 
 

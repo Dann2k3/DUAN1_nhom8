@@ -84,8 +84,7 @@ public class SplashActivity extends AppCompatActivity {
             Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
             startActivity(intent);
         } else {
-            if (ListData.type_user_current == -1) {
-                Toast.makeText(SplashActivity.this, "Đã xảy ra lỗi", Toast.LENGTH_SHORT).show();
+            if (ListData.type_user_current == -1 || ListData.enable_user_current != 0) {
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -116,4 +115,5 @@ public class SplashActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(myReceiver, intentFilter);
     }
+
 }
