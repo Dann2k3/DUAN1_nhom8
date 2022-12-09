@@ -8,7 +8,6 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Notify;
 
 public class MyReceiver extends BroadcastReceiver {
@@ -46,7 +46,7 @@ public class MyReceiver extends BroadcastReceiver {
                     Toast.makeText(context, "Internet connected", Toast.LENGTH_SHORT).show();
                     a = 0;
                 }
-                kiemTraThongBao(context);
+//                kiemTraThongBao(context);
             } else {
                 isConnected = false;
                 a++;
@@ -80,7 +80,12 @@ public class MyReceiver extends BroadcastReceiver {
 
     private void layThongBaoMoi(FirebaseDatabase database, String em, Context context) {
         List<Notify> list = new ArrayList<>();
-        DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(em);
+        DatabaseReference reference = database.getReference("coffee-poly").child("notify");
+        if (ListData.type_user_current == 2) {
+            reference.child(em);
+        } else {
+            reference.child("Staff_Ox3325");
+        }
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {

@@ -54,6 +54,7 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:paddingTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -221,15 +222,15 @@
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btn_detai_product_add_to_cart"
-                        android:layout_width="100dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="25dp"
                         android:background="@android:color/holo_orange_dark"
                         android:padding="10dp"
                         android:text="Thêm vào giỏ hàng"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        tools:ignore="HardcodedText"
-                        android:layout_marginBottom="25dp"/>
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

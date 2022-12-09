@@ -3,7 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
+import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
@@ -31,6 +31,7 @@ import java.util.Objects;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.NotifyRCVAdapter;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Notify;
 
 public class NotifycationActivity extends AppCompatActivity {
@@ -41,6 +42,8 @@ public class NotifycationActivity extends AppCompatActivity {
     private static String em;
     private FirebaseDatabase database;
     private static boolean isFirts = true;
+    private static final String TAG = "zzz";
+    private NotifyRCVAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +73,21 @@ public class NotifycationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
-        NotifyRCVAdapter adapter = new NotifyRCVAdapter(this);
+        adapter = new NotifyRCVAdapter(this);
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em);
+        if (ListData.type_user_current == 2) {
+            DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child(em);
+            layData(myRef1);
+        } else {
+            DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child("Staff_Ox3325");
+            layData(myRef1);
+        }
+        adapter.setData(list);
+        recyclerView.setAdapter(adapter);
+        setAL();
+    }
+
+    private void layData(DatabaseReference myRef1) {
         myRef1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -83,6 +98,7 @@ public class NotifycationActivity extends AppCompatActivity {
                         Collections.sort(list, (o1, o2) -> o1.getStatus() - o2.getStatus());
                     } else {
                         Collections.reverse(list);
+                        Log.d("zzz", "list: " + list.size());
                     }
                     adapter.setData(list);
                     recyclerView.setAdapter(adapter);
@@ -90,7 +106,6 @@ public class NotifycationActivity extends AppCompatActivity {
                         setAL();
                         isFirts = false;
                     }
-
                 }
             }
 
@@ -126,9 +141,6 @@ public class NotifycationActivity extends AppCompatActivity {
 
             }
         });
-        adapter.setData(list);
-        recyclerView.setAdapter(adapter);
-        setAL();
     }
 
     private void back() {
@@ -139,7 +151,7 @@ public class NotifycationActivity extends AppCompatActivity {
         });
     }
 
-    private void Mfinish() {
+    public void Mfinish() {
         finish();
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             overridePendingTransition(R.anim.prev_enter, R.anim.prev_exit);
@@ -173,9 +185,26 @@ public class NotifycationActivity extends AppCompatActivity {
     }
 
     private void chuyenListdaXem() {
+        if (ListData.type_user_current == 2) {
+            setSatus();
+        } else {
+            setSatus1();
+        }
+    }
+
+    private void setSatus1() {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getStatus() == 0) {
-                DatabaseReference myRef1 = database.getReference("coffee-poly/notify/" + em + "/" + list.get(i).getTime() + "/status");
+                DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child("Staff_Ox3325").child(list.get(i).getTime()).child("status");
+                myRef1.setValue(1);
+            }
+        }
+    }
+
+    private void setSatus() {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getStatus() == 0) {
+                DatabaseReference myRef1 = database.getReference("coffee-poly").child("notify").child(em).child(list.get(i).getTime()).child("status");
                 myRef1.setValue(1);
             }
         }

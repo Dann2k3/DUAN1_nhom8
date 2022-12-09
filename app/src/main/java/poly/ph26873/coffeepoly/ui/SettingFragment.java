@@ -268,7 +268,7 @@ public class SettingFragment extends Fragment {
                                 String imageUrl = uri.toString();
                                 Log.d(TAG, "taskSnapshot: " + imageUrl);
                                 String EM = user.getEmail().replaceAll("@gmail.com", "");
-                                User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), EM, sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(), edt_number_phone_frgst.getText().toString().trim(), imageUrl);
+                                User user1 = new User(EM, user.getDisplayName(), Integer.parseInt(edt_age_frgst.getText().toString().trim()), user.getEmail(), sp_gender_frgst.getSelectedItem().toString(), edt_address_frgst.getText().toString().trim(), edt_number_phone_frgst.getText().toString().trim(), imageUrl,0);
                                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                                 DatabaseReference newUser = database.getReference(TABLE_NAME).child(COL_USER).child(EM);
                                 newUser.setValue(user1, new DatabaseReference.CompletionListener() {

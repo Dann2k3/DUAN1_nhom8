@@ -6,22 +6,39 @@
     android:background="@drawable/custom_bill"
     android:gravity="center_vertical"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_bill_time_m"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thời gian: 18_11_2022 12:36:23"
-        android:textColor="@android:color/holo_orange_dark"
-        android:textSize="19dp"
-        android:textStyle="bold"/>
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_bill_time_m"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thời gian: 18_11_2022 12:36:23"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="19dp"
+                android:textStyle="bold"/>
 
-    <TextView
-        android:id="@+id/tv_bill_name_m"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Thông tin chi tiết:"
-        android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/tv_bill_name_m"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thông tin chi tiết:"
+                android:textColor="@color/black" />
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/imv_bill_cancel_m"
+            android:src="@drawable/ic_mv_cam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    
 
     <TextView
         android:layout_width="match_parent"

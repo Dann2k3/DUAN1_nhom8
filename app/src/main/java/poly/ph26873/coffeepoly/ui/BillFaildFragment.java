@@ -116,7 +116,7 @@ public class BillFaildFragment extends Fragment {
                     }
                     Bill bill = snapshot.getValue(Bill.class);
                     if (bill != null) {
-                        if (bill.getStatus() == 2) {
+                        if (bill.getStatus() == 2 || bill.getStatus()==5) {
                             listBill.add(bill);
                         }
                     }
@@ -163,7 +163,7 @@ public class BillFaildFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
+//        menu.clear();
         inflater.inflate(R.menu.menu_search, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
