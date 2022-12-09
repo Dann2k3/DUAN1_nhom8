@@ -61,18 +61,14 @@ public class BillFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Bill> bills = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    bills.add(dataSnapshot.getValue(Bill.class));
+                    Bill bill = dataSnapshot.getValue(Bill.class);
+                    if (bill.getStatus() == 0 || bill.getStatus() == 1) {
+                        bills.add(bill);
+                    }
                 }
                 if (bills.size() > 0) {
-                    List<Bill> bills1 = new ArrayList<>();
-                    for (int i = 0; i < bills.size(); i++) {
-                        if (bills.get(i).getStatus() == 1 || bills.get(i).getStatus() == 0) {
-                            bills1.add(bills.get(i));
-                            Log.d("zzz", "bills1.add(bills.get(i)): " + bills.get(i).getId());
-                        }
-                    }
-                    Collections.reverse(bills1);
-                    billRCVAdapter.setData(bills1);
+                    Collections.reverse(bills);
+                    billRCVAdapter.setData(bills);
                     if (isFirst == true) {
                         setAL();
                         isFirst = false;
