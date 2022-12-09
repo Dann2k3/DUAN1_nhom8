@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +45,6 @@ public class DetailProductActivity extends AppCompatActivity {
     private static final String COL_CART = "cart";
     private ImageView imv_detail_product_favorite, imv_detail_product_avatar, imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
     private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
-    private ScrollView scrV_content;
     private int a = 1;
     private Button btn_detai_product_add_to_cart;
     private static final String COL_FAVORITE = "favorite";
@@ -59,6 +57,7 @@ public class DetailProductActivity extends AppCompatActivity {
     private int ViTri;
     private FirebaseDatabase database;
     private LinearLayout ln_out;
+    private ExpandableTextView expandableTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,12 +240,7 @@ public class DetailProductActivity extends AppCompatActivity {
             Log.d(TAG, "id product: " + product.getId());
             Glide.with(DetailProductActivity.this).load(product.getImage()).error(R.color.red).into(imv_detail_product_avatar);
             tv_detai_product_name.setText(product.getName());
-            tv_detai_product_content.setText(product.getContent());
-            if (product.getContent().length() <= 150) {
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                scrV_content.setLayoutParams(lp);
-            }
+            expandableTextView.setText(product.getContent()+"");
             tv_detai_product_quantitySold.setText("Số lượng đã bán: " + product.getQuantitySold());
             tv_detai_product_status.setText("Trạng thái sản phẩm: " + product.getStatus());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -282,16 +276,15 @@ public class DetailProductActivity extends AppCompatActivity {
         imv_detai_product_add = findViewById(R.id.imv_detai_product_add);
         imv_detail_product_favorite = findViewById(R.id.imv_detail_product_favorite);
         tv_detai_product_name = findViewById(R.id.tv_detai_product_name);
-        tv_detai_product_content = findViewById(R.id.tv_detai_product_content);
         tv_detai_product_quantitySold = findViewById(R.id.tv_detai_product_quantitySold);
         tv_detai_product_status = findViewById(R.id.tv_detai_product_status);
         tv_detai_product_type = findViewById(R.id.tv_detai_product_type);
         tv_detai_product_price = findViewById(R.id.tv_detai_product_price);
         tv_detai_product_quantity = findViewById(R.id.tv_detai_product_quantity);
-        tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
         ln_out = findViewById(R.id.ln_out);
-        scrV_content = findViewById(R.id.scrV_content);
+        expandableTextView = findViewById(R.id.expand_text_view);
+        tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         progressDialog = new ProgressDialog(DetailProductActivity.this);
     }
 }
