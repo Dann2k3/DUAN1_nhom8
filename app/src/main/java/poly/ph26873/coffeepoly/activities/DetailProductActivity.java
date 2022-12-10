@@ -122,12 +122,13 @@ public class DetailProductActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this);
                 builder.setTitle("Sản phẩm đã được chuyển đến giở hàng");
                 builder.setMessage("Bạn có muốn chuyển đến giỏ hàng?");
-                builder.setPositiveButton("Đưa tôi đến giỏ hàng", (dialog, which) -> {
+                builder.setPositiveButton("Tiếp tục", (dialog, which) -> {
                     Intent intent = new Intent(DetailProductActivity.this, MainActivity.class);
                     intent.putExtra("goto", "cart");
                     startActivity(intent);
+                    finish();
                 });
-                builder.setNegativeButton("Hủy", (dialog, which) -> {
+                builder.setNegativeButton("Quay lại", (dialog, which) -> {
                 });
                 builder.setCancelable(true);
                 AlertDialog alertDialog = builder.create();

@@ -145,7 +145,6 @@ public class SettingFragment extends Fragment {
         user.updateProfile(profileUpdates)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "User profile updated.");
                         mainActivity.showInfomationUser();
                         putImageUser();
                     }
@@ -258,7 +257,6 @@ public class SettingFragment extends Fragment {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
                 if (taskSnapshot.getMetadata() != null) {
                     if (taskSnapshot.getMetadata().getReference() != null) {
                         Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();

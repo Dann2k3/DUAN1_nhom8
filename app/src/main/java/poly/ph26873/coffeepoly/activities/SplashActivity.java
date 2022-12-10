@@ -3,12 +3,9 @@ package poly.ph26873.coffeepoly.activities;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -51,7 +48,7 @@ public class SplashActivity extends AppCompatActivity {
         animatorSet.start();
         Log.d(TAG, "--------------SplashActivity--------------");
 
-        if (kiemTraInternet()) {
+        if (MyReceiver.isConnected == true) {
             serviceConnection();
             new Handler().postDelayed(this::nextActivity, 3000);
         } else {
@@ -67,21 +64,10 @@ public class SplashActivity extends AppCompatActivity {
 
     private void serviceConnection() {
         Intent intent = new Intent(SplashActivity.this, MyService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startForegroundService(intent);
-//        } else {
-//            startService(intent);
-//        }
         startService(intent);
     }
 
 
-    private boolean kiemTraInternet() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected());
-    }
 
 
     private void nextActivity() {
@@ -108,18 +94,12 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        kiemTraInternet();
-    }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
         myReceiver = new MyReceiver();
         IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(myReceiver, intentFilter);
     }
-
 }
