@@ -50,9 +50,13 @@ public class NotifycationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifycation);
         list = new ArrayList<>();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        em = Objects.requireNonNull(user.getEmail()).replace("@gmail.com", "");
+        if (ListData.type_user_current == 2) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            assert user != null;
+            em = Objects.requireNonNull(user.getEmail()).replace("@gmail.com", "");
+        } else {
+            em = "Staff_Ox3325";
+        }
         back();
         showListNotifyCation();
         delete();
