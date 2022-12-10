@@ -1,11 +1,17 @@
 package poly.ph26873.coffeepoly.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +34,7 @@ import java.util.List;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.HistoryRCVAdapter;
 import poly.ph26873.coffeepoly.models.History;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
 public class HistoryFragment extends Fragment {
@@ -44,10 +51,13 @@ public class HistoryFragment extends Fragment {
     private HistoryRCVAdapter historyRCVAdapter;
     private List<History> list;
     private boolean isFirst = true;
+    private LinearLayout ln_internet_his;
+    private BroadcastReceiver receiver = null;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ln_internet_his = view.findViewById(R.id.ln_internet_his);
         hisRecyclerView = view.findViewById(R.id.hisRecyclerView);
         list = new ArrayList<>();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -105,10 +115,40 @@ public class HistoryFragment extends Fragment {
 
             }
         });
+
+        broadcast();
+    }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_his.setVisibility(View.INVISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0, 0);
+                    ln_internet_his.setLayoutParams(lp);
+                } else {
+                    ln_internet_his.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ln_internet_his.setLayoutParams(lp);
+                }
+            }
+        };
+
+        getActivity().registerReceiver(receiver, intentFilter);
     }
 
     private void setAL() {
         LayoutAnimationController layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation);
         hisRecyclerView.setLayoutAnimation(layoutAnimationController);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(receiver);
     }
 }

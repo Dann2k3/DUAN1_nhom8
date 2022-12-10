@@ -1,6 +1,10 @@
 package poly.ph26873.coffeepoly.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +43,9 @@ public class DetailUserActivity extends AppCompatActivity {
     private static int a = 0;
     private static int b = 0;
     private static int c = 0;
+    private User user;
+    private User user1;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +55,28 @@ public class DetailUserActivity extends AppCompatActivity {
         initUI();
         back();
         Intent intent = getIntent();
-        User user = (User) intent.getSerializableExtra("user");
+        user = (User) intent.getSerializableExtra("user");
         show(user);
         onclick(user);
+        broadcast();
     }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet.setVisibility(View.INVISIBLE);
+                } else {
+                    ln_internet.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+
+        registerReceiver(receiver, intentFilter);
+    }
+
 
     private void onclick(User user) {
         btn_ena.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +155,7 @@ public class DetailUserActivity extends AppCompatActivity {
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User user1 = snapshot.getValue(User.class);
+                        user1 = snapshot.getValue(User.class);
                         if (user1 != null) {
                             if (user1.getEnable() == 1) {
                                 ln_detail_user.setBackgroundResource(R.color.black1);
@@ -282,7 +307,27 @@ public class DetailUserActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (user1 != null) {
+            outState.putSerializable("user_old", user1);
+            return;
+        }
+        outState.putSerializable("user_old", user);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            User user2 = (User) savedInstanceState.getSerializable("user_old");
+            show(user2);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

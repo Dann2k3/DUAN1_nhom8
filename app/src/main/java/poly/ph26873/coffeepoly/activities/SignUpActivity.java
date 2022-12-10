@@ -1,15 +1,22 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -35,6 +42,8 @@ public class SignUpActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private static final String TABLE_NAME = "coffee-poly";
     private static final String COL_USER = "user";
+    private LinearLayout ln_internet_su;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,23 @@ public class SignUpActivity extends AppCompatActivity {
         initUi();
         signInAccount();
         changeToSignUp();
+        broadcast();
+    }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_su.setVisibility(View.INVISIBLE);
+                } else {
+                    ln_internet_su.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+
+        registerReceiver(receiver, intentFilter);
     }
 
     private void changeToSignUp() {
@@ -129,6 +155,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void initUi() {
+        ln_internet_su = findViewById(R.id.ln_internet_su);
         edtEmail = findViewById(R.id.edt_email1);
         edtPass = findViewById(R.id.edt_pass1);
         btnSignUp = findViewById(R.id.btn_signup);
@@ -137,5 +164,27 @@ public class SignUpActivity extends AppCompatActivity {
         til_pass1 = findViewById(R.id.til_pass1);
         progressDialog = new ProgressDialog(SignUpActivity.this);
         progressDialog.setTitle("Đang tạo tài khoản...");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("us", edtEmail.getText().toString().trim());
+        outState.putString("ps", edtPass.getText().toString().trim());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            edtEmail.setText(savedInstanceState.getString("us"));
+            edtPass.setText(savedInstanceState.getString("ps"));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

@@ -1,12 +1,18 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
             Pattern.compile("^[A-Z0-9._%+-]+@gmail.com$", Pattern.CASE_INSENSITIVE);
 
     private int count = 0;
+    private LinearLayout ln_internet_lg;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,23 @@ public class LoginActivity extends AppCompatActivity {
         initAccount();
         checkUser();
         resetPassWord();
+        broadcast();
+    }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_lg.setVisibility(View.INVISIBLE);
+                } else {
+                    ln_internet_lg.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+
+        registerReceiver(receiver, intentFilter);
     }
 
     private void resetPassWord() {
@@ -167,6 +192,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void initUi() {
+        ln_internet_lg = findViewById(R.id.ln_internet_lg);
         edtEmail = findViewById(R.id.edt_email);
         edtPass = findViewById(R.id.edt_pass);
         btnLogin = findViewById(R.id.btn_login);
@@ -196,6 +222,30 @@ public class LoginActivity extends AppCompatActivity {
             System.exit(0);
             super.onBackPressed();
         }
+    }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        String us = edtEmail.getText().toString().trim();
+        String ps = edtPass.getText().toString().trim();
+        outState.putString("us", us);
+        outState.putString("ps", ps);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            edtEmail.setText(savedInstanceState.getString("us"));
+            edtPass.setText(savedInstanceState.getString("ps"));
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }

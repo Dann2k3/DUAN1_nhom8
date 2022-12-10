@@ -8,7 +8,28 @@
     android:orientation="vertical"
     android:padding="20dp"
     tools:context=".activities.ResetPassWordActivity">
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:id="@+id/ln_internet_rs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/wifi_off_20px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Không có kết nối mạng"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="18dp" />
+    </LinearLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_rs_email"
         android:layout_width="300dp"

@@ -182,6 +182,7 @@ public class NotifycationActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

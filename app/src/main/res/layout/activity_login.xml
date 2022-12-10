@@ -5,11 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
-<!--    <pl.droidsonroids.gif.GifImageView-->
-<!--        android:id="@+id/gifimv_login"-->
-<!--        android:background="@drawable/login"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"/>-->
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:id="@+id/ln_internet_lg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/wifi_off_20px" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Không có kết nối mạng"
+            android:textAlignment="center"
+            android:textColor="@color/red"
+            android:textSize="18dp" />
+    </LinearLayout>
+</LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,6 +57,8 @@
                 android:textColor="@color/green1"
                 android:textSize="35dp"
                 android:textStyle="bold" />
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_email"
