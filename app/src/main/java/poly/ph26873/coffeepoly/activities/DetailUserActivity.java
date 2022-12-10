@@ -31,8 +31,8 @@ public class DetailUserActivity extends AppCompatActivity {
     private ImageView imv_back_layout_detail_user, imv_avatar_detail_user;
     private TextView tv_name_detail_user, tv_email_detail_user, tv_id_detail_user, tv_age_detail_user,
             tv_gender_detail_user, tv_nb_detail_user, tv_email1_detail_user, tv_ad_detail_user,
-            tv_enable_detail_user, tv_pw_detail_user, tv_bill_tc, tv_bill_tb, tv_bill_tb1;
-    private LinearLayout ln_internet, ln_detail_user;
+            tv_enable_detail_user, tv_pw_detail_user, tv_bill_tc, tv_bill_tb, tv_bill_tb1, tv_type_detail_user;
+    private LinearLayout ln_internet, ln_detail_user, ln_tkct;
     private Button btn_ycmk, btn_dis, btn_ena;
     private FirebaseDatabase database;
     private String pa;
@@ -174,28 +174,59 @@ public class DetailUserActivity extends AppCompatActivity {
 
                     }
                 });
-                DatabaseReference reference1 = database.getReference("coffee-poly").child("bill").child(user.getId());
-                reference1.addValueEventListener(new ValueEventListener() {
+                DatabaseReference reference2 = database.getReference("coffee-poly").child("type_user").child(user.getId());
+                reference2.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        a = 0;
-                        b = 0;
-                        c = 0;
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            Bill bill = dataSnapshot.getValue(Bill.class);
-                            if (bill != null) {
-                                if (bill.getStatus() == 2) {
-                                    a++;
-                                } else if (bill.getStatus() == 4) {
-                                    b++;
-                                } else if (bill.getStatus() == 5) {
-                                    c++;
+                        int ty = snapshot.getValue(Integer.class);
+                        if (ty == 0) {
+                            tv_type_detail_user.setText("Admin");
+                            ln_tkct.setVisibility(View.INVISIBLE);
+                            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                                    0, 0);
+                            ln_tkct.setLayoutParams(lp1);
+                        } else if (ty == 1) {
+                            tv_type_detail_user.setText("Nhân viên");
+                            ln_tkct.setVisibility(View.INVISIBLE);
+                            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                                    0, 0);
+                            ln_tkct.setLayoutParams(lp1);
+                        } else {
+                            tv_type_detail_user.setText("Người dùng");
+                            ln_tkct.setVisibility(View.VISIBLE);
+                            LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
+                                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            ln_tkct.setLayoutParams(lp1);
+                            DatabaseReference reference1 = database.getReference("coffee-poly").child("bill").child(user.getId());
+                            reference1.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    a = 0;
+                                    b = 0;
+                                    c = 0;
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        Bill bill = dataSnapshot.getValue(Bill.class);
+                                        if (bill != null) {
+                                            if (bill.getStatus() == 2) {
+                                                a++;
+                                            } else if (bill.getStatus() == 4) {
+                                                b++;
+                                            } else if (bill.getStatus() == 5) {
+                                                c++;
+                                            }
+                                        }
+                                    }
+                                    tv_bill_tc.setText(String.valueOf(b));
+                                    tv_bill_tb.setText(String.valueOf(a));
+                                    tv_bill_tb1.setText(String.valueOf(c));
                                 }
-                            }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
-                        tv_bill_tc.setText(String.valueOf(b));
-                        tv_bill_tb.setText(String.valueOf(a));
-                        tv_bill_tb1.setText(String.valueOf(c));
                     }
 
                     @Override
@@ -229,6 +260,7 @@ public class DetailUserActivity extends AppCompatActivity {
         imv_back_layout_detail_user = findViewById(R.id.imv_back_layout_detail_user);
         imv_avatar_detail_user = findViewById(R.id.imv_avatar_detail_user);
         tv_name_detail_user = findViewById(R.id.tv_name_detail_user);
+        tv_type_detail_user = findViewById(R.id.tv_type_detail_user);
         tv_email_detail_user = findViewById(R.id.tv_email_detail_user);
         tv_id_detail_user = findViewById(R.id.tv_id_detail_user);
         tv_age_detail_user = findViewById(R.id.tv_age_detail_user);
@@ -240,6 +272,7 @@ public class DetailUserActivity extends AppCompatActivity {
         tv_pw_detail_user = findViewById(R.id.tv_pw_detail_user);
         ln_internet = findViewById(R.id.ln_internet);
         ln_detail_user = findViewById(R.id.ln_detail_user);
+        ln_tkct = findViewById(R.id.ln_tkct);
         btn_dis = findViewById(R.id.btn_dis);
         btn_ycmk = findViewById(R.id.btn_ycmk);
         btn_ena = findViewById(R.id.btn_ena);
