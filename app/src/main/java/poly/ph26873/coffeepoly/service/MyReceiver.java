@@ -40,7 +40,7 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
-            if (isNetWorkAvailabe(context)) {
+            if (isNetWorkAvailabe(context)==true) {
                 isConnected = true;
                 if (a != 0) {
                     Toast.makeText(context, "Internet connected", Toast.LENGTH_SHORT).show();
@@ -154,18 +154,22 @@ public class MyReceiver extends BroadcastReceiver {
         if (connectivityManager == null) {
             return false;
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                Network network = connectivityManager.getActiveNetwork();
-                if (network == null) {
-                    return false;
-                } else {
-                    NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
-                    return networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
-                }
-            } else {
-                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                return networkInfo != null && networkInfo.isConnected();
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+                NetworkInfo mobile = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                return wifi != null && wifi.isConnected() || (mobile != null && mobile.isConnected());
+//                Network network = connectivityManager.getActiveNetwork();
+//                if (network == null) {
+//                    return false;
+//                } else {
+//                    NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+//                    return networkCapabilities != null && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
+//                }
+//            }
+//            else {
+//                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+//                return networkInfo != null && networkInfo.isConnected();
+//            }
         }
 
     }
