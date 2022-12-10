@@ -242,26 +242,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showToolBar("Trang chủ");
             navigationView.setCheckedItem(R.id.nav_home);
             IDmenu = R.id.nav_home;
-            replaceFragmemt(new HomeFragment());
+            fragment = new HomeFragment();
+            replaceFragmemt(fragment);
             navigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         } else {
             if (gotoFrg.equals("cart")) {
                 showToolBar("Đặt hàng");
                 navigationView.setCheckedItem(R.id.nav_cart);
                 IDmenu = R.id.nav_cart;
-                replaceFragmemt(new CartFragment());
+                fragment = new CartFragment();
+                replaceFragmemt(fragment);
                 navigationView.getMenu().findItem(R.id.nav_cart).setChecked(true);
-            }else if(gotoFrg.equals("bill")){
+            } else if (gotoFrg.equals("bill")) {
                 showToolBar("Đơn hàng của bạn");
                 navigationView.setCheckedItem(R.id.nav_bill);
                 IDmenu = R.id.nav_bill;
-                replaceFragmemt(new BillFragment());
+                fragment = new BillFragment();
+                replaceFragmemt(fragment);
                 navigationView.getMenu().findItem(R.id.nav_bill).setChecked(true);
-            }else {
+            } else {
                 showToolBar("Lịch sử");
                 navigationView.setCheckedItem(R.id.nav_history);
                 IDmenu = R.id.nav_history;
-                replaceFragmemt(new HistoryFragment());
+                fragment = new HistoryFragment();
+                replaceFragmemt(fragment);
                 navigationView.getMenu().findItem(R.id.nav_history).setChecked(true);
             }
 
@@ -273,16 +277,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        Log.d(TAG, "idu: "+id);
         switch (id) {
             case R.id.nav_home:
-                replaceFragmemt(new HomeFragment());
+                fragment = new HomeFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 showToolBar("Trang chủ");
                 closeNavigation();
                 IDmenu = id;
                 break;
             case R.id.nav_cart:
-                replaceFragmemt(new CartFragment());
+                fragment = new CartFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 showToolBar("Giỏ hàng");
                 closeNavigation();
@@ -290,21 +297,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_bill:
-                replaceFragmemt(new BillFragment());
+                fragment = new BillFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 showToolBar("Đơn hàng của bạn");
                 closeNavigation();
                 IDmenu = id;
                 break;
             case R.id.nav_favourite:
-                replaceFragmemt(new FavouriteFragment());
+                fragment = new FavouriteFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Yêu thích");
                 IDmenu = id;
                 break;
             case R.id.nav_history:
-                replaceFragmemt(new HistoryFragment());
+                fragment = new HistoryFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Lịch sử");
@@ -313,7 +323,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             case R.id.nav_order_management:
-                replaceFragmemt(new ManagementFragment());
+                fragment = new ManagementFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Quản lí hóa đơn");
@@ -321,7 +332,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_order_management_scfl:
-                replaceFragmemt(new ShipingFragment());
+                fragment = new ShipingFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Đơn hàng đang giao");
@@ -329,7 +341,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_history_bill:
-                replaceFragmemt(new BillDaGiaoFragment());
+                fragment = new BillDaGiaoFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Đơn hàng thành công");
@@ -337,7 +350,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_bill_faild:
-                replaceFragmemt(new BillFaildFragment());
+                fragment = new BillFaildFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Đơn hàng thất bại");
@@ -346,7 +360,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
             case R.id.nav_turnover:
-                replaceFragmemt(new TurnoverFragment());
+                fragment = new TurnoverFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Doanh thu");
@@ -354,7 +369,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_turnover_product:
-                replaceFragmemt(new ThongKeSanPhamFragment());
+                fragment = new ThongKeSanPhamFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thống kê sản phẩm");
@@ -362,28 +378,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.nav_top_product:
-                replaceFragmemt(new TopProductFragment());
+                fragment = new TopProductFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Bảng xếp hạng sản phẩm");
                 IDmenu = id;
                 break;
             case R.id.nav_list_user:
-                replaceFragmemt(new ListUserFragment());
+                fragment = new ListUserFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Danh sách người dùng");
                 IDmenu = id;
                 break;
             case R.id.nav_setting:
-                replaceFragmemt(settingFragment);
+                fragment = new SettingFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thiết lập tài khoản");
                 IDmenu = id;
                 break;
             case R.id.nav_password:
-                replaceFragmemt(new PassWordFragment());
+                fragment = new PassWordFragment();
+                replaceFragmemt(fragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thay đổi mật khẩu");
@@ -575,5 +595,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             countTextView.setText("");
         }
         redCircle.setVisibility((alertCount > 0) ? VISIBLE : GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("title", toolbar.getTitle().toString());
+        outState.putInt("id", IDmenu);
+        getSupportFragmentManager().putFragment(outState,"myF",fragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            showToolBar(savedInstanceState.getString("title"));
+            hieuUngChecked(savedInstanceState.getInt("id"));
+            navigationView.getMenu().findItem(savedInstanceState.getInt("id")).setChecked(true);
+            replaceFragmemt(getSupportFragmentManager().getFragment(savedInstanceState,"myF"));
+        }
+
     }
 }

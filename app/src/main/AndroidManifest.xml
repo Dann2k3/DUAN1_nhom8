@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoffeePoly"
         tools:targetApi="31">
+
         <activity
+            android:screenOrientation="fullSensor"
             android:name=".activities.DetailUserActivity"
             android:exported="false">
             <meta-data
@@ -27,6 +29,7 @@
                 android:value="" />
         </activity>
         <activity
+            android:screenOrientation="fullSensor"
             android:name=".activities.NotifycationActivity"
             android:exported="false">
             <meta-data

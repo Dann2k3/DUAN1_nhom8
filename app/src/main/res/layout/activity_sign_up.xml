@@ -5,10 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.SignUpActivity">
-<!--    <pl.droidsonroids.gif.GifImageView-->
-<!--        android:background="@drawable/signup1"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:id="@+id/ln_internet_su"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/wifi_off_20px" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Không có kết nối mạng"
+                android:textAlignment="center"
+                android:textColor="@color/red"
+                android:textSize="18dp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"

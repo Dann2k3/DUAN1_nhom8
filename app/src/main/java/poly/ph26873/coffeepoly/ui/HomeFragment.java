@@ -1,7 +1,11 @@
 package poly.ph26873.coffeepoly.ui;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -9,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,6 +44,7 @@ import poly.ph26873.coffeepoly.adapter.BannerViewPagerAdapter;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
 import poly.ph26873.coffeepoly.models.Banner;
 import poly.ph26873.coffeepoly.models.Product;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
 public class HomeFragment extends Fragment {
@@ -75,6 +81,8 @@ public class HomeFragment extends Fragment {
     private TextView tv_home_see_all;
     private HorizontalRCVAdapter adapter;
     private List<Product> list_rcm_product;
+    private LinearLayout ln_internet_home;
+    private BroadcastReceiver receiver = null;
 
 
     @Override
@@ -84,7 +92,31 @@ public class HomeFragment extends Fragment {
         showBanner();
         database = FirebaseDatabase.getInstance();
         getList_rcm_product();
+        broadCast();
     }
+
+    private void broadCast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_home.setVisibility(View.INVISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0, 0);
+                    ln_internet_home.setLayoutParams(lp);
+                } else {
+                    ln_internet_home.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ln_internet_home.setLayoutParams(lp);
+                }
+            }
+        };
+
+        getActivity().registerReceiver(receiver, intentFilter);
+    }
+
 
     private void getList_rcm_product() {
         DatabaseReference myProduct = database.getReference(TABLE_NAME).child(COL_PRODUCT);
@@ -198,6 +230,7 @@ public class HomeFragment extends Fragment {
 
 
     private void initUi(View view) {
+        ln_internet_home = view.findViewById(R.id.ln_internet_home);
         viewPager = view.findViewById(R.id.viewPager);
         circleIndicator = view.findViewById(R.id.circleIndicator);
         recyclerView_rcm_product = view.findViewById(R.id.mRecyclerView_rcm);
@@ -259,4 +292,12 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            getActivity().unregisterReceiver(receiver);
+            receiver = null;
+        }
+    }
 }
