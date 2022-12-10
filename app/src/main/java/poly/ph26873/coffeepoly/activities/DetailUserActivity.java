@@ -247,4 +247,9 @@ public class DetailUserActivity extends AppCompatActivity {
         tv_bill_tb = findViewById(R.id.tv_bill_tb);
         tv_bill_tb1 = findViewById(R.id.tv_bill_tb1);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

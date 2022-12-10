@@ -285,6 +285,8 @@ public class CartFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     alertDialog.dismiss();
+                                    DatabaseReference myBill = database.getReference("coffee-poly/bill_current/" + email);
+                                    myBill.removeValue();
                                 }
                             });
                             builder.setView(view1);

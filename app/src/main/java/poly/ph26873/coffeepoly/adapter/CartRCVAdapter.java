@@ -33,7 +33,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -83,9 +82,13 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         itemBills.add(dataSnapshot.getValue(Item_Bill.class));
                     }
+                    if (itemBills.size() == 0) {
+                        holder.chk_item_bill_selected.setChecked(false);
+                        return;
+                    }
 
                     for (int i = 0; i < itemBills.size(); i++) {
-                        if (itemBills.get(i).getTime().equals(item_bill.getTime())&&itemBills.get(i).getId_product()==item_bill.getId_product()&&itemBills.get(i).getQuantity()==item_bill.getQuantity()) {
+                        if (itemBills.get(i).getTime().equals(item_bill.getTime()) && itemBills.get(i).getId_product() == item_bill.getId_product() && itemBills.get(i).getQuantity() == item_bill.getQuantity()) {
                             if (item_bill.getTime().equals(itemBills.get(i).getTime())) {
                                 holder.chk_item_bill_selected.setChecked(true);
                             } else {
@@ -100,6 +103,7 @@ public class CartRCVAdapter extends RecyclerView.Adapter<CartRCVAdapter.ItemBill
 
                 }
             });
+
             DatabaseReference myRef = database.getReference("coffee-poly").child("product");
             myRef.addValueEventListener(new ValueEventListener() {
                 @Override
