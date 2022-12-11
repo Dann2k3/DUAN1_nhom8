@@ -63,6 +63,8 @@ public class MyService extends Service {
         return START_STICKY;
     }
 
+
+
     private void laydanhsachUser(FirebaseDatabase database) {
         DatabaseReference reference = database.getReference("coffee-poly").child("user");
         reference.addChildEventListener(new ChildEventListener() {
