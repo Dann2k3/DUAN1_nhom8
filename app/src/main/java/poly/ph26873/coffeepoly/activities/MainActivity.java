@@ -21,6 +21,7 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static String tt;
     public static int idMain;
-    public static Fragment fragment;
+    public static Fragment fragment = null;
     private FrameLayout redCircle;
     private TextView countTextView;
     private int alertCount = 0;
@@ -128,9 +130,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(toolbar);
         toolbarAddNav();
         showInfomationUser();
-
 //        fix();
     }
+
+
 
     private void fix() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -221,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initUi() {
+
         toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navgation_view);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -277,7 +281,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        Log.d(TAG, "idu: "+id);
+        Log.d(TAG, "idu: " + id);
+        idFragment(id);
+        return false;
+    }
+
+    private void idFragment(int id) {
         switch (id) {
             case R.id.nav_home:
                 fragment = new HomeFragment();
@@ -433,7 +442,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
         }
-        return false;
     }
 
     public void hieuUngChecked(int id) {
@@ -600,20 +608,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("title", toolbar.getTitle().toString());
         outState.putInt("id", IDmenu);
-        getSupportFragmentManager().putFragment(outState,"myF",fragment);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            showToolBar(savedInstanceState.getString("title"));
-            hieuUngChecked(savedInstanceState.getInt("id"));
-            navigationView.getMenu().findItem(savedInstanceState.getInt("id")).setChecked(true);
-            replaceFragmemt(getSupportFragmentManager().getFragment(savedInstanceState,"myF"));
+            idFragment(savedInstanceState.getInt("id"));
         }
 
     }
+
 }

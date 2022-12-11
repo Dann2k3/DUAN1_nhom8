@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +41,7 @@ import java.util.List;
 import me.relex.circleindicator.CircleIndicator;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.AllProductActivity;
+import poly.ph26873.coffeepoly.activities.MessagerActivity;
 import poly.ph26873.coffeepoly.adapter.BannerViewPagerAdapter;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
 import poly.ph26873.coffeepoly.models.Banner;
@@ -83,6 +85,7 @@ public class HomeFragment extends Fragment {
     private List<Product> list_rcm_product;
     private LinearLayout ln_internet_home;
     private BroadcastReceiver receiver = null;
+    private FloatingActionButton fab_mess;
 
 
     @Override
@@ -93,6 +96,17 @@ public class HomeFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         getList_rcm_product();
         broadCast();
+        LienHe();
+    }
+
+    private void LienHe() {
+        fab_mess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), MessagerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void broadCast() {
@@ -230,6 +244,8 @@ public class HomeFragment extends Fragment {
 
 
     private void initUi(View view) {
+        fab_mess = view.findViewById(R.id.fab_mess);
+        fab_mess.setImageResource(R.drawable.messenger);
         ln_internet_home = view.findViewById(R.id.ln_internet_home);
         viewPager = view.findViewById(R.id.viewPager);
         circleIndicator = view.findViewById(R.id.circleIndicator);
@@ -242,6 +258,17 @@ public class HomeFragment extends Fragment {
         progressDialog.show();
         adapter = new HorizontalRCVAdapter(getContext());
         list_rcm_product = new ArrayList<>();
+        mRecycerView_all_product.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    fab_mess.hide();
+                } else {
+                    fab_mess.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     private List<Banner> getListBanner() {
