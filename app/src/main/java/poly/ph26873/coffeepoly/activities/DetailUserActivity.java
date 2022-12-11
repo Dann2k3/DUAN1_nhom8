@@ -56,7 +56,6 @@ public class DetailUserActivity extends AppCompatActivity {
         back();
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
-        show(user);
         onclick(user);
         broadcast();
     }
@@ -71,6 +70,7 @@ public class DetailUserActivity extends AppCompatActivity {
                 } else {
                     ln_internet.setVisibility(View.VISIBLE);
                 }
+                show(user);
             }
         };
 
@@ -135,7 +135,6 @@ public class DetailUserActivity extends AppCompatActivity {
                     anChucNang(btn_ena, btn_dis);
                     tv_enable_detail_user.setText("Đã kích hoạt");
                 }
-                ln_internet.setVisibility(View.VISIBLE);
                 Glide.with(this).load(user.getImage()).error(R.drawable.image_guest).into(imv_avatar_detail_user);
                 tv_name_detail_user.setText(user.getName());
                 tv_email_detail_user.setText(user.getEmail());
@@ -149,7 +148,6 @@ public class DetailUserActivity extends AppCompatActivity {
                 tv_bill_tb.setText("Lấy dữ liệu thất bại");
                 tv_bill_tb1.setText("Lấy dữ liệu thất bại");
             } else {
-                ln_internet.setVisibility(View.INVISIBLE);
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference reference = database.getReference("coffee-poly").child("user").child(user.getId());
                 reference.addValueEventListener(new ValueEventListener() {
