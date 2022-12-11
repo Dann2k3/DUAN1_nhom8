@@ -21,7 +21,6 @@ import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,7 +40,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -70,6 +68,7 @@ import poly.ph26873.coffeepoly.ui.HomeFragment;
 import poly.ph26873.coffeepoly.ui.ListUserFragment;
 import poly.ph26873.coffeepoly.ui.ManagementFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
+import poly.ph26873.coffeepoly.ui.SMSFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
 import poly.ph26873.coffeepoly.ui.ShipingFragment;
 import poly.ph26873.coffeepoly.ui.ThongKeSanPhamFragment;
@@ -366,6 +365,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showToolBar("Đơn hàng thất bại");
                 IDmenu = id;
                 break;
+            case R.id.nav_sms:
+                fragment = new SMSFragment();
+                replaceFragmemt(fragment);
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Tin nhắn");
+                IDmenu = id;
+                break;
 
 
             case R.id.nav_turnover:
@@ -445,7 +452,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_list_user, R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
+        int[] mang = {R.id.nav_sms, R.id.nav_list_user, R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

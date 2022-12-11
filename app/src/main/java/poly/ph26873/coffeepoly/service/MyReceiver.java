@@ -27,7 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.DetailUserActivity;
+import poly.ph26873.coffeepoly.activities.LoginActivity;
+import poly.ph26873.coffeepoly.activities.SplashActivity;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Notify;
 
@@ -50,6 +51,31 @@ public class MyReceiver extends BroadcastReceiver {
                 a++;
                 Toast.makeText(context, "Internet Disconnected", Toast.LENGTH_LONG).show();
             }
+        }
+        kiemTraEnable(context);
+
+    }
+
+    private void kiemTraEnable(Context context) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            DatabaseReference readUserE = database.getReference("coffee-poly").child("user").child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", "")).child("enable");
+            readUserE.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    ListData.enable_user_current = snapshot.getValue(Integer.class);
+                    if (ListData.enable_user_current == 1) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent1 = new Intent(context, SplashActivity.class);
+                        context.startActivity(intent1);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 
