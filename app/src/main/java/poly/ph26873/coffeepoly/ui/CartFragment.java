@@ -111,10 +111,15 @@ public class CartFragment extends Fragment {
                     layDanhSachTinhTien();
                 }
                 if (list.size() == 0) {
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    tv_cart_mess.setLayoutParams(lp);
                     ln_bill.setVisibility(View.INVISIBLE);
                 } else {
-                    tv_cart_mess.setText("");
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                           0, 0);
+                    tv_cart_mess.setLayoutParams(lp);
                 }
             }
 
@@ -133,10 +138,15 @@ public class CartFragment extends Fragment {
                     }
                 }
                 if (list.size() == 0) {
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    tv_cart_mess.setLayoutParams(lp);
                     ln_bill.setVisibility(View.INVISIBLE);
                 } else {
-                    tv_cart_mess.setText("");
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0,0);
+                    tv_cart_mess.setLayoutParams(lp);
                 }
             }
 
@@ -152,8 +162,11 @@ public class CartFragment extends Fragment {
                         break;
                     }
                 }
-                if (list.isEmpty()) {
+                if (list.size()==0) {
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+                    tv_cart_mess.setLayoutParams(lp);
                     ln_bill.setVisibility(View.INVISIBLE);
                 } else {
                     tv_cart_mess.setText("");
@@ -172,7 +185,10 @@ public class CartFragment extends Fragment {
 
         });
         if (list.isEmpty()) {
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             tv_cart_mess.setText("Giỏ hàng của bạn hiện không có sản phẩm nào");
+            tv_cart_mess.setLayoutParams(lp);
             ln_bill.setVisibility(View.INVISIBLE);
         } else {
             tv_cart_mess.setText("");

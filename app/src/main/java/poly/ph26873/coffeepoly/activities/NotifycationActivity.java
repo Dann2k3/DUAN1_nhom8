@@ -3,7 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
@@ -68,6 +68,14 @@ public class NotifycationActivity extends AppCompatActivity {
             DatabaseReference reference = database.getReference("coffee-poly").child("notify").child(em);
             reference.removeValue();
         });
+        ImageView imv_sort_layout_notify = findViewById(R.id.imv_sort_layout_notify);
+        imv_sort_layout_notify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.reverse(list);
+                adapter.setData(list);
+            }
+        });
     }
 
 
@@ -100,9 +108,6 @@ public class NotifycationActivity extends AppCompatActivity {
                     list.add(notify);
                     if (notify.getStatus() == 0) {
                         Collections.sort(list, (o1, o2) -> o1.getStatus() - o2.getStatus());
-                    } else {
-                        Collections.reverse(list);
-                        Log.d("zzz", "list: " + list.size());
                     }
                     adapter.setData(list);
                     recyclerView.setAdapter(adapter);
@@ -213,5 +218,11 @@ public class NotifycationActivity extends AppCompatActivity {
                 myRef1.setValue(1);
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        list.clear();
     }
 }

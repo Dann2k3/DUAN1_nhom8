@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
-import poly.ph26873.coffeepoly.activities.LoginActivity;
 import poly.ph26873.coffeepoly.activities.SplashActivity;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Notify;
@@ -68,6 +67,7 @@ public class MyReceiver extends BroadcastReceiver {
                         FirebaseAuth.getInstance().signOut();
                         Intent intent1 = new Intent(context, SplashActivity.class);
                         context.startActivity(intent1);
+                        Toast.makeText(context, "Tài khoản của bạn đã bị vô hiệu hóa", Toast.LENGTH_SHORT).show();
                     }
                 }
 
