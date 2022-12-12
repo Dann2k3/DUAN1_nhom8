@@ -37,6 +37,15 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
+
+            <ImageView
+                android:id="@+id/imv_del_mess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_baseline_delete_24" />
         </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
@@ -98,6 +107,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/custom_mess"
                 android:hint="Aa"
+                android:inputType="text"
                 android:textSize="18dp" />
 
 

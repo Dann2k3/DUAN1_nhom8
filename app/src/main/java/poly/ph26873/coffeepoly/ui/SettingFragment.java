@@ -229,7 +229,10 @@ public class SettingFragment extends Fragment {
     }
 
     public void setBitmapImageview(Bitmap bitmap) {
-        imv_avatar_frgst.setImageBitmap(bitmap);
+        if(bitmap!=null){
+            imv_avatar_frgst.setImageBitmap(bitmap);
+        }
+
     }
 
     public void setmUri(Uri mUri) {

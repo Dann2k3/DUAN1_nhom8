@@ -1,12 +1,16 @@
 package poly.ph26873.coffeepoly.activities;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -43,7 +47,7 @@ import poly.ph26873.coffeepoly.models.Notify_messager;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class MessagerActivity extends AppCompatActivity {
-    private ImageView imv_back_layout_mess, imv_mess;
+    private ImageView imv_back_layout_mess, imv_mess, imv_del_mess;
     private EditText edt_mess;
     private RecyclerView recyclerView;
     private List<Message> list;
@@ -73,7 +77,46 @@ public class MessagerActivity extends AppCompatActivity {
             tv_connect_nv.setLayoutParams(lp1);
         }
         sendMess();
+        XoaTinNhan();
         broadCast();
+    }
+
+    private void XoaTinNhan() {
+        imv_del_mess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MyReceiver.isConnected == false) {
+                    Toast.makeText(MessagerActivity.this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(MessagerActivity.this);
+                builder.setCancelable(false);
+                builder.setTitle("Xác nhận xóa đoạn chat?");
+                builder.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ProgressDialog progressDialog = new ProgressDialog(MessagerActivity.this);
+                        progressDialog.show();
+                        progressDialog.setCancelable(false);
+                        DatabaseReference reference = database.getReference("coffee-poly").child("messager").child(id_user);
+                        reference.removeValue(new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                });
+                builder.setNegativeButton("Quay lại", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        });
     }
 
 
@@ -109,12 +152,18 @@ public class MessagerActivity extends AppCompatActivity {
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int s = snapshot.getValue(Integer.class);
-                        if (s == 2) {
-                            tv_connect_nv.setText("Đã kết nối với nhân viên thành công");
-                        } else {
-                            tv_connect_nv.setText("Đang kết nối với nhân viên");
+                        int s;
+                        try {
+                            s = snapshot.getValue(Integer.class);
+                            if (s == 2) {
+                                tv_connect_nv.setText("Đã kết nối với nhân viên thành công");
+                            } else {
+                                tv_connect_nv.setText("Đang kết nối với nhân viên");
+                            }
+                        } catch (Exception e) {
+
                         }
+
                     }
 
                     @Override
@@ -141,6 +190,7 @@ public class MessagerActivity extends AppCompatActivity {
                         list.add(message);
                         adapter.setData(list);
                         recyclerView.setAdapter(adapter);
+                        recyclerView.scrollToPosition(list.size() - 1);
                     }
                 }
 
@@ -249,6 +299,7 @@ public class MessagerActivity extends AppCompatActivity {
 
     private void initUi() {
         imv_back_layout_mess = findViewById(R.id.imv_back_layout_mess);
+        imv_del_mess = findViewById(R.id.imv_del_mess);
         tv_connect_nv = findViewById(R.id.tv_connect_nv);
         imv_mess = findViewById(R.id.imv_mess);
         edt_mess = findViewById(R.id.edt_mess);
@@ -287,6 +338,24 @@ public class MessagerActivity extends AppCompatActivity {
         if (ListData.type_user_current != 2) {
             DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
             reference1.setValue(1);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ListData.type_user_current == 2) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+                    String time = simpleDateFormat.format(calendar.getTime());
+                    Message message = new Message("nhanvien1", "Xin chào, bạn cần giúp đỡ?", time, 1);
+                    DatabaseReference reference = database.getReference("coffee-poly").child("messager").child(id_user).child(time);
+                    reference.setValue(message);
+                }
+            }, 2000);
         }
     }
 }

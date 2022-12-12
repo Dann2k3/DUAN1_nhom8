@@ -5,13 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
@@ -24,6 +29,7 @@ public class AllProductActivity extends AppCompatActivity {
     private ImageView imv_back_layout_all_product;
     private RecyclerView recyclerView;
     private HorizontalRCVAdapter adapter;
+    private FloatingActionButton fab_mess_all;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,18 @@ public class AllProductActivity extends AppCompatActivity {
         initUi();
         back();
         showAllProduct();
+        LienHe();
+    }
+
+    private void LienHe() {
+        fab_mess_all.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AllProductActivity.this, MessagerActivity.class);
+                intent.putExtra("id_user", FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", ""));
+                startActivity(intent);
+            }
+        });
     }
 
     private void showAllProduct() {
@@ -51,12 +69,24 @@ public class AllProductActivity extends AppCompatActivity {
     private void initUi() {
         Toolbar toolbar = findViewById(R.id.toolbarAP);
         setSupportActionBar(toolbar);
+        fab_mess_all = findViewById(R.id.fab_mess_all);
         imv_back_layout_all_product = findViewById(R.id.imv_back_layout_all_product);
         recyclerView = findViewById(R.id.allRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(AllProductActivity.this, 3);
         recyclerView.setLayoutManager(manager);
         recyclerView.setHasFixedSize(true);
         adapter = new HorizontalRCVAdapter(AllProductActivity.this);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    fab_mess_all.hide();
+                } else {
+                    fab_mess_all.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @Override

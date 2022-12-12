@@ -411,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_setting:
                 fragment = new SettingFragment();
-                replaceFragmemt(fragment);
+                replaceFragmemt(settingFragment);
                 hieuUngChecked(id);
                 closeNavigation();
                 showToolBar("Thiết lập tài khoản");

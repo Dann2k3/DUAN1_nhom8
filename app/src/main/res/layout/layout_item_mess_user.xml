@@ -5,15 +5,37 @@
     android:gravity="right"
     android:orientation="vertical"
     android:padding="5dp"
-    >
-    <TextView
-        android:id="@+id/tv_mess_user"
-        android:text="Xin chào"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:background="@drawable/custom_mess_user_nv"
+    android:id="@+id/ln_mess_u">
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_mess_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_mess_user_nv"
+            android:text="Xin chào"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imv_avatar_me"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:src="@color/green1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_time_me"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="45dp"
+        android:text="time"
+        android:textSize="13dp"/>
 
 
 </LinearLayout>

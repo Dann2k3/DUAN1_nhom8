@@ -1,6 +1,9 @@
 package poly.ph26873.coffeepoly.adapter;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,12 +62,18 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    int status = snapshot.getValue(Integer.class);
-                    if (status == 0) {
-                        holder.imv_new.setVisibility(View.VISIBLE);
-                    } else {
-                        holder.imv_new.setVisibility(View.INVISIBLE);
+                    int status;
+                    try {
+                        status = snapshot.getValue(Integer.class);
+                        if (status == 0) {
+                            holder.imv_new.setVisibility(View.VISIBLE);
+                        } else {
+                            holder.imv_new.setVisibility(View.INVISIBLE);
+                        }
+                    } catch (Exception e) {
+
                     }
+
                 }
 
                 @Override
@@ -77,6 +87,38 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
                     Intent intent = new Intent(context, MessagerActivity.class);
                     intent.putExtra("id_user", user.getId());
                     context.startActivity(intent);
+                }
+            });
+            holder.onclick_mess.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setCancelable(false);
+                    builder.setTitle("Xác nhận xóa đoạn chat này?");
+                    builder.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ProgressDialog progressDialog = new ProgressDialog(context);
+                            progressDialog.show();
+                            DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(user.getId());
+                            reference1.removeValue(new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                    list.remove(user);
+                                    notifyDataSetChanged();
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                    builder.setNegativeButton("Quay lại", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.create().show();
+                    return false;
                 }
             });
             holder.imv_avatar_lm.setOnClickListener(new View.OnClickListener() {
