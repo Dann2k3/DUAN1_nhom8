@@ -242,6 +242,9 @@ public class HomeFragment extends Fragment {
                 for (int i = 0; i < list_rcm_product.size(); i++) {
                     if (list_rcm_product.get(i).getId() == product.getId()) {
                         list_rcm_product.set(i, product);
+                        showRecommentProduct(list_rcm_product);
+                        showAllProduct();
+                        break;
                     }
                 }
             }
