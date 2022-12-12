@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.activities;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class DetailTurnoverActivity extends AppCompatActivity {
     private RecyclerView dt_turn_RecyclerView;
     private DetailTurnoverBillRCVAdapter adapter;
     private FirebaseDatabase database;
+    private static final String TAG = "zzz";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,21 +44,36 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         Turnover turnover = (Turnover) getIntent().getSerializableExtra("turnover");
         if (turnover != null) {
+            Log.d(TAG, "onCreate: ");
             showInFomationBill(turnover);
+            Log.d(TAG, "turnover !=null ");
         } else {
             String idb = getIntent().getStringExtra("id_bill");
+            String idu = getIntent().getStringExtra("id_user");
+            Log.d(TAG, "idb: "+idb);
             if (idb != null && idb.length() > 0) {
-                showInFomationBill1(idb);
+                showInFomationBill1(idb,idu);
             }
         }
         onClicktoBack();
     }
 
-    private void showInFomationBill1(String idb) {
+    private void showInFomationBill1(String idb, String idu) {
         ProgressDialog progressDialog = new ProgressDialog(DetailTurnoverActivity.this);
         progressDialog.setMessage("Đang tải dữ liệu");
         progressDialog.show();
-        DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", "")).child(idb);
+        if(idu!=null&&idu.length()>0){
+            DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(idu).child(idb);
+            xuli(reference,progressDialog);
+        }else {
+            DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", "")).child(idb);
+            xuli(reference,progressDialog);
+        }
+
+
+    }
+
+    private void xuli(DatabaseReference reference, ProgressDialog progressDialog) {
         reference.addValueEventListener(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override

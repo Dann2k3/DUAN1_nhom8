@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -53,7 +55,15 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     public void onBindViewHolder(@NonNull BillRCVAdapter.BillHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_bill_time.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
+            holder.ln_bill_1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                    intent.putExtra("id_bill", bill.getId());
+                    context.startActivity(intent);
+                }
+            });
+            holder.tv_bill_time.setText("Thời gian: " + bill.getId().replaceAll("_", "/"));
             holder.tv_bill_name.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote().toString();
             note.substring(0, note.length() - 2);
@@ -139,6 +149,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     public class BillHolder extends RecyclerView.ViewHolder {
         private TextView tv_bill_mess, tv_bill_name, tv_bill_number_phone, tv_bill_time, tv_bill_note, tv_bill_address, tv_bill_total, tv_bill_status;
         private Button btn_bill_cancle;
+        private LinearLayout ln_bill_1;
 
         public BillHolder(@NonNull View itemView) {
             super(itemView);
@@ -151,6 +162,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
             tv_bill_total = itemView.findViewById(R.id.tv_bill_total);
             tv_bill_status = itemView.findViewById(R.id.tv_bill_status);
             btn_bill_cancle = itemView.findViewById(R.id.btn_bill_cancle);
+            ln_bill_1 = itemView.findViewById(R.id.ln_bill_1);
         }
     }
 }

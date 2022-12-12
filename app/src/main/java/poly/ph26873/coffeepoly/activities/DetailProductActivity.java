@@ -7,13 +7,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.models.TypeProduct;
@@ -44,9 +48,9 @@ public class DetailProductActivity extends AppCompatActivity {
     private static final String COL_TYPE_PRODUCT = "type_product";
     private static final String COL_CART = "cart";
     private ImageView imv_detail_product_favorite, imv_detail_product_avatar, imv_back_layout_detail_product, imv_detai_product_remove, imv_detai_product_add;
-    private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_content, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
+    private TextView tv_detai_product_total, tv_detai_product_name, tv_detai_product_quantitySold, tv_detai_product_status, tv_detai_product_type, tv_detai_product_price, tv_detai_product_quantity;
     private int a = 1;
-    private Button btn_detai_product_add_to_cart;
+    private Button btn_detai_product_add_to_cart, btn_het_hang;
     private static final String COL_FAVORITE = "favorite";
     private final List<Integer> favoriteList = new ArrayList<>();
     private Product product;
@@ -58,43 +62,114 @@ public class DetailProductActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private LinearLayout ln_out;
     private ExpandableTextView expandableTextView;
+    private RelativeLayout re_het;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
         initUi();
+        database = FirebaseDatabase.getInstance();
+        layIdUser();
+        kiemTraLoaiTaiKhoan();
         Intent intent = getIntent();
-        product = (Product) intent.getSerializableExtra("product");
+        if (MyReceiver.isConnected == false) {
+            product = (Product) intent.getSerializableExtra("product");
+            kiemTraHetHang();
+            layDanhSachYeuThich();
+        } else {
+            Product product1 = (Product) intent.getSerializableExtra("product");
+            DatabaseReference reference = database.getReference("coffee-poly").child("product").child(String.valueOf(product1.getId()));
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    product = snapshot.getValue(Product.class);
+                    if (product != null) {
+                        kiemTraHetHang();
+                        layDanhSachYeuThich();
+                        showInformationProduct();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
         backActivity();
         showInformationProduct();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        idu = Objects.requireNonNull(user.getEmail()).replaceAll("@gmail.com", "");
-        database = FirebaseDatabase.getInstance();
-        kiemTraLoaiTaiKhoan();
-        layDanhSachYeuThich();
-        onClickImagefavorite();
         addToCart();
     }
 
-    private void kiemTraLoaiTaiKhoan() {
-        DatabaseReference reference = database.getReference("coffee-poly").child("type_user").child(idu);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int type = Objects.requireNonNull(snapshot).getValue(Integer.class);
-                if (type != 2) {
-                    imv_detail_product_favorite.setVisibility(View.INVISIBLE);
-                    ln_out.setVisibility(View.INVISIBLE);
+    private void layIdUser() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
+        idu = Objects.requireNonNull(user.getEmail()).replaceAll("@gmail.com", "");
+    }
+
+    private void kiemTraHetHang() {
+        if (product.getStatus() == 1) {
+            re_het.setVisibility(View.VISIBLE);
+            ln_out.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+            ln_out.setLayoutParams(lp);
+            btn_het_hang.setText("Xác nhận còn hàng");
+            btn_het_hang.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ChangeStatus(0);
                 }
+            });
+        } else {
+            re_het.setVisibility(View.INVISIBLE);
+            if (ListData.type_user_current == 2) {
+                ln_out.setVisibility(View.VISIBLE);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ln_out.setLayoutParams(lp);
+            } else {
+                btn_het_hang.setText("Xác nhận hết hàng hàng");
+                btn_het_hang.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ChangeStatus(1);
+                    }
+                });
             }
+        }
+    }
 
+    private void ChangeStatus(int i) {
+        if (MyReceiver.isConnected == false) {
+            Toast.makeText(DetailProductActivity.this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        progressDialog.show();
+        DatabaseReference reference = database.getReference("coffee-poly").child("product").child(String.valueOf(product.getId())).child("status");
+        reference.setValue(i, new DatabaseReference.CompletionListener() {
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                progressDialog.dismiss();
             }
         });
+    }
+
+    private void kiemTraLoaiTaiKhoan() {
+        Log.d(TAG, "kiemTraLoaiTaiKhoan: " + ListData.type_user_current);
+        if (ListData.type_user_current != 2) {
+            imv_detail_product_favorite.setVisibility(View.INVISIBLE);
+            ln_out.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+            ln_out.setLayoutParams(lp);
+            btn_het_hang.setVisibility(View.VISIBLE);
+        } else {
+            imv_detail_product_favorite.setVisibility(View.VISIBLE);
+            btn_het_hang.setVisibility(View.INVISIBLE);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+            btn_het_hang.setLayoutParams(lp);
+            onClickImagefavorite();
+        }
     }
 
 
@@ -138,6 +213,9 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void layDanhSachYeuThich() {
+        if (ListData.type_user_current != 2) {
+            return;
+        }
         favoriteList.clear();
         reference = database.getReference(TABLE_NAME).child(COL_FAVORITE).child(idu).child("list_id_product");
         reference.addValueEventListener(new ValueEventListener() {
@@ -241,9 +319,14 @@ public class DetailProductActivity extends AppCompatActivity {
             Log.d(TAG, "id product: " + product.getId());
             Glide.with(DetailProductActivity.this).load(product.getImage()).error(R.color.red).into(imv_detail_product_avatar);
             tv_detai_product_name.setText(product.getName());
-            expandableTextView.setText(product.getContent()+"");
+            expandableTextView.setText(product.getContent() + "");
             tv_detai_product_quantitySold.setText("Số lượng đã bán: " + product.getQuantitySold());
-            tv_detai_product_status.setText("Trạng thái sản phẩm: " + product.getStatus());
+            if (product.getStatus() == 0) {
+                tv_detai_product_status.setText("Trạng thái sản phẩm: Còn hàng");
+            } else {
+                tv_detai_product_status.setText("Trạng thái sản phẩm: Tạm thời hết hàng");
+            }
+
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference(TABLE_NAME).child(COL_TYPE_PRODUCT).child(String.valueOf(product.getType()));
             reference.addValueEventListener(new ValueEventListener() {
@@ -271,6 +354,7 @@ public class DetailProductActivity extends AppCompatActivity {
     }
 
     private void initUi() {
+        re_het = findViewById(R.id.re_het);
         imv_detail_product_avatar = findViewById(R.id.imv_detail_product_avatar);
         imv_back_layout_detail_product = findViewById(R.id.imv_back_layout_detail_product);
         imv_detai_product_remove = findViewById(R.id.imv_detai_product_remove);
@@ -283,9 +367,25 @@ public class DetailProductActivity extends AppCompatActivity {
         tv_detai_product_price = findViewById(R.id.tv_detai_product_price);
         tv_detai_product_quantity = findViewById(R.id.tv_detai_product_quantity);
         btn_detai_product_add_to_cart = findViewById(R.id.btn_detai_product_add_to_cart);
+        btn_het_hang = findViewById(R.id.btn_het_hang);
         ln_out = findViewById(R.id.ln_out);
         expandableTextView = findViewById(R.id.expand_text_view);
         tv_detai_product_total = findViewById(R.id.tv_detai_product_total);
         progressDialog = new ProgressDialog(DetailProductActivity.this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("sl", tv_detai_product_quantity.getText().toString());
+        outState.putString("tt", tv_detai_product_total.getText().toString());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        a = Integer.parseInt(savedInstanceState.getString("sl"));
+        tv_detai_product_quantity.setText(savedInstanceState.getString("sl"));
+        tv_detai_product_total.setText(savedInstanceState.getString("tt"));
     }
 }

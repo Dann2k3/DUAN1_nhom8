@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
@@ -73,7 +75,16 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
     public void onBindViewHolder(@NonNull ShipingRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_his_time1s.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
+            holder.ln_ship.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                    intent.putExtra("id_user", bill.getId_user());
+                    intent.putExtra("id_bill", bill.getId());
+                    context.startActivity(intent);
+                }
+            });
+            holder.tv_his_time1s.setText("Thời gian: " + bill.getId().replaceAll("_", "/"));
             holder.tv_his_name1s.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote();
             note.substring(0, note.length() - 2);
@@ -287,10 +298,12 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
         private TextView tv_bill_mess_s, tv_his_time1s, tv_his_name1s, tv_his_number_phone1s, tv_his_note1s, tv_his_address1s, tv_his_total1s, tv_his_status1s;
         private Button btn_bill_cancle_s;
         private ImageView imv_more_vert_sp;
+        private LinearLayout ln_ship;
 
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
             tv_his_number_phone1s = itemView.findViewById(R.id.tv_bill_number_phone_s);
+            ln_ship = itemView.findViewById(R.id.ln_ship);
             tv_bill_mess_s = itemView.findViewById(R.id.tv_bill_mess_s);
             tv_his_name1s = itemView.findViewById(R.id.tv_bill_name_s);
             tv_his_time1s = itemView.findViewById(R.id.tv_bill_time_s);
