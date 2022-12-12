@@ -68,10 +68,8 @@ public class SMSFragment extends Fragment {
         reference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d(TAG, "onChildAdded: ");
                 Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
                 if (notify_messager != null) {
-                    Log.d(TAG, "onChildAdded: add");
                     list_nm.add(notify_messager);
                     sosanh();
                 }

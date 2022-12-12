@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.History;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -64,7 +67,7 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Bill bill = snapshot.getValue(Bill.class);
                         if (bill != null) {
-                            holder.tv_his_time.setText("Thời gian: " + history.getId());
+                            holder.tv_his_time.setText("Thời gian: " + history.getId().replaceAll("_","/"));
                             holder.tv_his_name.setText("Họ và tên: " + bill.getName());
                             String note = bill.getNote();
                             note.substring(0, note.length() - 2);
@@ -122,6 +125,14 @@ public class HistoryRCVAdapter extends RecyclerView.Adapter<HistoryRCVAdapter.Hi
                                     AlertDialog alertDialog = builder.create();
                                     alertDialog.show();
                                     return true;
+                                }
+                            });
+                            holder.onClick_del_his.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                                    intent.putExtra("id_bill",bill.getId());
+                                    context.startActivity(intent);
                                 }
                             });
                         }

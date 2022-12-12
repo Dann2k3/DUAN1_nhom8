@@ -73,7 +73,7 @@ public class ShipingRCVAdapter extends RecyclerView.Adapter<ShipingRCVAdapter.Hi
     public void onBindViewHolder(@NonNull ShipingRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_his_time1s.setText("Thời gian: " + bill.getId());
+            holder.tv_his_time1s.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
             holder.tv_his_name1s.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote();
             note.substring(0, note.length() - 2);

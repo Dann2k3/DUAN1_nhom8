@@ -3,7 +3,10 @@ package poly.ph26873.coffeepoly.models;
 public class Notify_messager {
     private String id_user;
     private int status;
-    //0 co tin nhan moi ,1
+    //0 co tin nhan moi tu user
+    //2 co tin nhan moi tu nhan vien
+    // 1
+
 
 
     public Notify_messager() {

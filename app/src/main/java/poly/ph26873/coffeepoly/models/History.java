@@ -1,6 +1,8 @@
 package poly.ph26873.coffeepoly.models;
 
-public class History {
+import java.io.Serializable;
+
+public class History implements Serializable {
     private String id;
     private int status;
     // 0 chưa xóa
