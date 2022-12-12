@@ -9,11 +9,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.bumptech.glide.Glide;
 
@@ -53,6 +53,11 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
     public void onBindViewHolder(@NonNull HorizontalRCVAdapter.ProductsHolder holder, int position) {
         Product product = list.get(position);
         if (product != null) {
+            if(product.getStatus()==1   ){
+                holder.re_het_h.setVisibility(View.VISIBLE);
+            }else {
+                holder.re_het_h.setVisibility(View.INVISIBLE);
+            }
             holder.tv_product_name_rcm.setText(product.getName());
             Glide.with(context).load(product.getImage()).error(R.color.red).into(holder.imv_product_avatar_rcm);
             holder.onclick_item.setOnClickListener(new View.OnClickListener() {
@@ -78,12 +83,14 @@ public class HorizontalRCVAdapter extends RecyclerView.Adapter<HorizontalRCVAdap
         private ImageView imv_product_avatar_rcm;
         private TextView tv_product_name_rcm;
         private LinearLayout onclick_item;
+        private RelativeLayout re_het_h;
 
         public ProductsHolder(@NonNull View itemView) {
             super(itemView);
             imv_product_avatar_rcm = itemView.findViewById(R.id.imv_product_avatar_rcm);
             tv_product_name_rcm = itemView.findViewById(R.id.tv_product_name_rcm);
             onclick_item = itemView.findViewById(R.id.onclick_item);
+            re_het_h = itemView.findViewById(R.id.re_het_h);
 
 
         }

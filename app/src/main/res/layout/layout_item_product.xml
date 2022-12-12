@@ -10,15 +10,41 @@
     android:padding="5dp">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         app:cardCornerRadius="22dp">
-        <ImageView
-            android:id="@+id/imv_product_avatar_rcm"
-            android:layout_width="95dp"
-            android:layout_height="95dp"
-            android:scaleType="centerCrop"
-            android:src="@color/purple_200" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imv_product_avatar_rcm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@color/purple_200" />
+
+            <RelativeLayout
+                android:id="@+id/re_het_h"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black1"
+                android:visibility="invisible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@color/black2"
+                    android:padding="5dp"
+                    android:text="Hết hàng"
+                    android:textAlignment="center"
+                    android:textColor="@color/red"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 
 
