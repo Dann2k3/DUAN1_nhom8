@@ -112,8 +112,6 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
                     }
                 });
             }
-
-//bbbbbbbbbb
         }
     }
 

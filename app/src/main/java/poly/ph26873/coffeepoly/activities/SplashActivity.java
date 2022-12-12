@@ -64,6 +64,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void serviceConnection() {
         Intent intent = new Intent(SplashActivity.this, MyService.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startService(intent);
     }
 
