@@ -203,6 +203,7 @@ public class DetailUserActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         int ty = snapshot.getValue(Integer.class);
                         if (ty == 0) {
+                            anChucNang1(btn_dis, btn_ena);
                             tv_type_detail_user.setText("Admin");
                             ln_tkct.setVisibility(View.INVISIBLE);
                             LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
@@ -259,6 +260,13 @@ public class DetailUserActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void anChucNang1(Button btn_dis, Button btn_ena) {
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                0, 0);
+        btn_dis.setLayoutParams(lp);
+        btn_ena.setLayoutParams(lp);
     }
 
     private void anChucNang(Button button, Button button1) {

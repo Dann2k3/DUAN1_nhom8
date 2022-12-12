@@ -179,6 +179,10 @@ public class DetailProductActivity extends AppCompatActivity {
                 Toast.makeText(this, "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (product.getStatus() == 1) {
+                Toast.makeText(this, "Sản phẩm hiện đang hết hàng", Toast.LENGTH_SHORT).show();
+                return;
+            }
             progressDialog.setMessage("Đang thêm vào giỏ hàng");
             progressDialog.setCancelable(false);
             progressDialog.show();
