@@ -48,7 +48,7 @@ public class NotifyRCVAdapter extends RecyclerView.Adapter<NotifyRCVAdapter.Noti
     public void onBindViewHolder(@NonNull NotifyHolder holder, int position) {
         Notify notify = list.get(position);
         if (notify != null) {
-            holder.tv_time.setText("Thời gian: " + notify.getTime());
+            holder.tv_time.setText("Thời gian: " + notify.getTime().replaceAll("_","/"));
             if(notify.getContent()!=null){
                 if (notify.getContent().contains("hủy")) {
                     holder.tv_content.setTextColor(Color.RED);
@@ -59,7 +59,7 @@ public class NotifyRCVAdapter extends RecyclerView.Adapter<NotifyRCVAdapter.Noti
                 } else {
                     holder.tv_content.setTextColor(Color.BLUE);
                 }
-                holder.tv_content.setText(notify.getContent());
+                holder.tv_content.setText(notify.getContent().replaceAll("_","/"));
             }
             if (notify.getStatus() == 0) {
                 holder.imv_status.setVisibility(View.VISIBLE);

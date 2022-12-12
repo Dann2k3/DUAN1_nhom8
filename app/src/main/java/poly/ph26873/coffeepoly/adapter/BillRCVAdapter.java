@@ -53,7 +53,7 @@ public class BillRCVAdapter extends RecyclerView.Adapter<BillRCVAdapter.BillHold
     public void onBindViewHolder(@NonNull BillRCVAdapter.BillHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_bill_time.setText("Thời gian: " + bill.getId());
+            holder.tv_bill_time.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
             holder.tv_bill_name.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote().toString();
             note.substring(0, note.length() - 2);

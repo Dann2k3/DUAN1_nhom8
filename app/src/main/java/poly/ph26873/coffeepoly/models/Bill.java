@@ -1,5 +1,6 @@
 package poly.ph26873.coffeepoly.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class Bill {

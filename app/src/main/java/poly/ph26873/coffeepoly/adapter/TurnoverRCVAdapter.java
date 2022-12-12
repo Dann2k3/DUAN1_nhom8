@@ -41,8 +41,8 @@ public class TurnoverRCVAdapter extends RecyclerView.Adapter<TurnoverRCVAdapter.
     public void onBindViewHolder(@NonNull TurnoverRCVAdapter.TurnoverHolder holder, int position) {
         Turnover turnover = list.get(position);
         if (turnover != null) {
-            holder.tv_turn_id.setText("ID: " + turnover.getId());
-            holder.tv_turn_time.setText("Thời gian: " + turnover.getTime());
+            holder.tv_turn_id.setText("ID: " + turnover.getId().replaceAll(" ",""));
+            holder.tv_turn_time.setText("Thời gian: " + turnover.getTime().replaceAll("_","/"));
             holder.tv_turn_total.setText("Tổng tiền: " + turnover.getTotal() + "K");
             holder.onclick_detail_item_turnover.setOnClickListener(new View.OnClickListener() {
                 @Override

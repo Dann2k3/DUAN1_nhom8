@@ -61,7 +61,7 @@ public class DetailTurnoverBillRCVAdapter extends RecyclerView.Adapter<DetailTur
                         Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_prd_in_turn_avatar);
                         holder.tv_prd_in_turn_name.setText(product.getName());
                         holder.tv_prd_in_turn_price.setText("Đơn giá: " + product.getPrice() + "K");
-                        holder.tv_prd_in_turn_quantity.setText("Số lương bán trong tháng: " + item_bill.getQuantity());
+                        holder.tv_prd_in_turn_quantity.setText("Số lương : " + item_bill.getQuantity());
                         DatabaseReference reference1 = database.getReference("coffee-poly").child("type_product").child(String.valueOf(product.getType())).child("country");
                         reference1.addValueEventListener(new ValueEventListener() {
                             @Override

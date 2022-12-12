@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ import poly.ph26873.coffeepoly.activities.AllProductActivity;
 import poly.ph26873.coffeepoly.activities.MessagerActivity;
 import poly.ph26873.coffeepoly.adapter.BannerViewPagerAdapter;
 import poly.ph26873.coffeepoly.adapter.HorizontalRCVAdapter;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Banner;
+import poly.ph26873.coffeepoly.models.Notify_messager;
 import poly.ph26873.coffeepoly.models.Product;
 import poly.ph26873.coffeepoly.service.MyReceiver;
 
@@ -127,10 +130,81 @@ public class HomeFragment extends Fragment {
                             ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     ln_internet_home.setLayoutParams(lp);
                 }
+                kiemTraTinNhan();
+                thongBaoNhanVien(context);
             }
         };
 
         getActivity().registerReceiver(receiver, intentFilter);
+    }
+
+    private void thongBaoNhanVien(Context context) {
+        if (ListData.type_user_current != 2) {
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager");
+            reference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
+                    if (notify_messager != null && notify_messager.getStatus() == 0) {
+                        MyReceiver.hienThongBao(context);
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
+                    if (notify_messager != null && notify_messager.getStatus() == 0) {
+                        MyReceiver.hienThongBao(context);
+                    }
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+    private void kiemTraTinNhan() {
+        if (ListData.type_user_current == 2) {
+            DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager").child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", "")).child("status");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int sta;
+                    try {
+                        sta = snapshot.getValue(Integer.class);
+                        if (sta == 2) {
+                            MyReceiver.hienThongBao(getContext());
+                            fab_mess.setImageResource(R.drawable.messenger1);
+                        } else {
+                            fab_mess.setImageResource(R.drawable.messenger);
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+
     }
 
 

@@ -62,7 +62,7 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         Bill bill = list.get(position);
         if (bill != null) {
             if (bill.getStatus() == 1) {
-                holder.tv_bill_time_m.setText("Thời gian: " + bill.getId());
+                holder.tv_bill_time_m.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
                 holder.tv_bill_name_m.setText("Họ và tên: " + bill.getName());
                 String note = bill.getNote().toString();
                 note.substring(0, note.length() - 2);

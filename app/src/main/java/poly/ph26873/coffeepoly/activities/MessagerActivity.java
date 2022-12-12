@@ -58,6 +58,7 @@ public class MessagerActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private MessagerRCVAdapter adapter;
     private TextView tv_connect_nv;
+    private int a = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class MessagerActivity extends AppCompatActivity {
         showListMess();
         if (ListData.type_user_current != 2) {
             DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
-            reference.setValue(2);
+            reference.setValue(3);
             LinearLayout.LayoutParams lp1 = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, 0);
             tv_connect_nv.setVisibility(View.INVISIBLE);
@@ -102,7 +103,14 @@ public class MessagerActivity extends AppCompatActivity {
                         reference.removeValue(new DatabaseReference.CompletionListener() {
                             @Override
                             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                progressDialog.dismiss();
+                                DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
+                                reference.setValue(1, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                        progressDialog.dismiss();
+                                    }
+                                });
+
                             }
                         });
                     }
@@ -155,7 +163,7 @@ public class MessagerActivity extends AppCompatActivity {
                         int s;
                         try {
                             s = snapshot.getValue(Integer.class);
-                            if (s == 2) {
+                            if (s == 3) {
                                 tv_connect_nv.setText("Đã kết nối với nhân viên thành công");
                             } else {
                                 tv_connect_nv.setText("Đang kết nối với nhân viên");
@@ -255,9 +263,14 @@ public class MessagerActivity extends AppCompatActivity {
                     public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                         edt_mess.setText("");
                         edt_mess.clearFocus();
+                        a++;
                         if (ListData.type_user_current == 2) {
                             Notify_messager notify_messager = new Notify_messager(id_user, 0);
                             DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id);
+                            reference1.setValue(notify_messager);
+                        } else {
+                            Notify_messager notify_messager = new Notify_messager(id_user, 2);
+                            DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user);
                             reference1.setValue(notify_messager);
                         }
 
@@ -316,6 +329,29 @@ public class MessagerActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        if (a == 0) {
+            if (ListData.type_user_current != 2) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
+                        reference1.setValue(1);
+                    }
+                }, 20000);
+            } else {
+                DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
+                reference1.setValue(1);
+            }
+        } else {
+            if (ListData.type_user_current != 2) {
+                DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
+                reference1.setValue(2);
+            } else {
+                DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
+                reference1.setValue(0);
+            }
+
+        }
     }
 
     @Override
@@ -332,30 +368,42 @@ public class MessagerActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (ListData.type_user_current != 2) {
-            DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id_user).child("status");
-            reference1.setValue(1);
-        }
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (ListData.type_user_current == 2) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
-                    String time = simpleDateFormat.format(calendar.getTime());
-                    Message message = new Message("nhanvien1", "Xin chào, bạn cần giúp đỡ?", time, 1);
-                    DatabaseReference reference = database.getReference("coffee-poly").child("messager").child(id_user).child(time);
-                    reference.setValue(message);
-                }
-            }, 2000);
-        }
+//        if (ListData.type_user_current == 2) {
+//            DatabaseReference reference1 = database.getReference("coffee-poly").child("Notify_messager").child(id).child("status");
+//            reference1.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    int sta;
+//                    try {
+//                        sta = snapshot.getValue(Integer.class);
+//                        if (sta == 1) {
+//                            new Handler().postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    Calendar calendar = Calendar.getInstance();
+//                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy kk:mm:ss");
+//                                    String time = simpleDateFormat.format(calendar.getTime());
+//                                    Message message = new Message("nhanvien1", "Xin chào, bạn cần giúp đỡ?", time, 1);
+//                                    DatabaseReference reference = database.getReference("coffee-poly").child("messager").child(id_user).child(time);
+//                                    reference.setValue(message);
+//                                }
+//                            }, 2000);
+//                        }
+//                    } catch (Exception e) {
+//
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                }
+//            });
+//
+//        }
     }
 }

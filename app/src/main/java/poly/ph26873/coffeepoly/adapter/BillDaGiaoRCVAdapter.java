@@ -46,7 +46,7 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
     public void onBindViewHolder(@NonNull BillDaGiaoRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
-            holder.tv_his_time1.setText("Thời gian: " + bill.getId());
+            holder.tv_his_time1.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
             holder.tv_his_name1.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote();
             note.substring(0, note.length() - 2);

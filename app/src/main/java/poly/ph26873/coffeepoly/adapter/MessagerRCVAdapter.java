@@ -56,7 +56,7 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ListData.type_user_current || (viewType == 1 && ListData.type_user_current == 0)) {
+        if (viewType == ListData.type_user_current || (viewType == 1 && ListData.type_user_current == 0)||(viewType == 0 && ListData.type_user_current == 1)) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_mess_user, parent, false);
             return new MessagerUserHolder(view);
         } else {
@@ -75,7 +75,7 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (holder.getItemViewType() == ListData.type_user_current || (holder.getItemViewType() == 1 && ListData.type_user_current == 0)) {
                 MessagerUserHolder userHolder = (MessagerUserHolder) holder;
                 userHolder.tv_mess_user.setText(message.getContent());
-                userHolder.tv_time_me.setText(message.getTime());
+                userHolder.tv_time_me.setText(message.getTime().replaceAll("_","/"));
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -119,7 +119,7 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 MessagerNVHolder nvHolder = (MessagerNVHolder) holder;
                 nvHolder.tv_mess_nv.setText(message.getContent());
-                nvHolder.tv_time_you.setText(message.getTime());
+                nvHolder.tv_time_you.setText(message.getTime().replaceAll("_","/"));
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
