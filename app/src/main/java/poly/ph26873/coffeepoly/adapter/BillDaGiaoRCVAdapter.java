@@ -1,12 +1,14 @@
 package poly.ph26873.coffeepoly.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.models.Bill;
 
 public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdapter.HistoryHolder> implements Filterable {
@@ -46,6 +49,15 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
     public void onBindViewHolder(@NonNull BillDaGiaoRCVAdapter.HistoryHolder holder, int position) {
         Bill bill = list.get(position);
         if (bill != null) {
+            holder.ln_bill_ok.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                    intent.putExtra("id_user", bill.getId_user());
+                    intent.putExtra("id_bill", bill.getId());
+                    context.startActivity(intent);
+                }
+            });
             holder.tv_his_time1.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
             holder.tv_his_name1.setText("Họ và tên: " + bill.getName());
             String note = bill.getNote();
@@ -77,10 +89,11 @@ public class BillDaGiaoRCVAdapter extends RecyclerView.Adapter<BillDaGiaoRCVAdap
 
     public class HistoryHolder extends RecyclerView.ViewHolder {
         private TextView tv_his_mess_1, tv_his_time1, tv_his_name1, tv_his_number_phone1, tv_his_note1, tv_his_address1, tv_his_total1, tv_his_status1;
-
+        private LinearLayout ln_bill_ok;
         public HistoryHolder(@NonNull View itemView) {
             super(itemView);
             tv_his_number_phone1 = itemView.findViewById(R.id.tv_his_number_phone_1);
+            ln_bill_ok = itemView.findViewById(R.id.ln_bill_ok);
             tv_his_name1 = itemView.findViewById(R.id.tv_his_name_1);
             tv_his_mess_1 = itemView.findViewById(R.id.tv_his_mess_1);
             tv_his_time1 = itemView.findViewById(R.id.tv_his_time_1);

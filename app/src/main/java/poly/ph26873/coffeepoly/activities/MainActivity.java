@@ -68,6 +68,7 @@ import poly.ph26873.coffeepoly.ui.HomeFragment;
 import poly.ph26873.coffeepoly.ui.ListUserFragment;
 import poly.ph26873.coffeepoly.ui.ManagementFragment;
 import poly.ph26873.coffeepoly.ui.PassWordFragment;
+import poly.ph26873.coffeepoly.ui.ProductFragment;
 import poly.ph26873.coffeepoly.ui.SMSFragment;
 import poly.ph26873.coffeepoly.ui.SettingFragment;
 import poly.ph26873.coffeepoly.ui.ShipingFragment;
@@ -136,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void fix() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        for (int i = 0; i < ListData.listUser.size(); i++) {
-            DatabaseReference reference = database.getReference("coffee-poly").child("pw_user").child(ListData.listUser.get(i).getId());
-            reference.setValue(123456+"");
+        for (int i = 0; i < ListData.listPrd.size(); i++) {
+            DatabaseReference reference = database.getReference("coffee-poly").child("product").child(ListData.listPrd.get(i).getId()+"").child("status");
+            reference.setValue(0);
         }
     }
 
@@ -373,6 +374,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 showToolBar("Tin nhắn");
                 IDmenu = id;
                 break;
+            case R.id.nav_prd:
+                fragment = new ProductFragment();
+                replaceFragmemt(fragment);
+                hieuUngChecked(id);
+                closeNavigation();
+                showToolBar("Sản phẩm");
+                IDmenu = id;
+                break;
 
 
             case R.id.nav_turnover:
@@ -452,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void hieuUngChecked(int id) {
-        int[] mang = {R.id.nav_sms, R.id.nav_list_user, R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
+        int[] mang = {R.id.nav_prd, R.id.nav_sms, R.id.nav_list_user, R.id.nav_turnover_product, R.id.nav_order_management_scfl, R.id.nav_home, R.id.nav_cart, R.id.nav_favourite, R.id.nav_history, R.id.nav_setting, R.id.nav_logout, R.id.nav_bill, R.id.nav_turnover, R.id.nav_top_product, R.id.nav_order_management, R.id.nav_history_bill, R.id.nav_bill_faild};
         for (int j : mang) {
             navigationView.getMenu().findItem(j).setChecked(id == j);
         }

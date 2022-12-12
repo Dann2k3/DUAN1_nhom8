@@ -8,14 +8,17 @@ public class Product implements Serializable {
     private String image;
     private int price;
     private String content;
-    private String status;
+    private int status;
     private int quantitySold;
     private int type;
+
+    //0 con
+    // 1 het
 
     public Product() {
     }
 
-    public Product(int id, String name, String image, int price, String content, String status, int quantitySold, int type) {
+    public Product(int id, String name, String image, int price, String content, int status, int quantitySold, int type) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -58,11 +61,11 @@ public class Product implements Serializable {
         this.content = content;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 

@@ -53,6 +53,10 @@
                 android:id="@+id/nav_sms"
                 android:icon="@drawable/sms_48px"
                 android:title="Tin nhắn" />
+            <item
+                android:id="@+id/nav_prd"
+                android:icon="@drawable/category_48px"
+                android:title="Sản Phẩm" />
         </menu>
     </item>
 

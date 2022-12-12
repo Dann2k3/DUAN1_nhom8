@@ -67,12 +67,39 @@
                         app:cardCornerRadius="20sp"
                         app:elevation="50dp">
 
-                        <ImageView
-                            android:id="@+id/imv_detail_product_avatar"
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:src="@color/red" />
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:id="@+id/imv_detail_product_avatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@color/green1" />
+
+                            <RelativeLayout
+                                android:id="@+id/re_het"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@color/black1"
+                                android:visibility="invisible">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:background="@color/black2"
+                                    android:padding="5dp"
+                                    android:text="Hết hàng"
+                                    android:textAlignment="center"
+                                    android:textColor="@color/red"
+                                    android:textSize="23dp"
+                                    android:textStyle="bold" />
+                            </RelativeLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                     </androidx.cardview.widget.CardView>
 
                     <ImageView
@@ -178,7 +205,7 @@
 
                 <LinearLayout
                     android:id="@+id/ln_out"
-                    android:layout_width="300dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:gravity="center"
@@ -187,7 +214,7 @@
                     <TextView
                         android:layout_marginBottom="10dp"
                         android:id="@+id/tv_detai_product_total"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingEnd="3dp"
                         android:text="Thành tiền: 100k"
@@ -248,6 +275,15 @@
                         android:textStyle="bold"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_het_hang"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:text="Xác nhận hết hàng" />
+
+
             </LinearLayout>
         </ScrollView>
 

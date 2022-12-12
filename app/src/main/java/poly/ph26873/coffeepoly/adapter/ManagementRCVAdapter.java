@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailTurnoverActivity;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Notify;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -62,7 +65,17 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         Bill bill = list.get(position);
         if (bill != null) {
             if (bill.getStatus() == 1) {
-                holder.tv_bill_time_m.setText("Thời gian: " + bill.getId().replaceAll("_","/"));
+                holder.ln_mana.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, DetailTurnoverActivity.class);
+                        intent.putExtra("id_bill", bill.getId());
+                        intent.putExtra("id_user",bill.getId_user());
+                        Log.d(TAG, "id_bill: "+bill.getId());
+                        context.startActivity(intent);
+                    }
+                });
+                holder.tv_bill_time_m.setText("Thời gian: " + bill.getId().replaceAll("_", "/"));
                 holder.tv_bill_name_m.setText("Họ và tên: " + bill.getName());
                 String note = bill.getNote().toString();
                 note.substring(0, note.length() - 2);
@@ -221,8 +234,10 @@ public class ManagementRCVAdapter extends RecyclerView.Adapter<ManagementRCVAdap
         private TextView tv_bill_mess_m, tv_bill_time_m, tv_bill_name_m, tv_bill_number_phone_m, tv_bill_note_m, tv_bill_address_m, tv_bill_total_m, tv_bill_status_m;
         private Button btn_bill_cancle_m;
         private ImageView imv_bill_cancel_m;
+        private LinearLayout ln_mana;
         public BillHolder(@NonNull View itemView) {
             super(itemView);
+            ln_mana = itemView.findViewById(R.id.ln_mana);
             tv_bill_number_phone_m = itemView.findViewById(R.id.tv_bill_number_phone_m);
             tv_bill_mess_m = itemView.findViewById(R.id.tv_bill_mess_m);
             tv_bill_name_m = itemView.findViewById(R.id.tv_bill_name_m);
