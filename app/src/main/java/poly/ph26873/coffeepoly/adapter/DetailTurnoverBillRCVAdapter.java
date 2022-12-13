@@ -1,5 +1,6 @@
 package poly.ph26873.coffeepoly.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -58,7 +59,9 @@ public class DetailTurnoverBillRCVAdapter extends RecyclerView.Adapter<DetailTur
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Product product = snapshot.getValue(Product.class);
                     if (product != null) {
-                        Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_prd_in_turn_avatar);
+                        if (isValidContextForGlide(context)){
+                            Glide.with(context).load(Uri.parse(product.getImage())).error(R.color.red).into(holder.imv_prd_in_turn_avatar);
+                        }
                         holder.tv_prd_in_turn_name.setText(product.getName());
                         holder.tv_prd_in_turn_price.setText("Đơn giá: " + product.getPrice() + "K");
                         holder.tv_prd_in_turn_quantity.setText("Số lương : " + item_bill.getQuantity());
@@ -91,6 +94,19 @@ public class DetailTurnoverBillRCVAdapter extends RecyclerView.Adapter<DetailTur
                 }
             });
         }
+    }
+
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
