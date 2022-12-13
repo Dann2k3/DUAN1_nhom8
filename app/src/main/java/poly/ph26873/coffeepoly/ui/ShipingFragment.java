@@ -1,7 +1,13 @@
 package poly.ph26873.coffeepoly.ui;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +25,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +41,10 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.adapter.ShipingRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 
-public class ShipingFragment extends Fragment {
+public class ShipingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
 
     @Override
@@ -50,6 +60,10 @@ public class ShipingFragment extends Fragment {
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
     private boolean isFirst = true;
+    private LinearLayout ln_internet_ship;
+    private BroadcastReceiver receiver = null;
+    private SwipeRefreshLayout shipSwipeRefreshLayout;
+    private List<Bill> listBill;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -58,6 +72,8 @@ public class ShipingFragment extends Fragment {
         progressDialog.setMessage("Đang tải dữ liệu...");
         progressDialog.setCancelable(false);
         progressDialog.show();
+        shipSwipeRefreshLayout = view.findViewById(R.id.shipSwipeRefreshLayout);
+        ln_internet_ship = view.findViewById(R.id.ln_internet_ship);
         recyclerView = view.findViewById(R.id.shipRecyclerView);
         adapter = new ShipingRCVAdapter(getContext());
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -66,6 +82,33 @@ public class ShipingFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         layListUser();
         progressDialog.dismiss();
+        broadcast();
+        shipSwipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_ship.setVisibility(View.INVISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            0, 0);
+                    ln_internet_ship.setLayoutParams(lp);
+                    shipSwipeRefreshLayout.setRefreshing(true);
+                    layListUser();
+                    anSwipeReferences();
+                } else {
+                    ln_internet_ship.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ln_internet_ship.setLayoutParams(lp);
+                }
+            }
+        };
+
+        getActivity().registerReceiver(receiver, intentFilter);
     }
 
 
@@ -108,27 +151,33 @@ public class ShipingFragment extends Fragment {
 
     private void layListBill(List<User> listUser) {
         DatabaseReference reference = database.getReference("coffee-poly/bill");
-        List<Bill> listBill = new ArrayList<>();
-        if (listUser.size() > 0) {
+        listBill = new ArrayList<>();
             for (int i = 0; i < listUser.size(); i++) {
-                final int index = i;
                 reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                        if (index == 0) {
-                            listBill.clear();
-                        }
                         Bill bill = snapshot.getValue(Bill.class);
                         if (bill != null && bill.getStatus() == 0) {
-                            listBill.add(bill);
-                            Collections.reverse(listBill);
-                            Log.d(TAG, "list can tim: " + listBill.size());
-                            adapter.setData(listBill);
-                            if (isFirst == true) {
-                                setAL();
-                                isFirst = false;
+                            int a = 0;
+                            if (listBill.size() > 0) {
+                                for (int j = 0; j < listBill.size(); j++) {
+                                    if (listBill.get(j).getId().equals(bill.getId())) {
+                                        a++;
+                                        break;
+                                    }
+                                }
                             }
-                            recyclerView.setAdapter(adapter);
+                            if (a == 0) {
+                                listBill.add(bill);
+                                Collections.reverse(listBill);
+                                Log.d(TAG, "list can tim: " + listBill.size());
+                                adapter.setData(listBill);
+                                if (isFirst == true) {
+                                    setAL();
+                                    isFirst = false;
+                                }
+                                recyclerView.setAdapter(adapter);
+                            }
                         }
                     }
 
@@ -170,11 +219,9 @@ public class ShipingFragment extends Fragment {
                     }
                 });
             }
-        }
         adapter.setData(listBill);
         recyclerView.setAdapter(adapter);
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -205,4 +252,26 @@ public class ShipingFragment extends Fragment {
         recyclerView.setLayoutAnimation(layoutAnimationController);
     }
 
+    @Override
+    public void onRefresh() {
+        if (listBill != null) {
+            adapter.setData(listBill);
+            setAL();
+        }
+        anSwipeReferences();
+    }
+
+    private void anSwipeReferences() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                shipSwipeRefreshLayout.setRefreshing(false);
+                if (MyReceiver.isConnected == false) {
+                    Toast.makeText(getContext(), "Không có internet", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, 1000);
+    }
 }

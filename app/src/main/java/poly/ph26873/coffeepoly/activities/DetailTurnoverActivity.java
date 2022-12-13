@@ -2,9 +2,17 @@ package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +35,7 @@ import poly.ph26873.coffeepoly.adapter.DetailTurnoverBillRCVAdapter;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.Item_Bill;
 import poly.ph26873.coffeepoly.models.Turnover;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class DetailTurnoverActivity extends AppCompatActivity {
     private ImageView imv_back_layout_detail_turnover;
@@ -35,6 +44,8 @@ public class DetailTurnoverActivity extends AppCompatActivity {
     private DetailTurnoverBillRCVAdapter adapter;
     private FirebaseDatabase database;
     private static final String TAG = "zzz";
+    private LinearLayout ln_internet_dt;
+    private BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,34 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_turnover);
         initUi();
         database = FirebaseDatabase.getInstance();
+        show();
+        onClicktoBack();
+        broadcast();
+    }
+
+    private void broadcast() {
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (MyReceiver.isConnected == true) {
+                    ln_internet_dt.setVisibility(View.INVISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 0);
+                    ln_internet_dt.setLayoutParams(lp);
+                    show();
+                } else {
+                    ln_internet_dt.setVisibility(View.VISIBLE);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    ln_internet_dt.setLayoutParams(lp);
+                }
+            }
+        };
+
+        registerReceiver(receiver, intentFilter);
+    }
+
+
+    private void show() {
         Turnover turnover = (Turnover) getIntent().getSerializableExtra("turnover");
         if (turnover != null) {
             Log.d(TAG, "onCreate: ");
@@ -50,24 +89,23 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         } else {
             String idb = getIntent().getStringExtra("id_bill");
             String idu = getIntent().getStringExtra("id_user");
-            Log.d(TAG, "idb: "+idb);
+            Log.d(TAG, "idb: " + idb);
             if (idb != null && idb.length() > 0) {
-                showInFomationBill1(idb,idu);
+                showInFomationBill1(idb, idu);
             }
         }
-        onClicktoBack();
     }
 
     private void showInFomationBill1(String idb, String idu) {
         ProgressDialog progressDialog = new ProgressDialog(DetailTurnoverActivity.this);
         progressDialog.setMessage("Đang tải dữ liệu");
         progressDialog.show();
-        if(idu!=null&&idu.length()>0){
+        if (idu != null && idu.length() > 0) {
             DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(idu).child(idb);
-            xuli(reference,progressDialog);
-        }else {
+            xuli(reference, progressDialog);
+        } else {
             DatabaseReference reference = database.getReference("coffee-poly").child("bill").child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replaceAll("@gmail.com", "")).child(idb);
-            xuli(reference,progressDialog);
+            xuli(reference, progressDialog);
         }
 
 
@@ -153,6 +191,7 @@ public class DetailTurnoverActivity extends AppCompatActivity {
 
     private void initUi() {
         imv_back_layout_detail_turnover = findViewById(R.id.imv_back_layout_detail_turnover);
+        ln_internet_dt = findViewById(R.id.ln_internet_dt);
         tv_dt_turn_time = findViewById(R.id.tv_dt_turn_time);
         tv_dt_turn_sta = findViewById(R.id.tv_dt_turn_sta);
         tv_dt_turn_name = findViewById(R.id.tv_dt_turn_name);
@@ -167,4 +206,13 @@ public class DetailTurnoverActivity extends AppCompatActivity {
         adapter = new DetailTurnoverBillRCVAdapter(DetailTurnoverActivity.this);
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+            receiver = null;
+        }
+    }
 }
