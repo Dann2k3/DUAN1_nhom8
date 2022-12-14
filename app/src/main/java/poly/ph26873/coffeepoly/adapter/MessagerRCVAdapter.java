@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
@@ -78,14 +80,21 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = list.get(position);
         if (message != null) {
-            Log.d(TAG, "getItemViewType =  "+holder.getItemViewType());
-            Log.d(TAG, "ListData.type_user_current =  "+ListData.type_user_current);
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String homnay = simpleDateFormat.format(calendar.getTime());
+            Log.d(TAG, "getItemViewType =  " + holder.getItemViewType());
+            Log.d(TAG, "ListData.type_user_current =  " + ListData.type_user_current);
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("coffee-poly").child("user").child(message.getId_user());
-            if (holder.getItemViewType() == ListData.type_user_current || (holder.getItemViewType() == 1 && ListData.type_user_current == 0)||(holder.getItemViewType() == 0 && ListData.type_user_current == 1)) {
+            if (holder.getItemViewType() == ListData.type_user_current || (holder.getItemViewType() == 1 && ListData.type_user_current == 0) || (holder.getItemViewType() == 0 && ListData.type_user_current == 1)) {
                 MessagerUserHolder userHolder = (MessagerUserHolder) holder;
                 userHolder.tv_mess_user.setText(message.getContent());
-                userHolder.tv_time_me.setText(message.getTime().replaceAll("_","/"));
+                if (homnay.equals(message.getTime().replaceAll("_", "/").substring(0, 10))) {
+                    userHolder.tv_time_me.setText("Hôm nay, " + message.getTime().replaceAll("_", "/").substring(10));
+                } else {
+                    userHolder.tv_time_me.setText(message.getTime().replaceAll("_", "/"));
+                }
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -137,7 +146,12 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 MessagerNVHolder nvHolder = (MessagerNVHolder) holder;
                 nvHolder.tv_mess_nv.setText(message.getContent());
-                nvHolder.tv_time_you.setText(message.getTime().replaceAll("_","/"));
+                if (homnay.equals(message.getTime().replaceAll("_", "/").substring(0, 10))) {
+                    nvHolder.tv_time_you.setText("Hôm nay, " + message.getTime().replaceAll("_", "/").substring(10));
+                } else {
+                    nvHolder.tv_time_you.setText(message.getTime().replaceAll("_", "/"));
+                }
+
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
