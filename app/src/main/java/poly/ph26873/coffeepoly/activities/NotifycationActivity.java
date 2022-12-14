@@ -44,6 +44,7 @@ public class NotifycationActivity extends AppCompatActivity {
     private static boolean isFirts = true;
     private static final String TAG = "zzz";
     private NotifyRCVAdapter adapter;
+    private int New = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,11 @@ public class NotifycationActivity extends AppCompatActivity {
         imv_sort_layout_notify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (New != 0) {
+                    chuyenListdaXem();
+                    showListNotifyCation();
+                    New = 0;
+                }
                 Collections.reverse(list);
                 adapter.setData(list);
             }
@@ -100,6 +106,7 @@ public class NotifycationActivity extends AppCompatActivity {
     }
 
     private void layData(DatabaseReference myRef1) {
+        list.clear();
         myRef1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -108,6 +115,7 @@ public class NotifycationActivity extends AppCompatActivity {
                     list.add(notify);
                     if (notify.getStatus() == 0) {
                         Collections.sort(list, (o1, o2) -> o1.getStatus() - o2.getStatus());
+                        New++;
                     }
                     adapter.setData(list);
                     recyclerView.setAdapter(adapter);
