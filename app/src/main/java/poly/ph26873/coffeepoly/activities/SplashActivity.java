@@ -66,18 +66,11 @@ public class SplashActivity extends AppCompatActivity {
 
     private void serviceConnection() {
         Intent intent = new Intent(SplashActivity.this, MyService.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        }else {
             startService(intent);
-        } catch (Exception e) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            }
-            else {
-                startService(intent);
-            }
         }
-
     }
 
 

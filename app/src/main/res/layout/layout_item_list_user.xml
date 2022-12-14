@@ -47,6 +47,7 @@
         </LinearLayout>
 
         <ImageView
+            android:scaleType="centerCrop"
             android:id="@+id/imv_more_vert"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
