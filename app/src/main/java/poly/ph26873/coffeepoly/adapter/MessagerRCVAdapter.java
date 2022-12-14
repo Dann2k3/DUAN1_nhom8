@@ -3,6 +3,7 @@ package poly.ph26873.coffeepoly.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context context;
     private List<Message> list;
+    private static final String TAG = "zzz";
 
     public MessagerRCVAdapter(Context context) {
         this.context = context;
@@ -49,6 +51,9 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public int getItemViewType(int position) {
         Message message = list.get(position);
+        if (message == null) {
+            return ListData.type_user_current;
+        }
         return message.getType();
     }
 
@@ -70,9 +75,11 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = list.get(position);
         if (message != null) {
+            Log.d(TAG, "getItemViewType =  "+holder.getItemViewType());
+            Log.d(TAG, "ListData.type_user_current =  "+ListData.type_user_current);
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference reference = database.getReference("coffee-poly").child("user").child(message.getId_user());
-            if (holder.getItemViewType() == ListData.type_user_current || (holder.getItemViewType() == 1 && ListData.type_user_current == 0)) {
+            if (holder.getItemViewType() == ListData.type_user_current || (holder.getItemViewType() == 1 && ListData.type_user_current == 0)||(holder.getItemViewType() == 0 && ListData.type_user_current == 1)) {
                 MessagerUserHolder userHolder = (MessagerUserHolder) holder;
                 userHolder.tv_mess_user.setText(message.getContent());
                 userHolder.tv_time_me.setText(message.getTime().replaceAll("_","/"));
