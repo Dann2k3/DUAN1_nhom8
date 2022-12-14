@@ -63,21 +63,20 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
                 } else {
                     holder.onclick_mess.setBackgroundResource(R.color.white);
                 }
+                Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(holder.imv_avatar_lm);
             } else {
-                DatabaseReference reference = database.getReference("coffee-poly").child("user").child(user.getId()).child("enable");
+                DatabaseReference reference = database.getReference("coffee-poly").child("user").child(user.getId());
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        int en;
-                        try {
-                            en = snapshot.getValue(Integer.class);
-                            if (en == 1) {
+                        User user1 = snapshot.getValue(User.class);
+                        if (user1 != null) {
+                            if (user1.getEnable() == 1) {
                                 holder.onclick_mess.setBackgroundResource(R.color.black1);
                             } else {
                                 holder.onclick_mess.setBackgroundResource(R.color.white);
                             }
-                        } catch (Exception e) {
-
+                            Glide.with(context).load(Uri.parse(user1.getImage())).error(R.drawable.image_guest).into(holder.imv_avatar_lm);
                         }
                     }
 
@@ -87,7 +86,6 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
                     }
                 });
             }
-            Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(holder.imv_avatar_lm);
             holder.tv_name_lm.setText(user.getName());
 
             DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager").child(user.getId()).child("status");

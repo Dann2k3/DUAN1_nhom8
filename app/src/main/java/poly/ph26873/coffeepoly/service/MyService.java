@@ -1,12 +1,15 @@
 package poly.ph26873.coffeepoly.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,7 +32,6 @@ public class MyService extends Service {
     public MyService() {
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,6 +39,11 @@ public class MyService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        All();
+        return START_STICKY;
+    }
+
+    private void All() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM_yyyy");
         String month = simpleDateFormat.format(calendar.getTime());
@@ -45,9 +52,7 @@ public class MyService extends Service {
         capNhatListQuanProduct(database, month);
         layLoaiTaiKhoan(database);
         laydanhsachUser(database);
-        return START_NOT_STICKY;
     }
-
 
 
     private void laydanhsachUser(FirebaseDatabase database) {
@@ -160,5 +165,15 @@ public class MyService extends Service {
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true);
+        } else {
+            stopSelf();
+        }
     }
 }
