@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -66,7 +67,17 @@ public class SplashActivity extends AppCompatActivity {
     private void serviceConnection() {
         Intent intent = new Intent(SplashActivity.this, MyService.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startService(intent);
+        try {
+            startService(intent);
+        } catch (Exception e) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            }
+            else {
+                startService(intent);
+            }
+        }
+
     }
 
 
