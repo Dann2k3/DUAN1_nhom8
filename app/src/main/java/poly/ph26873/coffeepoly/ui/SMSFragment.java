@@ -82,6 +82,7 @@ public class SMSFragment extends Fragment {
                     for (int i = 0; i < list_nm.size(); i++) {
                         if (notify_messager.getId_user() == list_nm.get(i).getId_user()) {
                             list_nm.set(i, notify_messager);
+                            sosanh();
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,11 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
     public void onBindViewHolder(@NonNull ListMessagerRCVAdapter.UserHolder holder, int position) {
         User user = list.get(position);
         if (user != null) {
+            if (user.getEnable() == 1) {
+                holder.onclick_mess.setBackgroundResource(R.color.black1);
+            } else {
+                holder.onclick_mess.setBackgroundResource(R.color.white);
+            }
             Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(holder.imv_avatar_lm);
             holder.tv_name_lm.setText(user.getName());
             FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -143,7 +149,7 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
     public class UserHolder extends RecyclerView.ViewHolder {
         private ImageView imv_avatar_lm, imv_new;
         private TextView tv_name_lm;
-        private CardView onclick_mess;
+        private LinearLayout onclick_mess;
 
         public UserHolder(@NonNull View itemView) {
             super(itemView);

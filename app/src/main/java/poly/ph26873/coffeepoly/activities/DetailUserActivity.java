@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Bill;
 import poly.ph26873.coffeepoly.models.User;
 import poly.ph26873.coffeepoly.service.MyReceiver;
@@ -181,7 +182,16 @@ public class DetailUserActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     pa = snapshot.getValue(String.class);
-                                    tv_pw_detail_user.setText(pa);
+                                    if (ListData.type_user_current == 0) {
+                                        tv_pw_detail_user.setText(pa);
+                                    } else {
+                                        String p = "";
+                                        for (int i = 0; i < pa.length(); i++) {
+                                            p += "*";
+                                        }
+                                        tv_pw_detail_user.setText(p);
+                                    }
+
                                 }
 
                                 @Override

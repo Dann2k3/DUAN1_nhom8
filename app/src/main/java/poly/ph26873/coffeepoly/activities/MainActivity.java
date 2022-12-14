@@ -4,7 +4,9 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -193,7 +195,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String image = snapshot.getValue(String.class);
                 Uri uri = Uri.parse(image);
                 Log.d(TAG, "onDataChange: Uri " + uri.toString());
-                Glide.with(MainActivity.this).load(uri).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588")).into(img_avatar);
+                if (isValidContextForGlide(MainActivity.this)) {
+                    Glide.with(MainActivity.this).load(uri).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588")).into(img_avatar);
+                }
             }
 
             @Override
@@ -211,6 +215,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.d(TAG, "name user: " + name);
         Log.d(TAG, "email user: " + email);
         checkAccountType();
+    }
+
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+
+        }
+        return true;
     }
 
 
@@ -454,7 +469,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 builder.setCancelable(false);
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
-
                 break;
 
         }

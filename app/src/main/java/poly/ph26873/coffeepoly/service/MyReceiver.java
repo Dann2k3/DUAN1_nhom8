@@ -11,10 +11,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.SplashActivity;
 import poly.ph26873.coffeepoly.listData.ListData;
-import poly.ph26873.coffeepoly.models.Notify_messager;
 
 public class MyReceiver extends BroadcastReceiver {
     private int a = 0;
@@ -62,10 +59,10 @@ public class MyReceiver extends BroadcastReceiver {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     ListData.enable_user_current = snapshot.getValue(Integer.class);
                     if (ListData.enable_user_current == 1) {
-                        FirebaseAuth.getInstance().signOut();
                         Intent intent1 = new Intent(context, SplashActivity.class);
                         context.startActivity(intent1);
                         Toast.makeText(context, "Tài khoản của bạn đã bị vô hiệu hóa", Toast.LENGTH_SHORT).show();
+                        FirebaseAuth.getInstance().signOut();
                     }
                 }
 

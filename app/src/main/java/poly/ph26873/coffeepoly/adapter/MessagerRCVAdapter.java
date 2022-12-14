@@ -2,6 +2,8 @@ package poly.ph26873.coffeepoly.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 import poly.ph26873.coffeepoly.R;
+import poly.ph26873.coffeepoly.activities.DetailUserActivity;
 import poly.ph26873.coffeepoly.listData.ListData;
 import poly.ph26873.coffeepoly.models.Message;
 import poly.ph26873.coffeepoly.models.User;
@@ -87,6 +90,14 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
+                        if (message.getType() == 2) {
+                            userHolder.tv_name_me.setTextColor(Color.BLACK);
+                        } else if (message.getType() == 1) {
+                            userHolder.tv_name_me.setTextColor(Color.BLUE);
+                        } else {
+                            userHolder.tv_name_me.setTextColor(Color.GREEN);
+                        }
+                        userHolder.tv_name_me.setText(user.getName());
                         if (isValidContextForGlide(context)) {
                             Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(userHolder.imv_avatar_me);
                         }
@@ -131,7 +142,30 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User user = snapshot.getValue(User.class);
-                        Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(nvHolder.imv_avatar_you);
+                        if (message.getType() == 2) {
+                            nvHolder.tv_name_you.setTextColor(Color.BLACK);
+                            nvHolder.tv_name_you.setText(user.getName());
+                        } else if (message.getType() == 1) {
+                            nvHolder.tv_name_you.setTextColor(Color.BLUE);
+                            nvHolder.tv_name_you.setText("Nhân viên: " + user.getName());
+                        } else {
+                            nvHolder.tv_name_you.setTextColor(Color.GREEN);
+                            nvHolder.tv_name_you.setText("Quản lí: " + user.getName());
+                        }
+                        if (isValidContextForGlide(context)) {
+                            Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(nvHolder.imv_avatar_you);
+                        }
+
+                        if (ListData.type_user_current != 2) {
+                            nvHolder.imv_avatar_you.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(context, DetailUserActivity.class);
+                                    intent.putExtra("user", user);
+                                    context.startActivity(intent);
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -166,12 +200,13 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public class MessagerUserHolder extends RecyclerView.ViewHolder {
-        private TextView tv_mess_user, tv_time_me;
+        private TextView tv_mess_user, tv_time_me, tv_name_me;
         private ImageView imv_avatar_me;
         private LinearLayout ln_mess_u;
 
         public MessagerUserHolder(@NonNull View itemView) {
             super(itemView);
+            tv_name_me = itemView.findViewById(R.id.tv_name_me);
             tv_mess_user = itemView.findViewById(R.id.tv_mess_user);
             tv_time_me = itemView.findViewById(R.id.tv_time_me);
             imv_avatar_me = itemView.findViewById(R.id.imv_avatar_me);
@@ -180,11 +215,12 @@ public class MessagerRCVAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public class MessagerNVHolder extends RecyclerView.ViewHolder {
-        private TextView tv_mess_nv, tv_time_you;
+        private TextView tv_mess_nv, tv_time_you, tv_name_you;
         private ImageView imv_avatar_you;
 
         public MessagerNVHolder(@NonNull View itemView) {
             super(itemView);
+            tv_name_you = itemView.findViewById(R.id.tv_name_you);
             tv_mess_nv = itemView.findViewById(R.id.tv_mess_nv);
             tv_time_you = itemView.findViewById(R.id.tv_time_you);
             imv_avatar_you = itemView.findViewById(R.id.imv_avatar_you);
