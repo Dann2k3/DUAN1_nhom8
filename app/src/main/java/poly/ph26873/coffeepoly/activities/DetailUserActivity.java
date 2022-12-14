@@ -59,6 +59,22 @@ public class DetailUserActivity extends AppCompatActivity {
         user = (User) intent.getSerializableExtra("user");
         onclick(user);
         broadcast();
+        zoomAvatar();
+    }
+
+    private void zoomAvatar() {
+        imv_avatar_detail_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DetailUserActivity.this, ImageActivity.class);
+                if (user1 != null) {
+                    intent.putExtra("image", user1.getImage());
+                } else {
+                    intent.putExtra("image", user.getImage());
+                }
+                startActivity(intent);
+            }
+        });
     }
 
     private void broadcast() {
