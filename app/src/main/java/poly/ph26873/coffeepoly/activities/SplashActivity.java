@@ -38,6 +38,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        Log.d(TAG, "SplashActivity: ---------------------------");
         TextView tv_coofee_poly = findViewById(R.id.tv_coofee_poly);
         ObjectAnimator ob1 = ObjectAnimator.ofFloat(tv_coofee_poly, "rotation", 0f, 360f);
         ob1.setDuration(2000);

@@ -6,13 +6,13 @@
     android:layout_marginBottom="3dp"
     android:elevation="150dp"
     app:cardCornerRadius="14dp"
-    android:id="@+id/onclick_mess">
+    >
 
 
     <LinearLayout
+        android:id="@+id/onclick_mess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -37,7 +37,8 @@
             android:id="@+id/imv_new"
             android:layout_width="15dp"
             android:layout_height="15dp"
-            android:src="@color/green1" />
+            android:src="@color/green1"
+            android:layout_marginRight="15dp"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -17,19 +17,28 @@
             android:layout_height="30dp"
             android:layout_marginEnd="10dp"
             android:src="@color/green1" />
-
         <TextView
-            android:id="@+id/tv_mess_nv"
-            android:text="Xin chào"
-            android:textColor="@color/black"
+            android:id="@+id/tv_name_you"
             android:textSize="20dp"
-            android:background="@drawable/custom_mess_user_nv1"
+            android:text="Nhan vien"
+            android:maxLines="1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"/>
+
+
 
 
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_mess_nv"
+        android:text="Xin chào"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:background="@drawable/custom_mess_user_nv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"/>
     <TextView
         android:id="@+id/tv_time_you"
         android:layout_width="wrap_content"
