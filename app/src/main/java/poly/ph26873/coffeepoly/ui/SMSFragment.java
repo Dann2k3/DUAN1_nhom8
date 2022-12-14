@@ -63,6 +63,7 @@ public class SMSFragment extends Fragment {
 
 
     private void LayListUserMess() {
+        list_nm.clear();
         Log.d(TAG, "LayListUserMess: ---------------");
         DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager");
         reference.addChildEventListener(new ChildEventListener() {
@@ -70,8 +71,18 @@ public class SMSFragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
                 if (notify_messager != null) {
-                    list_nm.add(notify_messager);
-                    sosanh();
+                    int a = 0;
+                    for (int i = 0; i < list_nm.size(); i++) {
+                        if (list_nm.get(i).getId_user().equals(notify_messager.getId_user())) {
+                            a++;
+                            break;
+                        }
+                    }
+                    if (a == 0) {
+                        list_nm.add(notify_messager);
+                        Log.d(TAG, "list_nm: " + list_nm.size());
+                        sosanh();
+                    }
                 }
             }
 
@@ -80,9 +91,10 @@ public class SMSFragment extends Fragment {
                 Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
                 if (notify_messager != null && !list_nm.isEmpty()) {
                     for (int i = 0; i < list_nm.size(); i++) {
-                        if (notify_messager.getId_user() == list_nm.get(i).getId_user()) {
+                        if (notify_messager.getId_user().equals(list_nm.get(i).getId_user())) {
                             list_nm.set(i, notify_messager);
                             sosanh();
+                            break;
                         }
                     }
                 }
@@ -90,7 +102,16 @@ public class SMSFragment extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                Notify_messager notify_messager = snapshot.getValue(Notify_messager.class);
+                if (notify_messager != null && !list_nm.isEmpty()) {
+                    for (int i = 0; i < list_nm.size(); i++) {
+                        if (notify_messager.getId_user().equals(list_nm.get(i).getId_user())) {
+                            list_nm.remove(i);
+                            sosanh();
+                            break;
+                        }
+                    }
+                }
             }
 
             @Override
@@ -147,6 +168,7 @@ public class SMSFragment extends Fragment {
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             0, 0);
                     ln_internet_sms.setLayoutParams(lp);
+                    LayListUserMess();
                 } else {
                     ln_internet_sms.setVisibility(View.VISIBLE);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(

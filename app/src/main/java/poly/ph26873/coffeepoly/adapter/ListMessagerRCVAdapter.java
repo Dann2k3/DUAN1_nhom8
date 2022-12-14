@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -31,6 +30,7 @@ import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailUserActivity;
 import poly.ph26873.coffeepoly.activities.MessagerActivity;
 import poly.ph26873.coffeepoly.models.User;
+import poly.ph26873.coffeepoly.service.MyReceiver;
 
 public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCVAdapter.UserHolder> {
     private Context context;
@@ -56,14 +56,40 @@ public class ListMessagerRCVAdapter extends RecyclerView.Adapter<ListMessagerRCV
     public void onBindViewHolder(@NonNull ListMessagerRCVAdapter.UserHolder holder, int position) {
         User user = list.get(position);
         if (user != null) {
-            if (user.getEnable() == 1) {
-                holder.onclick_mess.setBackgroundResource(R.color.black1);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            if (MyReceiver.isConnected == false) {
+                if (user.getEnable() == 1) {
+                    holder.onclick_mess.setBackgroundResource(R.color.black1);
+                } else {
+                    holder.onclick_mess.setBackgroundResource(R.color.white);
+                }
             } else {
-                holder.onclick_mess.setBackgroundResource(R.color.white);
+                DatabaseReference reference = database.getReference("coffee-poly").child("user").child(user.getId()).child("enable");
+                reference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int en;
+                        try {
+                            en = snapshot.getValue(Integer.class);
+                            if (en == 1) {
+                                holder.onclick_mess.setBackgroundResource(R.color.black1);
+                            } else {
+                                holder.onclick_mess.setBackgroundResource(R.color.white);
+                            }
+                        } catch (Exception e) {
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
             Glide.with(context).load(Uri.parse(user.getImage())).error(R.drawable.image_guest).into(holder.imv_avatar_lm);
             holder.tv_name_lm.setText(user.getName());
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
             DatabaseReference reference = database.getReference("coffee-poly").child("Notify_messager").child(user.getId()).child("status");
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
