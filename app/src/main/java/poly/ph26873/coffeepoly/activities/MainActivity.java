@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String image = snapshot.getValue(String.class);
                 Uri uri = Uri.parse(image);
                 Log.d(TAG, "onDataChange: Uri " + uri.toString());
-                if (isValidContextForGlide(MainActivity.this)) {
+                if (isValidContextForGlide(MainActivity.this)==true) {
                     Glide.with(MainActivity.this).load(uri).error(Uri.parse("https://firebasestorage.googleapis.com/v0/b/coffepoly-f7e3b.appspot.com/o/avatar.jpg?alt=media&token=131ad1fb-e9c5-49e6-a2b8-429955b12588")).into(img_avatar);
                 }
             }
