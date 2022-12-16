@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 
 import poly.ph26873.coffeepoly.R;
 import poly.ph26873.coffeepoly.activities.DetailUserActivity;
+import poly.ph26873.coffeepoly.activities.ImageActivity;
 import poly.ph26873.coffeepoly.models.User;
 
 public class ListUserRCVAdapter extends RecyclerView.Adapter<ListUserRCVAdapter.UserHolder> implements Filterable {
@@ -122,6 +123,14 @@ public class ListUserRCVAdapter extends RecyclerView.Adapter<ListUserRCVAdapter.
                         }
                     });
                     popupMenu.show();
+                }
+            });
+            holder.imv_avatar_list_user.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ImageActivity.class);
+                    intent.putExtra("image", user.getImage());
+                    context.startActivity(intent);
                 }
             });
         }
