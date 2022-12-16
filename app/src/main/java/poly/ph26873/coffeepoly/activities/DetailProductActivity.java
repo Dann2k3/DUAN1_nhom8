@@ -1,8 +1,10 @@
 package poly.ph26873.coffeepoly.activities;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -321,7 +323,9 @@ public class DetailProductActivity extends AppCompatActivity {
     private void showInformationProduct() {
         if (product != null) {
             Log.d(TAG, "id product: " + product.getId());
-            Glide.with(DetailProductActivity.this).load(product.getImage()).error(R.color.red).into(imv_detail_product_avatar);
+            if (isValidContextForGlide(DetailProductActivity.this) == true) {
+                Glide.with(DetailProductActivity.this).load(product.getImage()).error(R.color.red).into(imv_detail_product_avatar);
+            }
             tv_detai_product_name.setText(product.getName());
             expandableTextView.setText(product.getContent() + "");
             tv_detai_product_quantitySold.setText("Số lượng đã bán: " + product.getQuantitySold());
@@ -351,6 +355,19 @@ public class DetailProductActivity extends AppCompatActivity {
             tv_detai_product_quantity.setText(a + "");
             changeQuantityProduct(product.getPrice());
         }
+    }
+
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void backActivity() {
