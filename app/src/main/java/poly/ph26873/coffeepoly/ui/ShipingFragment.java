@@ -32,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,14 +122,100 @@ public class ShipingFragment extends Fragment implements SwipeRefreshLayout.OnRe
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
-                    listUser.add(user);
-                    layListBill(listUser);
+                    if (user.getEnable() == 0) {
+                        if (listUser.isEmpty()) {
+                            DatabaseReference r1 = database.getReference("coffee-poly").child("type_user").child(user.getId());
+                            r1.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int type = snapshot.getValue(Integer.class);
+                                    if (type == 2) {
+                                        listUser.add(user);
+                                        layListBill(listUser);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        } else {
+                            int a = 0;
+                            for (int i = 0; i < listUser.size(); i++) {
+                                if (listUser.get(i).getId().equals(user.getId())) {
+                                    a++;
+                                    break;
+                                }
+                            }
+                            if (a == 0) {
+                                DatabaseReference r1 = database.getReference("coffee-poly").child("type_user").child(user.getId());
+                                r1.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        int type = snapshot.getValue(Integer.class);
+                                        if (type == 2) {
+                                            listUser.add(user);
+                                            layListBill(listUser);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
+                        }
+
+                    }
                 }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                User user = snapshot.getValue(User.class);
+                if (user.getEnable() == 1 && !listUser.isEmpty()) {
+                    DatabaseReference r1 = database.getReference("coffee-poly").child("type_user").child(user.getId());
+                    r1.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int type = snapshot.getValue(Integer.class);
+                            if (type == 2) {
+                                for (int i = 0; i < listUser.size(); i++) {
+                                    if (listUser.get(i).getId() == user.getId()) {
+                                        listUser.remove(i);
+                                        layListBill(listUser);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            int type = snapshot.getValue(Integer.class);
+                            if (type == 2) {
+                                listUser.add(user);
+                                layListBill(listUser);
+                            }
+                        }
+                    });
+
+                } else if (user.getEnable() == 0) {
+                    DatabaseReference r1 = database.getReference("coffee-poly").child("type_user").child(user.getId());
+                    r1.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
 
             @Override
@@ -146,16 +233,17 @@ public class ShipingFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             }
         });
-        layListBill(listUser);
     }
 
     private void layListBill(List<User> listUser) {
+        Log.d(TAG, "listUser.size: " + listUser.size());
         DatabaseReference reference = database.getReference("coffee-poly/bill");
         listBill = new ArrayList<>();
             for (int i = 0; i < listUser.size(); i++) {
                 reference.child(listUser.get(i).getId()).addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        Log.d(TAG, "onChildAdded: ");
                         Bill bill = snapshot.getValue(Bill.class);
                         if (bill != null && bill.getStatus() == 0) {
                             int a = 0;
@@ -183,19 +271,34 @@ public class ShipingFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                        Log.d(TAG, "onChildChanged: ");
                         Bill bill = snapshot.getValue(Bill.class);
                         if (bill != null) {
-                            if (bill.getStatus() == 0 && !listBill.contains(bill)) {
-                                listBill.add(bill);
-                                Collections.reverse(listBill);
-                                adapter.setData(listBill);
-                            } else if (bill.getStatus() != 0 && !listBill.isEmpty()) {
+                            Log.d(TAG, "bill.sttus: "+bill.getStatus());
+                            if (bill.getStatus() == 0) {
+                                int a = 0;
                                 for (int j = 0; j < listBill.size(); j++) {
-                                    if (listBill.get(j).getId() == bill.getId()) {
-                                        listBill.remove(listBill.get(j));
-                                        Collections.reverse(listBill);
-                                        adapter.setData(listBill);
+                                    if (listBill.get(j).getId().equals(bill.getId())) {
+                                        a++;
                                         break;
+                                    }
+                                }
+                                if(a==0){
+                                    Log.d(TAG, "onChildChanged: loai 1");
+                                    listBill.add(bill);
+                                    Collections.reverse(listBill);
+                                    adapter.setData(listBill);
+                                }
+                            } if (bill.getStatus() != 0) {
+                                if(listBill.size()!=0){
+                                    for (int j = 0; j < listBill.size(); j++) {
+                                        if (listBill.get(j).getId().equals(bill.getId())) {
+                                            Log.d(TAG, "onChildChanged: loai 2");
+                                            listBill.remove(listBill.get(j));
+                                            Collections.reverse(listBill);
+                                            adapter.setData(listBill);
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -219,8 +322,6 @@ public class ShipingFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     }
                 });
             }
-        adapter.setData(listBill);
-        recyclerView.setAdapter(adapter);
     }
 
     @Override
